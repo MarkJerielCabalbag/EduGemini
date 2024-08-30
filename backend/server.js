@@ -12,7 +12,7 @@ import classworkRouter from "./routes/classworkRouter.js";
 const app = express();
 connectDB();
 const corsOptions = {
-  origin: "http://localhost:3000",
+  origin: "http://localhost:5000",
   methods: "GET, POST, PUT, DELETE, OPTIONS",
   allowedHeaders: "Content-Type, Authorization",
   credentials: true,
@@ -24,7 +24,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 app.use((req, res, next) => {
-  res.header("Access-Control-Allow-Origin", "http://localhost:3000");
+  res.header("Access-Control-Allow-Origin", "http://localhost:5000");
   res.header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
   res.header("Access-Control-Allow-Headers", "Content-Type, Authorization");
   res.header("Access-Control-Allow-Credentials", "true");

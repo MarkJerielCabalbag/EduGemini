@@ -1,4 +1,5 @@
 import { useQuery, useMutation } from "@tanstack/react-query";
+import axios from "axios";
 
 const uri = "https://edugemini.onrender.com";
 
@@ -18,22 +19,40 @@ async function register(formData) {
   });
 }
 
+// async function login(formData) {
+//   return await fetch(`https://edugemini.onrender.com/api/eduGemini/login`, {
+//     method: "POST",
+//     headers: { "Content-Type": "application/json" },
+//     credentials: "include",
+//     withCredentials: true,
+//     body: JSON.stringify(formData),
+//   }).then(async (res) => {
+//     const response = await res.json();
+
+//     if (!res.ok) {
+//       throw new Error(response.message || "An Error Occured");
+//     }
+
+//     return response;
+//   });
+// }
+
 async function login(formData) {
-  return await fetch(`https://edugemini.onrender.com/api/eduGemini/login`, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    credentials: "include",
-    withCredentials: true,
-    body: JSON.stringify(formData),
-  }).then(async (res) => {
-    const response = await res.json();
+  return await axios
+    .post(`https://edugemini.onrender.com/api/eduGemini/login`, formData, {
+      headers: { "Content-Type": "application/json" },
+      credentials: "include",
+      withCredentials: true,
+    })
+    .then(async (res) => {
+      const response = await res.json();
 
-    if (!res.ok) {
-      throw new Error(response.message || "An Error Occured");
-    }
+      if (!res.ok) {
+        throw new Error(response.message || "An Error Occured");
+      }
 
-    return response;
-  });
+      return response;
+    });
 }
 
 async function logout() {
