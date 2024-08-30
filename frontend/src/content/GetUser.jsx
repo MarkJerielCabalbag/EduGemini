@@ -15,7 +15,7 @@ function GetUser() {
             {user.profile_path && (
               <img
                 className="h-20 w-20 rounded-full border-2 border-slate-900"
-                src={`https://edugemini.onrender.com/${user.profile_path}/${user.profile.filename}`}
+                src={`http://localhost:3000/${user.profile_path}/${user.profile.filename}`}
               />
             )}
             Account Information

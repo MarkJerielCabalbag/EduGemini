@@ -114,13 +114,13 @@ const logoutUser = asyncHandler(async (req, res) => {
 //@route    POST /api/eduGemini/profile
 //@access   private
 const getUserProfile = asyncHandler(async (req, res, next) => {
-  const user = await User.findById(req.user._id).select("-user_password");
+  const user = await User.find(req.user._id).select("-user_password");
 
   if (!user) {
     return res.status(404).json({ message: "User not found" });
   }
 
-  res.status(200).send([user]);
+  res.status(200).send(user);
 });
 
 // //@desc     Update User Profile

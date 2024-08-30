@@ -3,7 +3,7 @@ import { useQuery, useMutation } from "@tanstack/react-query";
 const uri = "https://edugemini.onrender.com";
 
 async function register(formData) {
-  return await fetch("https://edugemini.onrender.com/api/eduGemini/register", {
+  return await fetch("http://localhost:3000/api/eduGemini/register", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(formData),
@@ -19,10 +19,10 @@ async function register(formData) {
 }
 
 async function login(formData) {
-  return await fetch(`https://edugemini.onrender.com/api/eduGemini/login`, {
+  return await fetch(`http://localhost:3000/api/eduGemini/login`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-
+    credentials: "include",
     body: JSON.stringify(formData),
   }).then(async (res) => {
     const response = await res.json();
@@ -36,7 +36,7 @@ async function login(formData) {
 }
 
 async function logout() {
-  return await fetch(`${uri}/api/eduGemini/logout`, {
+  return await fetch(`http://localhost:3000/api/eduGemini/logout`, {
     method: "POST",
   }).then(async (res) => {
     const response = await res.json();
@@ -71,36 +71,36 @@ async function updateUser(formData) {
 }
 
 async function getUser() {
-  return await fetch(`https://edugemini.onrender.com/api/eduGemini/profile`, {
+  return await fetch("http://localhost:3000/api/eduGemini/profile", {
     method: "GET",
     headers: {
       Accept: "application/json",
       "Content-Type": "application/json",
     },
-    body: JSON.stringify(formData),
-    withCredentials: true,
     credentials: "include",
+    withCredentials: true,
   }).then(async (res) => {
     const response = await res.json();
-
     if (!res.ok) {
-      throw new Error(response.message || "An Error Occured");
+      throw new Error(response.message || "An Error Occurred");
     }
-
     return response;
   });
 }
 
 export async function getAllClassroom(userId) {
-  return await fetch(`${uri}/api/eduGemini/classroom/allClass/${userId}`, {
-    method: "GET",
-    headers: {
-      Accept: "application/json",
-      "Content-Type": "application/json",
-    },
-    withCredentials: true,
-    credentials: "include",
-  }).then(async (res) => {
+  return await fetch(
+    `http://localhost:3000/api/eduGemini/classroom/allClass/${userId}`,
+    {
+      method: "GET",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+      },
+      withCredentials: true,
+      credentials: "include",
+    }
+  ).then(async (res) => {
     const response = await res.json();
 
     if (!res.ok) {

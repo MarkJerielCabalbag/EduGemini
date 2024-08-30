@@ -60,7 +60,7 @@ const router = createBrowserRouter(
 
       <Route path="" element={<PrivateRoute />}>
         <Route path="/home" element={<Home />} />
-        <Route path="/class/:userId" element={<Class />}></Route>
+        <Route path="/class/:userId" element={<Class />} />
 
         <Route
           path="/class/classroom/getCreatedClass/:userId/:roomId"
