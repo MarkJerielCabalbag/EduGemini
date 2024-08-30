@@ -56,7 +56,7 @@ const router = createBrowserRouter(
         />
       </Route>
 
-      <Route index={true} path="/" element={<Auth />} />
+      <Route index={true} path="/" element={<Auth />}></Route>
 
       <Route path="" element={<PrivateRoute />}>
         <Route path="/home" element={<Home />} />

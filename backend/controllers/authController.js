@@ -125,7 +125,7 @@ const getUserProfile = asyncHandler(async (req, res, next) => {
   generateToken(res, user._id);
 
   // Return the user's profile in the response
-  return res.status(200).send(user);
+  return res.status(200).send([user]);
 });
 // //@desc     Update User Profile
 // //@route    POST /api/eduGemini/profile

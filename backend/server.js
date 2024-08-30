@@ -12,8 +12,8 @@ import classworkRouter from "./routes/classworkRouter.js";
 const app = express();
 connectDB();
 const corsOptions = {
-  origin: "https://edu-gemini.vercel.app",
-  // origin: "http://localhost:5000",
+  // origin: "https://edu-gemini.vercel.app",
+  origin: "http://localhost:5000",
   credentials: true,
 };
 
