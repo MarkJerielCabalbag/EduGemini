@@ -35,6 +35,7 @@ function MenuBar() {
   const { data, isLoading, isError } = useGetUser({ onSuccess, onError });
 
   const userId = data?.map((user) => user._id.toString());
+  console.log(userId);
   const { mutateAsync } = useLogout({ onSuccess, onError });
   return (
     <div className="w-full flex justify-center mt-4">
