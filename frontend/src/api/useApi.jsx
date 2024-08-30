@@ -3,7 +3,7 @@ import { useQuery, useMutation } from "@tanstack/react-query";
 const uri = "https://edugemini.onrender.com";
 
 async function register(formData) {
-  return await fetch(`http://locahost:3000/api/eduGemini/register`, {
+  return await fetch("http://locahost:3000/api/eduGemini/register", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(formData),

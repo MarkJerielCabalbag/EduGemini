@@ -11,13 +11,34 @@ import path from "path";
 import classworkRouter from "./routes/classworkRouter.js";
 import adminRouter from "./routes/adminRoutes.js";
 import User from "./models/userModel.js";
+import bodyParser from "body-parser";
 const app = express();
 connectDB();
 
+app.use(cors());
 app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
+app.use(express.urlencoded({ extended: false }));
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
 
-app.use(cookieParser());
+const __dirname = dirname(fileURLToPath(import.meta.url));
+
+app.use(
+  "/announcements",
+  express.static(path.join(__dirname, "/routes/announcements"))
+);
+
+app.use("/profile", express.static("profile"));
+app.use("/outputs", express.static("classworks"));
+
+app.use("/api/eduGemini", authRouter);
+app.use("/api/eduGemini/classroom", classRouter);
+app.use("/api/eduGemini/classwork", classworkRouter);
+app.use("/api/eduGemini/ai", adminRouter);
+app.listen(process.env.PORT, () => {
+  console.log(`Server is running on: ${process.env.PORT || 7000}`);
+});
+
 // app.use(function (req, res, next) {
 //   res.header("Access-Control-Allow-Origin", req.headers.origin);
 //   res.header(
@@ -39,22 +60,3 @@ app.use(cookieParser());
 //   res.status(200);
 //   next();
 // });
-const __dirname = dirname(fileURLToPath(import.meta.url));
-
-app.use(cors());
-
-app.use(
-  "/announcements",
-  express.static(path.join(__dirname, "/routes/announcements"))
-);
-
-app.use("/profile", express.static("profile"));
-app.use("/outputs", express.static("classworks"));
-
-app.use("/api/eduGemini", authRouter);
-app.use("/api/eduGemini/classroom", classRouter);
-app.use("/api/eduGemini/classwork", classworkRouter);
-app.use("/api/eduGemini/ai", adminRouter);
-app.listen(process.env.PORT, () => {
-  console.log(`Server is running on: ${process.env.PORT || 7000}`);
-});
