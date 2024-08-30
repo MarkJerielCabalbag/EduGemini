@@ -7,7 +7,7 @@ function FileViewer() {
     return <div>No files to display</div>;
   }
   const docs = files.map((file) => ({
-    uri: `http://localhost:3000/announcements/${file.filename}`,
+    uri: `https://edugemini.onrender.com/announcements/${file.filename}`,
   }));
 
   return <DocViewer documents={docs} pluginRenderers={DocViewerRenderers} />;

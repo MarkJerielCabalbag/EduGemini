@@ -33,7 +33,8 @@ function MenuBar() {
     console.log(error.message);
   };
   const { data, isLoading, isError } = useGetUser({ onSuccess, onError });
-  const userId = data?.map((item) => item._id.toString());
+  const userId = data?.map((user) => user._id);
+  console.log(userId);
   const { mutateAsync } = useLogout({ onSuccess, onError });
   return (
     <div className="w-full flex justify-center mt-4">
@@ -94,7 +95,7 @@ function MenuBar() {
                       <>
                         {user.profile_path && (
                           <AvatarImage
-                            src={`http://localhost:3000/${user.profile_path}/${user.profile.filename}`}
+                            src={`https://edugemini.onrender.com/${user.profile_path}/${user.profile.filename}`}
                           />
                         )}
                       </>

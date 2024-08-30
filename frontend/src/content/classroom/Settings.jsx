@@ -75,7 +75,7 @@ function Settings() {
                           {student.user_profile_path && (
                             <AvatarImage
                               className="h-10 w-10 rounded-full border-2 border-slate-900"
-                              src={`http://localhost:3000/${student.user_profile_path}/${student.user_img}`}
+                              src={`https://edugemini.onrender.com/${student.user_profile_path}/${student.user_img}`}
                             />
                           )}
                         </Avatar>

@@ -94,7 +94,7 @@ function GetAnnouncement({ statusBtn, cardStatus }) {
                         <CardTitle className="flex gap-2 items-center">
                           <img
                             className="h-10 w-10 rounded-full border-2 border-slate-900"
-                            src={`http://localhost:3000/${item?.profile_path}/${item?.user_img}`}
+                            src={`https://edugemini.onrender.com/${item?.profile_path}/${item?.user_img}`}
                           />
                           {item.username}
                         </CardTitle>

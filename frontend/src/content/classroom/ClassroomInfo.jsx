@@ -56,7 +56,7 @@ function ClassroomInfo({ design, hide }) {
               <Avatar className="h-16 w-16">
                 <AvatarImage
                   className="border-2 border-slate-200 rounded-full"
-                  src={`http://localhost:3000/${roomDetails?.profile_path}/${roomDetails?.user_img}`}
+                  src={`https://edugemini.onrender.com/${roomDetails?.profile_path}/${roomDetails?.user_img}`}
                 />
               </Avatar>
               <div>

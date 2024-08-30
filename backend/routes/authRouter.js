@@ -11,7 +11,7 @@ import generateToken from "../utils/generateToken.js";
 import bcrypt from "bcrypt";
 const authRouter = express.Router();
 import asyncHandler from "express-async-handler";
-
+authRouter.use(protectRoutes);
 // register user
 authRouter.post("/register", authController.registerUser);
 

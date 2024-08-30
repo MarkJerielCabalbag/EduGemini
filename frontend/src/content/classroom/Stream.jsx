@@ -44,7 +44,7 @@ function Stream({ statusBtn }) {
       }
 
       const response = await fetch(
-        `http://localhost:3000/api/eduGemini/classroom/createAnnouncement/${roomId}`,
+        `https://edugemini.onrender.com/classroom/createAnnouncement/${roomId}`,
         {
           method: "POST",
           body: formData,

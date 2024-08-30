@@ -85,7 +85,7 @@ function UpdateUser() {
 
   const profile = data?.map(
     (user) =>
-      `http://localhost:3000/${user.profile_path}/${user.profile.filename}`
+      `https://edugemini.onrender.com/${user.profile_path}/${user.profile.filename}`
   );
 
   const handleImgSrc = () => {

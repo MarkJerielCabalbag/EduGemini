@@ -63,7 +63,7 @@ function Classwork({ statusBtn }) {
       formData.append("classworkAttachFile", classworkAttachFile);
 
       const response = await fetch(
-        `http://localhost:3000/api/eduGemini/classwork/createClasswork/${roomId}`,
+        `https://edugemini.onrender.com/classwork/createClasswork/${roomId}`,
         {
           method: "POST",
           body: formData,

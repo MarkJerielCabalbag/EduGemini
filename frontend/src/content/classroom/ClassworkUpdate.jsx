@@ -54,7 +54,7 @@ function ClassworkUpdate({ setOpenSettingModal }) {
       formData.append("classworkAttachFile", classworkAttachFile);
 
       const response = await fetch(
-        `http://localhost:3000/api/eduGemini/classwork/updateClasswork/${roomId}/${workId}`,
+        `https://edugemini.onrender.com/classwork/updateClasswork/${roomId}/${workId}`,
         {
           method: "POST",
           body: formData,
