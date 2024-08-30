@@ -55,7 +55,7 @@ app.get(
     generateToken(res, user._id);
 
     // Return the user's profile in the response
-    return res.status(200).json({ message: "ji" }).send([user]);
+    return res.status(200).send([user]);
   })
 );
 
