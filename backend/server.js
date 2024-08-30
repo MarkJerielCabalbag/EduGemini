@@ -12,22 +12,13 @@ import classworkRouter from "./routes/classworkRouter.js";
 const app = express();
 connectDB();
 const corsOptions = {
-  origin: "http://localhost:5000",
+  origin: "https://edu-gemini.vercel.app",
   credentials: true,
 };
 
 app.use(cors(corsOptions));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-
-app.use(function (req, res, next) {
-  res.header("Access-Control-Allow-Origin", req.headers.origin);
-  res.header(
-    "Access-Control-Allow-Headers",
-    "Origin, X-Requested-With, Content-Type, Accept"
-  );
-  next();
-});
 
 app.use(cookieParser());
 
