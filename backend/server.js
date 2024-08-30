@@ -18,9 +18,7 @@ connectDB();
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-app.use(cors({ origin: true, credentials: true }));
 app.use(cookieParser());
-
 app.use(function (req, res, next) {
   res.header("Access-Control-Allow-Origin", req.headers.origin);
   res.header(
@@ -30,7 +28,21 @@ app.use(function (req, res, next) {
   next();
 });
 
+// app.options("*", function (req, res, next) {
+//   res.header("Access-Control-Allow-Origin", "http://localhost:5000");
+//   res.header("Access-Control-Allow-Credentials", "true");
+//   res.header("Access-Control-Allow-Headers", [
+//     "X-Requested-With",
+//     "content-type",
+//     "credentials",
+//   ]);
+//   res.header("Access-Control-Allow-Methods", "GET,POST,DELETE,PUT");
+//   res.status(200);
+//   next();
+// });
 const __dirname = dirname(fileURLToPath(import.meta.url));
+
+app.use(cors({ origin: true, credentials: true }));
 
 app.use(
   "/announcements",

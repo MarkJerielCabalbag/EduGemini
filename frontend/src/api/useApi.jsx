@@ -77,6 +77,7 @@ async function getUser() {
       Accept: "application/json",
       "Content-Type": "application/json",
     },
+    body: JSON.stringify(formData),
     withCredentials: true,
     credentials: "include",
   }).then(async (res) => {
