@@ -15,11 +15,11 @@ import bodyParser from "body-parser";
 const app = express();
 connectDB();
 
-app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
+app.use(cors({ origin: true, credentials: true }));
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
