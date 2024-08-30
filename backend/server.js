@@ -18,14 +18,14 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 app.use(cookieParser());
-app.use(function (req, res, next) {
-  res.header("Access-Control-Allow-Origin", req.headers.origin);
-  res.header(
-    "Access-Control-Allow-Headers",
-    "Origin, X-Requested-With, Content-Type, Accept"
-  );
-  next();
-});
+// app.use(function (req, res, next) {
+//   res.header("Access-Control-Allow-Origin", req.headers.origin);
+//   res.header(
+//     "Access-Control-Allow-Headers",
+//     "Origin, X-Requested-With, Content-Type, Accept"
+//   );
+//   next();
+// });
 
 // app.options("*", function (req, res, next) {
 //   res.header("Access-Control-Allow-Origin", "http://localhost:5000");
@@ -41,7 +41,7 @@ app.use(function (req, res, next) {
 // });
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
-app.use(cors({ origin: true, credentials: true }));
+app.use(cors());
 
 app.use(
   "/announcements",

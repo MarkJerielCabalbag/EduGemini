@@ -3,11 +3,9 @@ import { useQuery, useMutation } from "@tanstack/react-query";
 const uri = "https://edugemini.onrender.com";
 
 async function register(formData) {
-  return await fetch(`${uri}/api/eduGemini/register`, {
+  return await fetch(`http://locahost:3000/api/eduGemini/register`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    withCredentials: true,
-    credentials: "include",
     body: JSON.stringify(formData),
   }).then(async (res) => {
     const response = await res.json();
@@ -74,9 +72,12 @@ async function updateUser(formData) {
 }
 
 async function getUser() {
-  return await fetch(`https://edugemini.onrender.com/api/eduGemini/profile`, {
+  return await fetch(`${uri}/api/eduGemini/profile`, {
     method: "GET",
-    headers: { "Content-Type": "application/json" },
+    headers: {
+      Accept: "application/json",
+      "Content-Type": "application/json",
+    },
     withCredentials: true,
     credentials: "include",
   }).then(async (res) => {
