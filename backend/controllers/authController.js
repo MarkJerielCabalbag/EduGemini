@@ -116,13 +116,17 @@ const logoutUser = asyncHandler(async (req, res) => {
 const getUserProfile = asyncHandler(async (req, res, next) => {
   const user = await User.findById(req.user._id).select("-user_password");
 
+  // If the user is not found, return a 404 response
   if (!user) {
     return res.status(404).json({ message: "User not found" });
   }
+
+  // Generate a new token and set it in the response as a cookie
   generateToken(res, user._id);
+
+  // Return the user's profile in the response
   return res.status(200).send(user);
 });
-
 // //@desc     Update User Profile
 // //@route    POST /api/eduGemini/profile
 // //@access   private
