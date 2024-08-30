@@ -11,25 +11,34 @@ import path from "path";
 import classworkRouter from "./routes/classworkRouter.js";
 const app = express();
 connectDB();
-// const corsOptions = {
-//   // origin: "https://edu-gemini.vercel.app",
-//   origin: "http://localhost:5000",
-//   credentials: true,
-// };
+const corsOptions = {
+  origin: "http://localhost:3000",
+  methods: "GET, POST, PUT, DELETE, OPTIONS",
+  allowedHeaders: "Content-Type, Authorization",
+  credentials: true,
+};
 
-app.use(cors());
+app.use(cors(corsOptions));
+
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-app.options((req, res, next) => {
-  res.header("Access-Control-Allow-Origin", "*");
+app.use((req, res, next) => {
+  res.header("Access-Control-Allow-Origin", "http://localhost:3000");
   res.header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
   res.header("Access-Control-Allow-Headers", "Content-Type, Authorization");
   res.header("Access-Control-Allow-Credentials", "true");
+
+  // Handle OPTIONS preflight requests
   if (req.method === "OPTIONS") {
-    return res.status(204).end();
+    return res.sendStatus(204);
   }
+
   next();
+});
+
+app.get("/api/eduGemini/profile", (req, res) => {
+  res.json({ message: "Profile data" });
 });
 
 app.use(cookieParser());
