@@ -37,13 +37,11 @@ app.use((req, res, next) => {
   if (req.method === "OPTIONS") {
     return res.sendStatus(204);
   }
-
-  next();
 });
 
 app.get(
   "/api/eduGemini/profile",
-  expressAsyncHandler(async (req, res) => {
+  expressAsyncHandler(async (req, res, next) => {
     const user = await User.findById(req.user._id).select("-user_password");
 
     // If the user is not found, return a 404 response
