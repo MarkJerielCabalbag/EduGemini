@@ -3,7 +3,7 @@ import { useQuery, useMutation } from "@tanstack/react-query";
 const uri = "https://edugemini.onrender.com";
 
 async function register(formData) {
-  return await fetch("http://localhost:3000/api/eduGemini/register", {
+  return await fetch("https://edugemini.onrender.com/api/eduGemini/register", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(formData),
@@ -19,7 +19,7 @@ async function register(formData) {
 }
 
 async function login(formData) {
-  return await fetch(`http://localhost:3000/api/eduGemini/login`, {
+  return await fetch(`https://edugemini.onrender.com/api/eduGemini/login`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     credentials: "include",
@@ -36,7 +36,7 @@ async function login(formData) {
 }
 
 async function logout() {
-  return await fetch(`http://localhost:3000/api/eduGemini/logout`, {
+  return await fetch(`https://edugemini.onrender.com/api/eduGemini/logout`, {
     method: "POST",
   }).then(async (res) => {
     const response = await res.json();
@@ -71,14 +71,10 @@ async function updateUser(formData) {
 }
 
 async function getUser() {
-  return await fetch("http://localhost:3000/api/eduGemini/profile", {
+  return await fetch("https://edugemini.onrender.com/api/eduGemini/profile", {
     method: "GET",
-    headers: {
-      Accept: "application/json",
-      "Content-Type": "application/json",
-    },
+    headers: { "Content-Type": "application/json" },
     credentials: "include",
-    withCredentials: true,
   }).then(async (res) => {
     const response = await res.json();
     if (!res.ok) {
