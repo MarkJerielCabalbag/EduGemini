@@ -11,8 +11,10 @@ import path from "path";
 import classworkRouter from "./routes/classworkRouter.js";
 import User from "./models/userModel.js";
 import generateToken from "./utils/generateToken.js";
+import expressAsyncHandler from "express-async-handler";
 const app = express();
 connectDB();
+
 const corsOptions = {
   origin: "http://localhost:5000",
   methods: "GET, POST, PUT, DELETE, OPTIONS",
@@ -39,20 +41,23 @@ app.use((req, res, next) => {
   next();
 });
 
-app.get("/api/eduGemini/profile", async (req, res) => {
-  const user = await User.findById(req.user._id).select("-user_password");
+app.get(
+  "/api/eduGemini/profile",
+  expressAsyncHandler(async (req, res) => {
+    const user = await User.findById(req.user._id).select("-user_password");
 
-  // If the user is not found, return a 404 response
-  if (!user) {
-    return res.status(404).json({ message: "User not found" });
-  }
+    // If the user is not found, return a 404 response
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
 
-  // Generate a new token and set it in the response as a cookie
-  generateToken(res, user._id);
+    // Generate a new token and set it in the response as a cookie
+    generateToken(res, user._id);
 
-  // Return the user's profile in the response
-  return res.status(200).send([user]);
-});
+    // Return the user's profile in the response
+    return res.status(200).json({ message: "ji" }).send([user]);
+  })
+);
 
 app.use(cookieParser());
 
