@@ -37,9 +37,9 @@ app.use((req, res, next) => {
   next();
 });
 
-app.get("/api/eduGemini/profile", (req, res) => {
-  res.json({ message: "Profile data" });
-});
+// app.get("/api/eduGemini/profile", (req, res) => {
+//   res.json({ message: "Profile data" });
+// });
 
 app.use(cookieParser());
 
