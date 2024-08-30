@@ -119,6 +119,19 @@ const getUserProfile = asyncHandler(async (req, res, next) => {
   if (!user) {
     return res.status(404).json({ message: "User not found" });
   }
+  const userId = user._id;
+  // Generate a new JWT token
+  const token = jwt.sign({ userId }, process.env.JWT_SECRET, {
+    expiresIn: "1d",
+  });
+
+  // Set the token as a cookie
+  res.cookie("jwt", token, {
+    httpOnly: true,
+    secure: process.env.NODE_ENV !== "development", // Use 'secure' flag in production
+    sameSite: "strict", // Ensures the cookie is not sent with cross-site requests
+    maxAge: 30 * 24 * 60 * 60 * 1000, // 30 days
+  });
 
   res.status(200).send(user);
 });
