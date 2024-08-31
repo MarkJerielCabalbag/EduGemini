@@ -15,35 +15,38 @@ import expressAsyncHandler from "express-async-handler";
 const app = express();
 connectDB();
 
-const corsOptions = {
-  origin: "http://localhost:5000",
-  methods: "GET, POST, PUT, DELETE, OPTIONS",
-  allowedHeaders: "Content-Type, Authorization",
-  credentials: true,
-};
+// const corsOptions = {
+//   origin: "http://localhost:5000",
+//   methods: "GET, POST, PUT, DELETE, OPTIONS",
+//   allowedHeaders: "Content-Type, Authorization",
+//   credentials: true,
+// };
 
-app.use(cors(corsOptions));
-
+app.use(cors());
+app.use(cookieParser());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-app.use((req, res, next) => {
-  res.setHeader("Access-Control-Allow-Origin", "http://localhost:5000");
-  res.setHeader(
-    "Access-Control-Allow-Methods",
-    "GET, POST, PUT, DELETE, OPTIONS"
-  );
-  res.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization");
-  res.setHeader("Access-Control-Allow-Credentials", "true");
+app.use(function (req, res, next) {
+  var cookie = req.cookies.jwt;
+  const userId = req.user._id;
+  const token = jwt.sign({ userId }, process.env.JWT_SECRET, {
+    expiresIn: "1d",
+  });
 
-  // Handle OPTIONS preflight requests
-  if (req.method === "OPTIONS") {
-    return res.sendStatus(204);
+  if (!cookie) {
+    res.cookie("jwt", token, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV !== "development",
+      sameSite: "strict",
+      maxAge: 30 * 24 * 60 * 60 * 1000,
+    });
+  } else {
+    console.log("lets check that this is a valid cookie");
+    // send cookie along to the validation functions...
   }
   next();
 });
-
-app.use(cookieParser());
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
