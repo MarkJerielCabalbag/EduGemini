@@ -32,7 +32,7 @@ function MenuBar() {
     toast.error("There seems to be an error, Try again");
     console.log(error.message);
   };
-  // const { data, isLoading, isError } = useGetUser({ onSuccess, onError });
+  const { data, isLoading, isError } = useGetUser({ onSuccess, onError });
 
   const userId = localStorage.getItem("userId");
   console.log(userId);
@@ -83,7 +83,7 @@ function MenuBar() {
               <LogOut size={25} className="bg-black text-white p-1 rounded" />
             </MenubarItem>
             <MenubarSeparator />
-            {/* <MenubarItem
+            <MenubarItem
               className="flex flex-row-reverse gap-4"
               onClick={() => navigate("/profile")}
             >
@@ -120,7 +120,7 @@ function MenuBar() {
                   </div>
                 </>
               ))}
-            </MenubarItem> */}
+            </MenubarItem>
           </MenubarContent>
         </MenubarMenu>
       </Menubar>

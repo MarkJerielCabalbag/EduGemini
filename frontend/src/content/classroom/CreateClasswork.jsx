@@ -29,7 +29,7 @@ function CreateClasswork({ statusBtn, cardStatus }) {
   });
 
   const { data: user } = useGetUser({ onError, onSuccess });
-  const userId = user?.map((user) => user._id);
+  const userId = user?.map((user) => user._id.toString());
 
   // const classwork = data?.map((item) => item.classwork_title);
 
