@@ -111,7 +111,8 @@ const logoutUser = asyncHandler(async (req, res) => {
 //@route    POST /api/eduGemini/profile/:userId
 //@access   private
 const getUserProfile = asyncHandler(async (req, res) => {
-  const user = await User.findById(req._id.params);
+  const { userId } = req.params;
+  const user = await User.findById(userId);
 
   return res.status(200).send(user);
 });
