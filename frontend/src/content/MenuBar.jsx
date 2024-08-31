@@ -11,7 +11,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Link, useNavigate } from "react-router-dom";
 import avatar from "../assets/R.png";
 import { LogOut, PlusCircle, Settings, Share, UserCircle } from "lucide-react";
-import { useLogout, useGetUser } from "@/api/useApi";
+import { useLogout, useGetUser, getUser } from "@/api/useApi";
 import toast from "react-hot-toast";
 import { Skeleton } from "@/components/ui/skeleton";
 
@@ -32,7 +32,11 @@ function MenuBar() {
     toast.error("There seems to be an error, Try again");
     console.log(error.message);
   };
-  const { data, isLoading, isError } = useGetUser({ onSuccess, onError });
+  const { data, isLoading, isError } = useGetUser({
+    queryFn: () => getUser(userId),
+    onSuccess,
+    onError,
+  });
 
   const userId = localStorage.getItem("userId");
   console.log(userId);

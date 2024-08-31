@@ -22,6 +22,7 @@ const protectRoutes = asyncHandler(async (req, res, next) => {
     res.status(401).json({ message: "Not Authorized, no token" });
     console.log("Not authorized, no token");
   }
+  next();
 });
 
 export { protectRoutes };

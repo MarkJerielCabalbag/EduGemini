@@ -83,11 +83,14 @@ async function updateUser(formData) {
   });
 }
 
-async function getUser() {
-  return await fetch("https://edugemini.onrender.com/api/eduGemini/profile", {
-    method: "GET",
-    headers: { "Content-Type": "application/json" },
-  }).then(async (res) => {
+export async function getUser(userId) {
+  return await fetch(
+    `https://edugemini.onrender.com/api/eduGemini/profile/${userId}`,
+    {
+      method: "GET",
+      headers: { "Content-Type": "application/json" },
+    }
+  ).then(async (res) => {
     const response = await res.json();
     if (!res.ok) {
       throw new Error(response.message || "An Error Occurred");
@@ -540,10 +543,10 @@ export const useUpdateUser = ({ mutationFn, onSuccess, onError }) => {
   });
 };
 
-export const useGetUser = ({ onSuccess, onError }) => {
+export const useGetUser = ({ queryFn, onSuccess, onError }) => {
   return useQuery({
     queryKey: ["user"],
-    queryFn: getUser,
+    queryFn,
     onError,
     onSuccess,
   });
