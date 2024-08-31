@@ -6,6 +6,7 @@ const protectRoutes = asyncHandler(async (req, res, next) => {
   let token;
 
   token = req.cookies.jwt;
+  console.log(token);
 
   if (token) {
     try {
@@ -15,12 +16,12 @@ const protectRoutes = asyncHandler(async (req, res, next) => {
 
       next();
     } catch (err) {
-      res.status(401).json({ message: "Not Authorized, invalid token" });
-      console.log("Not authorized, invalid token");
+      res.status(401).json({ message: "Not Authorized, invalid token 1" });
+      console.log("Not authorized, invalid token 1");
     }
   } else {
-    res.status(401).json({ message: "Not Authorized, no token" });
-    console.log("Not authorized, no token");
+    res.status(401).json({ message: "Not Authorized, no token 2" });
+    console.log("Not authorized, no token 2");
   }
 });
 
