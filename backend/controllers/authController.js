@@ -121,10 +121,6 @@ const getUserProfile = asyncHandler(async (req, res, next) => {
     return res.status(404).json({ message: "User not found" });
   }
 
-  if (!req.cookies.jwt) {
-    return res.status(401).json({ message: `${req.cookies.jwt}` });
-  }
-
   res.writeHead(200, {
     "Set-Cookie": "jwt=encryptedstring; HttpOnly;",
     "Access-Control-Allow-Credentials": "true",
