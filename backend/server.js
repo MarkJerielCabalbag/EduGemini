@@ -28,34 +28,20 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 app.use((req, res, next) => {
-  res.header("Access-Control-Allow-Origin", "http://localhost:5000");
-  res.header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
-  res.header("Access-Control-Allow-Headers", "Content-Type, Authorization");
-  res.header("Access-Control-Allow-Credentials", "true");
+  res.setHeader("Access-Control-Allow-Origin", "http://localhost:5000");
+  res.setHeader(
+    "Access-Control-Allow-Methods",
+    "GET, POST, PUT, DELETE, OPTIONS"
+  );
+  res.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization");
+  res.setHeader("Access-Control-Allow-Credentials", "true");
 
   // Handle OPTIONS preflight requests
   if (req.method === "OPTIONS") {
     return res.sendStatus(204);
   }
+  next();
 });
-
-app.get(
-  "/api/eduGemini/profile",
-  expressAsyncHandler(async (req, res, next) => {
-    const user = await User.findById(req.user._id).select("-user_password");
-
-    // If the user is not found, return a 404 response
-    if (!user) {
-      return res.status(404).json({ message: "User not found" });
-    }
-
-    // Generate a new token and set it in the response as a cookie
-    generateToken(res, user._id);
-
-    // Return the user's profile in the response
-    return res.status(200).send([user]);
-  })
-);
 
 app.use(cookieParser());
 
