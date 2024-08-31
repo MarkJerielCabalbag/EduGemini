@@ -1,5 +1,5 @@
 import express from "express";
-import authController from "../controllers/authController.js";
+
 import { protectRoutes, lo } from "../middlewares/authMiddleware.js";
 import User from "../models/userModel.js";
 import fs from "fs-extra";
@@ -18,13 +18,13 @@ const authRouter = express.Router();
 import asyncHandler from "express-async-handler";
 
 // register user
-authRouter.post("/register", authController.registerUser);
+authRouter.post("/register", registerUser);
 
 //login user
-authRouter.post("/login", authController.loginUser);
+authRouter.post("/login", loginUser);
 
 //logout user
-authRouter.post("/logout", authController.logoutUser);
+authRouter.post("/logout", logoutUser);
 authRouter.route("/profile").get(protectRoutes, getUserProfile);
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
