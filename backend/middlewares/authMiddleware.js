@@ -5,30 +5,22 @@ import User from "../models/userModel.js";
 const protectRoutes = asyncHandler(async (req, res, next) => {
   let token;
 
-  if (
-    req.headers.authorization &&
-    req.headers.authorization.startsWith("Bearer")
-  ) {
-    try {
-      // get token from header
-      token = req.headers.authorization.split(" ")[1];
+  token = req.cookies.jwt;
 
-      //verify token if it has the user
+  if (token) {
+    try {
       const decoded = jwt.verify(token, process.env.JWT_SECRET);
 
-      //get user from the dean
       req.user = await User.findById(decoded.id).select("-user_password");
+
       next();
     } catch (err) {
-      console.log(err);
-      res.status(401);
-      throw new Error("Not authorized");
+      res.status(401).json({ message: "Not Authorized, invalid token" });
+      console.log("Not authorized, invalid token");
     }
-  }
-
-  if (!token) {
-    res.status(401);
-    throw new Error("Not Authorized, no token");
+  } else {
+    res.status(401).json({ message: "Not Authorized, no token" });
+    console.log("Not authorized, no token");
   }
 });
 
