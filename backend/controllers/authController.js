@@ -121,15 +121,15 @@ const getUserProfile = asyncHandler(async (req, res, next) => {
     return res.status(404).json({ message: "User not found" });
   }
 
-  res.setHeader(
-    "Access-Control-Allow-Headers",
-    "Origin, X-Requested-With, Content-Type, Accept"
-  );
-  res.setHeader("Access-Control-Allow-Origin", "http://localhost:5000");
+  const token = jwt.sign(user._id, process.env.JWT_SECRET, {
+    expiresIn: "1d",
+  });
 
-  res.writeHead(200, {
-    "Set-Cookie": "jwt=encryptedstring; HttpOnly",
-    "Access-Control-Allow-Credentials": "true",
+  res.cookie("jwt", token, {
+    httpOnly: true,
+    secure: process.env.NODE_ENV !== "development",
+    sameSite: "strict",
+    maxAge: 30 * 24 * 60 * 60 * 1000,
   });
 
   // Return the user's profile in the response
