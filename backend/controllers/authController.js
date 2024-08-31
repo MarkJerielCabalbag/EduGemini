@@ -55,11 +55,11 @@ const registerUser = asyncHandler(async (req, res, next) => {
   });
 
   if (user) {
-    generateToken(user._id);
     return res.status(200).json({
-      _id: user._id,
+      _id: user.id,
       user_email: user.user_email,
       user_username: user.user_username,
+      token: generateToken(user._id),
       message: `Welcome ${user.user_username} :)`,
     });
   } else {
@@ -85,16 +85,13 @@ const loginUser = asyncHandler(async (req, res, next) => {
   const user = await User.findOne({ user_email });
 
   if (user && (await bcrypt.compare(user_password, user.user_password))) {
-    generateToken(user._id);
-    res
-      .status(200)
-
-      .json({
-        message: `Welcome back ${user.user_username}!`,
-        user_username: user.user_username,
-        user_email: user.user_email,
-        _id: user._id,
-      });
+    return res.status(200).json({
+      message: `Welcome back ${user.user_username}!`,
+      user_username: user.user_username,
+      user_email: user.user_email,
+      token: generateToken(user._id),
+      _id: user.id,
+    });
   } else {
     return res.status(400).json({ message: "Invalid email or password" });
   }
