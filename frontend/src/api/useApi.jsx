@@ -89,11 +89,9 @@ async function updateUser(formData) {
 
 async function getUser() {
   return await fetch("https://edugemini.onrender.com/api/eduGemini/profile", {
-    withCredentials: true,
+    headers: { "Content-Type": "application/json" },
     credentials: "include",
-    headers: {
-      "Content-Type": "application/json",
-    },
+    withCredentials: true,
   }).then(async (res) => {
     const response = await res.json();
     if (!res.ok) {
