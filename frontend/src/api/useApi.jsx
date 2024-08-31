@@ -24,7 +24,7 @@ async function login(formData) {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     credentials: "include",
-
+    withCredentials: true,
     body: JSON.stringify(formData),
   }).then(async (res) => {
     const response = await res.json();
