@@ -121,9 +121,6 @@ const getUserProfile = asyncHandler(async (req, res, next) => {
     return res.status(404).json({ message: "User not found" });
   }
 
-  // Generate a new token and set it in the response as a cookie
-  generateToken(res, user._id);
-
   // Return the user's profile in the response
   return res.status(200).send([user]);
 });

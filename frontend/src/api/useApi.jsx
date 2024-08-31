@@ -88,21 +88,19 @@ async function updateUser(formData) {
 }
 
 async function getUser() {
-  return await axios
-    .get("https://edugemini.onrender.com/api/eduGemini/profile", {
-      withCredentials: true,
-      credentials: "include",
-      headers: {
-        "Content-Type": "application/json",
-      },
-    })
-    .then(async (res) => {
-      const response = await res.json();
-      if (!res.ok) {
-        throw new Error(response.message || "An Error Occurred");
-      }
-      return response;
-    });
+  return await fetch("https://edugemini.onrender.com/api/eduGemini/profile", {
+    withCredentials: true,
+    credentials: "include",
+    headers: {
+      "Content-Type": "application/json",
+    },
+  }).then(async (res) => {
+    const response = await res.json();
+    if (!res.ok) {
+      throw new Error(response.message || "An Error Occurred");
+    }
+    return response;
+  });
 }
 
 export async function getAllClassroom(userId) {
