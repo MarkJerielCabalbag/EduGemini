@@ -23,8 +23,6 @@ async function login(formData) {
   return await fetch(`https://edugemini.onrender.com/api/eduGemini/login`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    credentials: "include",
-    withCredentials: true,
     body: JSON.stringify(formData),
   }).then(async (res) => {
     const response = await res.json();
@@ -89,9 +87,8 @@ async function updateUser(formData) {
 
 async function getUser() {
   return await fetch("https://edugemini.onrender.com/api/eduGemini/profile", {
+    method: "GET",
     headers: { "Content-Type": "application/json" },
-    credentials: "include",
-    withCredentials: true,
   }).then(async (res) => {
     const response = await res.json();
     if (!res.ok) {
