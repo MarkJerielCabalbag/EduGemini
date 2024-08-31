@@ -113,34 +113,18 @@ const logoutUser = asyncHandler(async (req, res) => {
 //@desc     Get User Profile
 //@route    POST /api/eduGemini/profile
 //@access   private
-const getUserProfile = asyncHandler(async (req, res, next) => {
-  const user = await User.findById(req.user._id).select("-user_password");
+const getUserProfile = asyncHandler(async (req, res) => {
+  const user = await User.findById(req.user._id);
 
-  // If the user is not found, return a 404 response
-  if (!user) {
-    return res.status(404).json({ message: "User not found" });
-  }
-
-  var cookie = req.cookies.jwt;
-  const userId = req.user._id;
-  const token = jwt.sign({ userId }, process.env.JWT_SECRET, {
-    expiresIn: "1d",
-  });
-
-  if (!cookie) {
-    res.cookie("jwt", token, {
-      httpOnly: true,
-      secure: process.env.NODE_ENV !== "development",
-      sameSite: "strict",
-      maxAge: 30 * 24 * 60 * 60 * 1000,
+  if (user) {
+    return res.json({
+      _id: user._id,
+      name: user.name,
+      email: user.email,
     });
   } else {
-    console.log("lets check that this is a valid cookie");
-    // send cookie along to the validation functions...
+    return res.status(404).json({ message: "no user found" });
   }
-
-  // Return the user's profile in the response
-  return res.status(200).send([user]);
 });
 // //@desc     Update User Profile
 // //@route    POST /api/eduGemini/profile
