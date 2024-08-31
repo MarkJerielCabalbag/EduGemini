@@ -86,11 +86,11 @@ const loginUser = asyncHandler(async (req, res, next) => {
 
   if (user && (await bcrypt.compare(user_password, user.user_password))) {
     return res.status(200).json({
+      _id: user.id,
       message: `Welcome back ${user.user_username}!`,
       user_username: user.user_username,
       user_email: user.user_email,
       token: generateToken(user._id),
-      _id: user.id,
     });
   } else {
     return res.status(400).json({ message: "Invalid email or password" });
@@ -111,17 +111,7 @@ const logoutUser = asyncHandler(async (req, res) => {
 //@route    POST /api/eduGemini/profile
 //@access   private
 const getUserProfile = asyncHandler(async (req, res) => {
-  const user = await User.findById(req.user._id);
-
-  if (user) {
-    return res.json({
-      _id: user._id,
-      name: user.name,
-      email: user.email,
-    });
-  } else {
-    return res.status(404).json({ message: "no user found" });
-  }
+  res.status(200).json(req.user);
 });
 
 const generateToken = (id) => {
