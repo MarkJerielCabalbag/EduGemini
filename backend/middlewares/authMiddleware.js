@@ -16,10 +16,10 @@ const protectRoutes = asyncHandler(async (req, res, next) => {
       next();
     } catch (error) {
       console.error(error);
-      return res.status(401);
+      return res.status(401).json({ message: "Not Authorized no token " });
     }
   } else {
-    return res.status(401);
+    return res.status(401).json({ message: "Not Authorized no token " });
   }
 });
 

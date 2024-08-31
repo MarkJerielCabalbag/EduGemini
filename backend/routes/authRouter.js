@@ -1,11 +1,12 @@
 import express from "express";
 import authController from "../controllers/authController.js";
-import { protectRoutes } from "../middlewares/authMiddleware.js";
+import { protectRoutes, lo } from "../middlewares/authMiddleware.js";
 import User from "../models/userModel.js";
 import fs from "fs-extra";
 import multer from "multer";
 import { dirname } from "path";
 import { fileURLToPath } from "url";
+
 import { getUserProfile } from "../controllers/authController.js";
 import bcrypt from "bcrypt";
 const authRouter = express.Router();
@@ -19,7 +20,7 @@ authRouter.post("/login", authController.loginUser);
 
 //logout user
 authRouter.post("/logout", authController.logoutUser);
-authRouter.get("/profile", protectRoutes, getUserProfile);
+authRouter.route("/profile").get(protectRoutes, getUserProfile);
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const storage = multer.diskStorage({
