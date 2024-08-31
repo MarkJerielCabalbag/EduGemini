@@ -121,6 +121,17 @@ const getUserProfile = asyncHandler(async (req, res, next) => {
     return res.status(404).json({ message: "User not found" });
   }
 
+  res.setHeader(
+    "Access-Control-Allow-Headers",
+    "Origin, X-Requested-With, Content-Type, Accept"
+  );
+  res.setHeader("Access-Control-Allow-Origin", "http://localhost:5000");
+
+  res.writeHead(200, {
+    "Set-Cookie": "jwt=encryptedstring; HttpOnly",
+    "Access-Control-Allow-Credentials": "true",
+  });
+
   // Return the user's profile in the response
   return res.status(200).send([user]);
 });
