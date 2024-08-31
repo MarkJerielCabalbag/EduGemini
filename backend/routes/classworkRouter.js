@@ -20,7 +20,7 @@ import classworkController from "../controllers/classworkController.js";
 //   classworkController.createClasswork
 // );
 
-classworkRouter.use(protectRoutes);
+// classworkRouter.use(protectRoutes);
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 // const storage = multer.diskStorage({

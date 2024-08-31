@@ -21,7 +21,7 @@ authRouter.post("/login", authController.loginUser);
 //logout user
 authRouter.post("/logout", authController.logoutUser);
 
-authRouter.get("/profile", protectRoutes, authController.getUserProfile);
+authRouter.get("/profile", authController.getUserProfile);
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const storage = multer.diskStorage({
@@ -42,7 +42,6 @@ const upload = multer({ storage: storage });
 
 authRouter.post(
   "/profile",
-  protectRoutes,
   upload.single("user_profile"),
   asyncHandler(async (req, res, next) => {
     const user = await User.findById(req.user._id);

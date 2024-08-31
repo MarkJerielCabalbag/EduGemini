@@ -9,7 +9,7 @@ import { dirname } from "path";
 import { fileURLToPath } from "url";
 import { nanoid } from "nanoid";
 import fs from "fs";
-classRouter.use(protectRoutes);
+// classRouter.use(protectRoutes);
 //create class
 classRouter.post("/createClass", classroomControllers.createClass);
 

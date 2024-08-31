@@ -101,12 +101,7 @@ export async function getAllClassroom(userId) {
     `http://localhost:3000/api/eduGemini/classroom/allClass/${userId}`,
     {
       method: "GET",
-      headers: {
-        Accept: "application/json",
-        "Content-Type": "application/json",
-      },
-      withCredentials: true,
-      credentials: "include",
+      headers: { "Content-Type": "application/json" },
     }
   ).then(async (res) => {
     const response = await res.json();
@@ -122,13 +117,8 @@ export async function getAllClassroom(userId) {
 async function createClass(formData) {
   return await fetch(`${uri}/api/eduGemini/classroom/createClass`, {
     method: "POST",
-    headers: {
-      Accept: "application/json",
-      "Content-Type": "application/json",
-    },
+    headers: { "Content-Type": "application/json" },
     body: JSON.stringify(formData),
-    withCredentials: true,
-    credentials: "include",
   }).then(async (res) => {
     const response = await res.json();
 
@@ -143,12 +133,7 @@ async function createClass(formData) {
 async function allClass(userId) {
   await fetch(`${uri}/api/eduGemini/classroom/getAllClass/${userId}`, {
     method: "GET",
-    headers: {
-      Accept: "application/json",
-      "Content-Type": "application/json",
-    },
-    withCredentials: true,
-    credentials: "include",
+    headers: { "Content-Type": "application/json" },
   }).then(async (res) => {
     const response = await res.json();
     if (!res.ok) {
@@ -161,12 +146,7 @@ async function allClass(userId) {
 export async function fetchAllClassData(userId) {
   return await fetch(`${uri}/api/eduGemini/classroom/getAllClass/${userId}`, {
     method: "GET",
-    headers: {
-      Accept: "application/json",
-      "Content-Type": "application/json",
-    },
-    withCredentials: true,
-    credentials: "include",
+    headers: { "Content-Type": "application/json" },
   }).then(async (res) => {
     const response = await res.json();
     if (!res.ok) {
@@ -181,12 +161,7 @@ export async function fetchClassData(roomId) {
     `${uri}/api/eduGemini/classroom/getCreatedClassroom/${roomId}`,
     {
       method: "GET",
-      headers: {
-        Accept: "application/json",
-        "Content-Type": "application/json",
-      },
-      withCredentials: true,
-      credentials: "include",
+      headers: { "Content-Type": "application/json" },
     }
   ).then(async (res) => {
     const response = await res.json();
@@ -202,13 +177,8 @@ export async function createAnnouncement(formData, roomId) {
     `${uri}/api/eduGemini/classroom/createAnnouncement/${roomId}`,
     {
       method: "POST",
-      headers: {
-        Accept: "application/json",
-        "Content-Type": "application/json",
-      },
+      headers: { "Content-Type": "application/json" },
       body: JSON.stringify(formData),
-      withCredentials: true,
-      credentials: "include",
     }
   ).then(async (res) => {
     const response = await res.json();
@@ -226,12 +196,7 @@ export async function getAnnouncement(roomId) {
     `${uri}/api/eduGemini/classroom/getAnnouncement/${roomId}`,
     {
       method: "GET",
-      headers: {
-        Accept: "application/json",
-        "Content-Type": "application/json",
-      },
-      withCredentials: true,
-      credentials: "include",
+      headers: { "Content-Type": "application/json" },
     }
   ).then(async (res) => {
     const response = await res.json();
@@ -248,13 +213,8 @@ export async function deleteAnnouncement(announceId, roomId) {
       `${uri}/api/eduGemini/classroom/deleteAnnouncement/${roomId}`,
       {
         method: "DELETE",
-        headers: {
-          Accept: "application/json",
-          "Content-Type": "application/json",
-        },
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ announceId }),
-        withCredentials: true,
-        credentials: "include",
       }
     );
 
@@ -274,8 +234,6 @@ export async function createClassworkType(formData) {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(formData),
-    withCredentials: true,
-    credentials: "include",
   }).then(async (res) => {
     const response = await res.json();
 
@@ -293,9 +251,6 @@ export async function getClassworkType(roomId) {
     {
       method: "GET",
       headers: { "Content-Type": "application/json" },
-
-      withCredentials: true,
-      credentials: "include",
     }
   ).then(async (res) => {
     const response = await res.json();
@@ -312,9 +267,6 @@ export async function getClassworks(roomId) {
   return await fetch(`${uri}/api/eduGemini/classwork/getClasswork/${roomId}`, {
     method: "GET",
     headers: { "Content-Type": "application/json" },
-
-    withCredentials: true,
-    credentials: "include",
   }).then(async (res) => {
     const response = await res.json();
 
@@ -332,9 +284,6 @@ export async function getClassworkInformation(roomId, workId) {
     {
       method: "GET",
       headers: { "Content-Type": "application/json" },
-
-      withCredentials: true,
-      credentials: "include",
     }
   ).then(async (res) => {
     const response = await res.json();
@@ -352,8 +301,6 @@ async function deleteClasswork(formData) {
     method: "DELETE",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(formData),
-    withCredentials: true,
-    credentials: "include",
   }).then(async (res) => {
     const response = await res.json();
 
@@ -371,8 +318,6 @@ export async function deleteSpecificClasswork(roomId, workId) {
     {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      withCredentials: true,
-      credentials: "include",
     }
   ).then(async (res) => {
     const response = await res.json();
@@ -391,8 +336,6 @@ async function loginAdmin(formData) {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(formData),
-    withCredentials: true,
-    credentials: "include",
   }).then(async (res) => {
     const response = await res.json();
 
@@ -407,12 +350,7 @@ async function loginAdmin(formData) {
 async function getAllClassAdmin() {
   return await fetch(`${uri}/api/eduGemini/ai/admin/allClass`, {
     method: "GET",
-    headers: {
-      Accept: "application/json",
-      "Content-Type": "application/json",
-    },
-    withCredentials: true,
-    credentials: "include",
+    headers: { "Content-Type": "application/json" },
   }).then(async (res) => {
     const response = await res.json();
 
@@ -462,8 +400,6 @@ async function joinClass(formData) {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(formData),
-    withCredentials: true,
-    credentials: "include",
   }).then(async (res) => {
     const response = await res.json();
 
@@ -479,9 +415,6 @@ export async function joinedClass(userId) {
   return await fetch(`${uri}/api/eduGemini/classroom/joinedClass/${userId}`, {
     method: "GET",
     headers: { "Content-Type": "application/json" },
-
-    withCredentials: true,
-    credentials: "include",
   }).then(async (res) => {
     const response = await res.json();
 
@@ -498,8 +431,6 @@ async function acceptJoinStudent(formData) {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(formData),
-    withCredentials: true,
-    credentials: "include",
   }).then(async (res) => {
     const response = await res.json();
 
@@ -516,8 +447,6 @@ async function rejectJoinStudent(formData) {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(formData),
-    withCredentials: true,
-    credentials: "include",
   }).then(async (res) => {
     const response = await res.json();
 
@@ -533,8 +462,6 @@ export async function classwork(workId) {
   return await fetch(`${uri}/api/eduGemini/classwork/classworkData/${workId}`, {
     method: "GET",
     headers: { "Content-Type": "application/json" },
-    withCredentials: true,
-    credentials: "include",
   }).then(async (res) => {
     const response = await res.json();
 
@@ -552,8 +479,6 @@ export async function getAttachments(roomId, workId, userId) {
     {
       method: "GET",
       headers: { "Content-Type": "application/json" },
-      withCredentials: true,
-      credentials: "include",
     }
   ).then(async (res) => {
     const response = await res.json();
