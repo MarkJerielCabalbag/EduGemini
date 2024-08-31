@@ -37,7 +37,7 @@ const storage = multer.diskStorage({
 const upload = multer({ storage: storage });
 
 //user profile
-authRouter.get("/profile", authController.getUserProfile);
+authRouter.get("/profile", protectRoutes, authController.getUserProfile);
 
 authRouter.post(
   "/profile",
