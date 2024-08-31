@@ -166,7 +166,7 @@ const generateToken = (id) => {
 //   res.status(400).json({ message: "Please fill all fields" });
 // });
 
-export {
+export default {
   registerUser,
   loginUser,
   logoutUser,

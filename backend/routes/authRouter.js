@@ -6,26 +6,21 @@ import fs from "fs-extra";
 import multer from "multer";
 import { dirname } from "path";
 import { fileURLToPath } from "url";
+import authController from "../controllers/authController.js";
 
-import {
-  registerUser,
-  loginUser,
-  logoutUser,
-  getUserProfile,
-} from "../controllers/authController.js";
 import bcrypt from "bcrypt";
 const authRouter = express.Router();
 import asyncHandler from "express-async-handler";
 
 // register user
-authRouter.post("/register", registerUser);
+authRouter.post("/register", authController.registerUser);
 
 //login user
-authRouter.post("/login", loginUser);
+authRouter.post("/login", authController.loginUser);
 
 //logout user
-authRouter.post("/logout", logoutUser);
-authRouter.get("/profile", protectRoutes, getUserProfile);
+authRouter.post("/logout", authController.logoutUser);
+authRouter.get("/profile", protectRoutes, authController.getUserProfile);
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const storage = multer.diskStorage({

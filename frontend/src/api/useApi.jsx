@@ -25,13 +25,11 @@ async function login(formData) {
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(formData),
   }).then(async (res) => {
-    const response = await res.json();
-
+    const responseData = await res.json();
     if (!res.ok) {
-      throw new Error(response.message || "An Error Occured");
+      throw new Error(responseData.message || "An error occured");
     }
-
-    return response;
+    return responseData;
   });
 }
 
