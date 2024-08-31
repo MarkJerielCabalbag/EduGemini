@@ -114,7 +114,7 @@ const getUserProfile = asyncHandler(async (req, res) => {
   const { userId } = req.params;
   const user = await User.findById(userId);
 
-  return res.status(200).send(user);
+  return res.status(200).send([user]);
 });
 
 const generateToken = (id) => {
