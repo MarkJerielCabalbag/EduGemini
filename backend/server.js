@@ -44,27 +44,6 @@ app.use((req, res, next) => {
   next();
 });
 
-app.use(function (req, res, next) {
-  var cookie = req.cookies.jwt;
-  const userId = req.user._id;
-  const token = jwt.sign({ userId }, process.env.JWT_SECRET, {
-    expiresIn: "1d",
-  });
-
-  if (!cookie) {
-    res.cookie("jwt", token, {
-      httpOnly: true,
-      secure: process.env.NODE_ENV !== "development",
-      sameSite: "strict",
-      maxAge: 30 * 24 * 60 * 60 * 1000,
-    });
-  } else {
-    console.log("lets check that this is a valid cookie");
-    // send cookie along to the validation functions...
-  }
-  next();
-});
-
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
 app.use(
