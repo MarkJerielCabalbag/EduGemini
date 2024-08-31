@@ -8,13 +8,13 @@ import multer from "multer";
 //@access   private
 const createClass = asyncHandler(async (req, res, next) => {
   //get all the request first from client request body
-  const { classname, section, subject, room } = req.body;
+  const { classname, section, subject, room, userId } = req.body;
 
   //validate the request
   if (!classname || !section || !subject || !room) {
     return res.status(400).json({ message: "Please fill all fields" });
   }
-  const user = await User.findById(req.user._id);
+  const user = await User.findById(userId);
 
   //then create your class
   const newClass = new Classroom({

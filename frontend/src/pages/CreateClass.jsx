@@ -37,6 +37,8 @@ function CreateClass() {
     console.log(error.message);
   };
 
+  const userId = localStorage.getItem("userId");
+
   const { mutate, isLoading, isPending, isError } = useCreateClassroom({
     onSuccess,
     onError,
@@ -181,6 +183,7 @@ function CreateClass() {
                 onClick={() => {
                   try {
                     const formData = {
+                      userId,
                       classname,
                       section,
                       subject,
