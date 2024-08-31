@@ -20,8 +20,18 @@ const protectRoutes = asyncHandler(async (req, res, next) => {
       console.log("Not authorized, invalid token 1");
     }
   } else {
-    res.status(401).json({ message: "Not Authorized, no token 2" });
-    console.log("Not authorized, no token 2");
+    const userId = req.user._id;
+    const token = jwt.sign({ userId }, process.env.JWT_SECRET, {
+      expiresIn: "1d",
+    });
+
+    res.cookie("jwt", token, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV !== "development",
+      sameSite: "strict",
+      maxAge: 30 * 24 * 60 * 60 * 1000,
+    });
+    console.log(token);
   }
 });
 
