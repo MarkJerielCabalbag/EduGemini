@@ -6,8 +6,7 @@ import fs from "fs-extra";
 import multer from "multer";
 import { dirname } from "path";
 import { fileURLToPath } from "url";
-import jwt from "jsonwebtoken";
-import generateToken from "../utils/generateToken.js";
+import { getUserProfile } from "../controllers/authController.js";
 import bcrypt from "bcrypt";
 const authRouter = express.Router();
 import asyncHandler from "express-async-handler";
@@ -20,6 +19,7 @@ authRouter.post("/login", authController.loginUser);
 
 //logout user
 authRouter.post("/logout", authController.logoutUser);
+authRouter.get("/profile", protectRoutes, getUserProfile);
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const storage = multer.diskStorage({
@@ -37,7 +37,6 @@ const storage = multer.diskStorage({
 const upload = multer({ storage: storage });
 
 //user profile
-authRouter.get("/profile", protectRoutes, authController.getUserProfile);
 
 authRouter.post(
   "/profile",
