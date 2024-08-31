@@ -14,7 +14,7 @@ const createClass = asyncHandler(async (req, res, next) => {
   if (!classname || !section || !subject || !room) {
     return res.status(400).json({ message: "Please fill all fields" });
   }
-  const user = await User.findById(req.user.id);
+  const user = await User.findById(req.user._id);
 
   //then create your class
   const newClass = new Classroom({

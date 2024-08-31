@@ -1,7 +1,7 @@
 import asyncHandler from "express-async-handler";
 import User from "../models/userModel.js";
 import jwt from "jsonwebtoken";
-import bcrypt from "bcrypt";
+import bcrypt from "bcryptjs";
 // import generateToken from "../utils/generateToken.js";
 import fs from "fs";
 import path from "path";
@@ -111,7 +111,7 @@ const logoutUser = asyncHandler(async (req, res) => {
 //@route    POST /api/eduGemini/profile
 //@access   private
 const getUserProfile = asyncHandler(async (req, res) => {
-  const user = await User.findById(req.user.id);
+  const user = await User.findById(req.user._id);
 
   res.status(200).send([user]);
 });
