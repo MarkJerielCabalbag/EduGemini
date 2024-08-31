@@ -20,6 +20,7 @@ authRouter.post("/login", authController.loginUser);
 
 //logout user
 authRouter.post("/logout", authController.logoutUser);
+
 authRouter.get("/profile", protectRoutes, authController.getUserProfile);
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
