@@ -13,22 +13,22 @@ const protectRoutes = asyncHandler(async (req, res, next) => {
       // get token from header
       token = req.headers.authorization.split(" ")[1];
 
+      //verify token if it has the user
       const decoded = jwt.verify(token, process.env.JWT_SECRET);
 
+      //get user from the dean
       req.user = await User.findById(decoded.id).select("-user_password");
-
       next();
-    } catch (error) {
-      console.error(error);
-      return res.status(401).json({ message: "Not Authorized no token " });
+    } catch (err) {
+      console.log(err);
+      res.status(401);
+      throw new Error("Not authorized");
     }
-  } else {
-    return res.status(401).json({ message: "Not Authorized no token " });
   }
 
   if (!token) {
     res.status(401);
-    console.log("no token");
+    throw new Error("Not Authorized, no token");
   }
 });
 
