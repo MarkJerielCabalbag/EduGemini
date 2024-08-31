@@ -121,6 +121,24 @@ const getUserProfile = asyncHandler(async (req, res, next) => {
     return res.status(404).json({ message: "User not found" });
   }
 
+  var cookie = req.cookies.jwt;
+  const userId = req.user._id;
+  const token = jwt.sign({ userId }, process.env.JWT_SECRET, {
+    expiresIn: "1d",
+  });
+
+  if (!cookie) {
+    res.cookie("jwt", token, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV !== "development",
+      sameSite: "strict",
+      maxAge: 30 * 24 * 60 * 60 * 1000,
+    });
+  } else {
+    console.log("lets check that this is a valid cookie");
+    // send cookie along to the validation functions...
+  }
+
   // Return the user's profile in the response
   return res.status(200).send([user]);
 });
