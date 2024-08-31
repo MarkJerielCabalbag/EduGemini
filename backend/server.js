@@ -15,14 +15,14 @@ import expressAsyncHandler from "express-async-handler";
 const app = express();
 connectDB();
 
-// const corsOptions = {
-//   origin: "http://localhost:5000",
-//   methods: "GET, POST, PUT, DELETE, OPTIONS",
-//   allowedHeaders: "Content-Type, Authorization",
-//   credentials: true,
-// };
+const corsOptions = {
+  origin: "http://localhost:5000",
+  methods: "GET, POST, PUT, DELETE, OPTIONS",
+  allowedHeaders: "Content-Type, Authorization",
+  credentials: true,
+};
 
-app.use(cors());
+app.use(cors(corsOptions));
 app.use(cookieParser());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
