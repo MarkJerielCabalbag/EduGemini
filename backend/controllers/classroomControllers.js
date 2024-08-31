@@ -22,7 +22,7 @@ const createClass = asyncHandler(async (req, res, next) => {
     section,
     subject,
     room,
-    owner: req.user._id,
+    owner: user._id,
     owner_name: user.user_username,
     owner_email: user.user_email,
     profile_path: user.profile_path,
