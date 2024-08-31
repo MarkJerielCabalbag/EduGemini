@@ -7,7 +7,12 @@ import multer from "multer";
 import { dirname } from "path";
 import { fileURLToPath } from "url";
 
-import { getUserProfile } from "../controllers/authController.js";
+import {
+  registerUser,
+  loginUser,
+  logoutUser,
+  getUserProfile,
+} from "../controllers/authController.js";
 import bcrypt from "bcrypt";
 const authRouter = express.Router();
 import asyncHandler from "express-async-handler";

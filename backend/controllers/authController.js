@@ -160,7 +160,7 @@ const getUserProfile = asyncHandler(async (req, res) => {
 //   res.status(400).json({ message: "Please fill all fields" });
 // });
 
-export default {
+export {
   registerUser,
   loginUser,
   logoutUser,
