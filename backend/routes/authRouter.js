@@ -1,6 +1,6 @@
 import express from "express";
 
-import { protectRoutes, lo } from "../middlewares/authMiddleware.js";
+import { protectRoutes } from "../middlewares/authMiddleware.js";
 import User from "../models/userModel.js";
 import fs from "fs-extra";
 import multer from "multer";
