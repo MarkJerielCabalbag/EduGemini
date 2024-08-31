@@ -165,6 +165,6 @@ export default {
   registerUser,
   loginUser,
   logoutUser,
-  // getUserProfile,
+  getUserProfile,
   // updateUserProfile,
 };
