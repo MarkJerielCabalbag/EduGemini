@@ -25,7 +25,7 @@ authRouter.post("/login", loginUser);
 
 //logout user
 authRouter.post("/logout", logoutUser);
-authRouter.route("/profile").get(protectRoutes, getUserProfile);
+authRouter.get("/profile", protectRoutes, getUserProfile);
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const storage = multer.diskStorage({

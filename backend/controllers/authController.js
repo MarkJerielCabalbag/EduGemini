@@ -2,7 +2,7 @@ import asyncHandler from "express-async-handler";
 import User from "../models/userModel.js";
 import jwt from "jsonwebtoken";
 import bcrypt from "bcrypt";
-import generateToken from "../utils/generateToken.js";
+// import generateToken from "../utils/generateToken.js";
 import fs from "fs";
 import path from "path";
 import { dirname } from "path";
@@ -55,7 +55,7 @@ const registerUser = asyncHandler(async (req, res, next) => {
   });
 
   if (user) {
-    generateToken(res, user._id);
+    generateToken(user._id);
     return res.status(200).json({
       _id: user._id,
       user_email: user.user_email,
@@ -85,7 +85,7 @@ const loginUser = asyncHandler(async (req, res, next) => {
   const user = await User.findOne({ user_email });
 
   if (user && (await bcrypt.compare(user_password, user.user_password))) {
-    generateToken(res, user._id);
+    generateToken(user._id);
     res
       .status(200)
 
@@ -126,6 +126,12 @@ const getUserProfile = asyncHandler(async (req, res) => {
     return res.status(404).json({ message: "no user found" });
   }
 });
+
+const generateToken = (id) => {
+  return jwt.sign({ id }, process.env.JWT_SECRET, {
+    expiresIn: "1d",
+  });
+};
 // //@desc     Update User Profile
 // //@route    POST /api/eduGemini/profile
 // //@access   private
