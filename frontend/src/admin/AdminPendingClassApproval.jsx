@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { useGetAllClassAdmin } from "@/api/useApi";
+import { getAllClassAdmin, useGetAllClassAdmin } from "@/api/useApi";
 import {
   Card,
   CardDescription,
@@ -41,7 +41,9 @@ function AdminPendingClassApproval() {
   const onSuccess = () => {
     queryClient.invalidateQueries({ queryKey: ["allClassAdmin"] });
   };
+  const userId = localStorage.getItem("userId");
   const { data, isFetching, isLoading, isPending } = useGetAllClassAdmin({
+    queryFn: () => getAllClassAdmin(userId),
     onError,
     onSuccess,
   });

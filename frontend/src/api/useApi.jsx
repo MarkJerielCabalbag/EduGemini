@@ -350,8 +350,8 @@ async function loginAdmin(formData) {
   });
 }
 
-async function getAllClassAdmin() {
-  return await fetch(`${uri}/api/eduGemini/ai/admin/allClass`, {
+export async function getAllClassAdmin(userId) {
+  return await fetch(`${uri}/api/eduGemini/ai/admin/allClass/${userId}`, {
     method: "GET",
     headers: { "Content-Type": "application/json" },
   }).then(async (res) => {
@@ -654,7 +654,7 @@ export const useLoginAdmin = ({ onError, onSuccess }) => {
   });
 };
 
-export const useGetAllClassAdmin = ({ onError, onSuccess }) => {
+export const useGetAllClassAdmin = ({ queryFn, onError, onSuccess }) => {
   return useQuery({
     queryKey: ["allClassAdmin"],
     queryFn: getAllClassAdmin,
