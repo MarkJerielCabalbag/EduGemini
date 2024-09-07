@@ -45,7 +45,7 @@ function FileViewer({ userStatus }) {
               <div className="my-5">
                 <ArrowLeft
                   onClick={() => {
-                    userStatus === "student"
+                    userStatus === "instructor"
                       ? navigate(
                           `/class/classroom/getCreatedClass/${userId}/${roomId}`
                         )
