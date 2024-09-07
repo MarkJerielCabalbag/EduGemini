@@ -69,7 +69,7 @@ const router = createBrowserRouter(
           <Route
             index={true}
             path="/class/classroom/getCreatedClass/:userId/:roomId"
-            element={<Stream statusBtn={"show"} />}
+            element={<Stream statusBtn={"show"} userStatus={"instructor"} />}
           />
 
           <Route
@@ -90,13 +90,14 @@ const router = createBrowserRouter(
           path="/class/classroom/getCreatedClass/viewClasswork/:workId"
           element={<ClassworkView userStatus={"instructor"} />}
         />
+
         <Route
-          path="/class/classroom/viewAnnouncement/:roomId/:announceId"
+          path="/class/classroom/getCreatedClass/viewAnnouncement/:roomId/:announceId"
           element={<FileViewer userStatus={"instructor"} />}
         />
 
         <Route
-          path="/class/classroom/viewAnnouncement/:roomId/:announceId"
+          path="/class/classroom/getCreatedClass/student/:roomId/:announceId"
           element={<FileViewer userStatus={"student"} />}
         />
 
@@ -104,6 +105,7 @@ const router = createBrowserRouter(
           path="/class/classwork/outputs/:roomId/:userId/:workId"
           element={<Outputs />}
         />
+
         <Route path="/enrolled/:userId" element={<Enrolled />} />
         <Route path="/enrolled/classroom/:wordId" />
         <Route path="/profile" element={<Profile />} />
@@ -117,8 +119,8 @@ const router = createBrowserRouter(
           <Route
             index={true}
             path="/class/classroom/getCreatedClass/:roomId"
-            element={<Stream statusBtn={"hidden"} />}
-          />
+            element={<Stream statusBtn={"hidden"} userStatus={"student"} />}
+          ></Route>
 
           <Route
             path="/class/classroom/getCreatedClass/:roomId/classwork"

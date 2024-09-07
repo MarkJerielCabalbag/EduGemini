@@ -18,7 +18,7 @@ import GetAnnouncement from "./GetAnnouncement";
 import { useQueryClient } from "@tanstack/react-query";
 import DocViewer, { DocViewerRenderers } from "@cyntler/react-doc-viewer";
 import { baseUrl } from "@/baseUrl";
-function Stream({ statusBtn }) {
+function Stream({ statusBtn, userStatus }) {
   const [announcement, setAnnouncement] = useState({
     title: "",
     description: "",
@@ -79,6 +79,7 @@ function Stream({ statusBtn }) {
       </Button>
 
       <GetAnnouncement
+        userStatus={userStatus}
         statusBtn={statusBtn}
         cardStatus={`${
           statusBtn === "hidden"

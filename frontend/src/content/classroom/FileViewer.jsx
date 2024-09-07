@@ -44,13 +44,13 @@ function FileViewer({ userStatus }) {
             <>
               <div className="my-5">
                 <ArrowLeft
-                  onClick={() => {
+                  onClick={() =>
                     userStatus === "instructor"
                       ? navigate(
                           `/class/classroom/getCreatedClass/${userId}/${roomId}`
                         )
-                      : navigate(`/class/classroom/getCreatedClass/${roomId}`);
-                  }}
+                      : navigate(`/class/classroom/getCreatedClass/${roomId}`)
+                  }
                 />
                 <div className="bg-slate-900 p-5 rounded-md mt-5 relative">
                   <Badge className="bg-slate-400 flex gap-2 items-center w-max py-2 px-5">

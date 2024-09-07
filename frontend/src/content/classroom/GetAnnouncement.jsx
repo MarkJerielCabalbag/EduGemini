@@ -13,7 +13,7 @@ import { useState } from "react";
 import DeleteAnnouncement from "@/components/modals/DeleteAnnouncement";
 import { Button } from "@/components/ui/button";
 import { Link, useParams } from "react-router-dom";
-function GetAnnouncement({ statusBtn, cardStatus }) {
+function GetAnnouncement({ statusBtn, cardStatus, userStatus }) {
   const [openDeleteAnnouncementModal, setOpenDeleteAnnouncementModal] =
     useState(false);
   const { roomId } = useParams();
@@ -83,13 +83,23 @@ function GetAnnouncement({ statusBtn, cardStatus }) {
                           }`}
                         />
                       </div>
-                      <Link
-                        className="font-bold italic opacity-90 flex gap-2 underline underline-offset-8"
-                        to={`/class/classroom/viewAnnouncement/${roomId}/${item._id}`}
-                      >
-                        <ExternalLink />
-                        {item.title}
-                      </Link>
+                      {userStatus === "instructor" ? (
+                        <Link
+                          className="font-bold italic opacity-90 flex gap-2 underline underline-offset-8"
+                          to={`/class/classroom/getCreatedClass/viewAnnouncement/${roomId}/${item._id}`}
+                        >
+                          <ExternalLink />
+                          {item.title}
+                        </Link>
+                      ) : (
+                        <Link
+                          className="font-bold italic opacity-90 flex gap-2 underline underline-offset-8"
+                          to={`/class/classroom/getCreatedClass/student/${roomId}/${item._id}`}
+                        >
+                          <ExternalLink />
+                          {item.title}
+                        </Link>
+                      )}
                     </div>
                   </>
                 ))}
