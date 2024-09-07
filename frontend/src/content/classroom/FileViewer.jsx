@@ -16,7 +16,7 @@ import { ArrowLeft, Bell, DownloadCloudIcon, File, Files } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { baseUrl } from "@/baseUrl";
 
-function FileViewer() {
+function FileViewer({ userStatus }) {
   const { roomId, announceId } = useParams();
   const userId = localStorage.getItem("userId");
   const queryClient = useQueryClient();
@@ -45,9 +45,11 @@ function FileViewer() {
               <div className="my-5">
                 <ArrowLeft
                   onClick={() =>
-                    navigate(
-                      `/class/classroom/getCreatedClass/${userId}/${roomId}`
-                    )
+                    userStatus === "instructor"
+                      ? navigate(
+                          `/class/classroom/getCreatedClass/${userId}/${roomId}`
+                        )
+                      : navigate(`/class/classroom/getCreatedClass/${roomId}`)
                   }
                 />
                 <div className="bg-slate-900 p-5 rounded-md mt-5 relative">
