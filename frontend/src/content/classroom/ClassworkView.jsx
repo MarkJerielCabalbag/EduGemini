@@ -81,7 +81,7 @@ function ClassworkView({ userStatus }) {
                     ? navigate(
                         `/class/classroom/getCreatedClass/${userId}/${roomId}/classwork`
                       )
-                    : navigate("/home");
+                    : navigate(`/class/classroom/getCreatedClass/${roomId}`);
                 }}
               />
 

@@ -128,7 +128,7 @@ function ClassroomSubmition() {
                             ? "No description stated"
                             : info.classwork_description}
                         </p>
-                        <DocViewer
+                        {/* <DocViewer
                           documents={docs}
                           pluginRenderers={DocViewerRenderers}
                           config={{
@@ -138,7 +138,7 @@ function ClassroomSubmition() {
                               retainURLParams: false,
                             },
                           }}
-                        />
+                        /> */}
 
                         <div className="bg-slate-400 shadow-sm shadow-white rounded my-2 p-5">
                           <h1>Your Work</h1>
