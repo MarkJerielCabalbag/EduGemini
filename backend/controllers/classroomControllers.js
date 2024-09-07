@@ -3,6 +3,10 @@ import Classroom from "../models/classroomModel.js";
 import asyncHandler from "express-async-handler";
 import { nanoid } from "nanoid";
 import multer from "multer";
+import fs from "fs";
+import { dirname } from "path";
+import { fileURLToPath } from "url";
+const __dirname = dirname(fileURLToPath(import.meta.url));
 //@desc     create class
 //@route    POST /api/eduGemini/classroom/createClass
 //@access   private
@@ -46,7 +50,7 @@ const createClass = asyncHandler(async (req, res, next) => {
   });
 });
 
-//@desc     get all classroom from classroom collection
+//@desc     filter all classroom that has the userId on it
 //@route    GET /api/eduGemini/classroom/allClass/:roomId
 //@access   private
 const allClass = asyncHandler(async (req, res, next) => {
@@ -57,6 +61,15 @@ const allClass = asyncHandler(async (req, res, next) => {
   });
 
   res.status(200).send(filteredClassrooms);
+});
+
+//@desc     get all classroom from classroom collection
+//@route    GET /api/eduGemini/classroom/allClass/:roomId
+//@access   private
+const adminAllClass = asyncHandler(async (req, res, next) => {
+  const adminAllClasses = await Classroom.find();
+
+  res.status(200).send(adminAllClass);
 });
 
 //@desc     get all created classroom created by user id
@@ -82,18 +95,16 @@ const getAllClass = asyncHandler(async (req, res, next) => {
 });
 
 //@desc     get specific classroom based on classroom id
-//@route    GET /api/eduGemini/classroom/getCreatedClassroom/:classroomId
+//@route    GET /api/eduGemini/classroom/getCreatedClassroom/:roomId
 //@access   private
 const getCreatedClassroom = asyncHandler(async (req, res, next) => {
   //get the request from req route params
-
+  const { roomId } = req.params;
   //find that classroom from classroom collection
-  const classroomExist = await Classroom.findById(req.params.roomId);
+  const classroomExist = await Classroom.findById(roomId);
 
   if (!classroomExist) {
-    return res
-      .status(404)
-      .json({ message: `${classroomExist._id} does not exist` });
+    return res.status(404).json({ message: `${roomId} does not exist` });
   }
 
   res.status(200).send([classroomExist]);
@@ -114,35 +125,61 @@ const getAnnouncements = asyncHandler(async (req, res, next) => {
 //@desc     DELETE announcement
 //@route    DELETE /api/eduGemini/classroom/getCreatedClassroom/deleteAnnouncement/:roomId
 //@access   private
-// const deleteAnnouncement = asyncHandler(async (req, res, next) => {
-//   const classroomId = req.params.roomId;
-//   const { announceId } = req.body; // Extract announceId from req.body
+const deleteAnnouncement = asyncHandler(async (req, res) => {
+  const classroomId = req.params.roomId;
+  const { announceId } = req.body;
 
-//   if (!announceId) {
-//     return res.status(400).json({ message: "Announcement ID is required" });
-//   }
+  if (!announceId) {
+    return res.status(400).json({ message: "Announcement ID is required" });
+  }
 
-//   const classroomExist = await Classroom.findById(classroomId);
+  const classroomExist = await Classroom.findById(classroomId);
 
-//   if (!classroomExist) {
-//     return res.status(404).json({ message: "Classroom not found" });
-//   }
+  if (!classroomExist) {
+    return res.status(404).json({ message: "Classroom not found" });
+  }
 
-//   const getAllAnnouncement = classroomExist.announcement;
+  const getAllAnnouncement = classroomExist.announcement;
+  const announcementToDelete = getAllAnnouncement.find(
+    (announcement) => announcement._id.toString() === announceId
+  );
 
-//   const updatedAnnouncements = getAllAnnouncement.filter(
-//     (announcement) => announcement._id.toString() !== announceId
-//   );
+  if (!announcementToDelete) {
+    return res.status(404).json({ message: "Announcement not found" });
+  }
 
-//   if (updatedAnnouncements.length === getAllAnnouncement.length) {
-//     return res.status(404).json({ message: "Announcement not found" });
-//   }
+  const updatedAnnouncements = getAllAnnouncement.filter(
+    (announcement) => announcement._id.toString() !== announceId
+  );
 
-//   classroomExist.announcement = updatedAnnouncements;
-//   await classroomExist.save();
+  fs.rm(
+    `./${announcementToDelete.path}`,
+    { recursive: true, force: true },
+    (err) => {
+      if (err) {
+        throw err;
+      }
+      console.log(`${announcementToDelete.path} is deleted!`);
+    }
+  );
 
-//   res.status(200).json({ message: "Deleted successfully" });
-// });
+  // Remove files from the file system
+  announcementToDelete.files.forEach((file) => {
+    const filePath = __dirname + file.path;
+    fs.unlink(filePath, (err) => {
+      if (err) {
+        console.error(`Failed to delete file: ${filePath}`, err);
+      } else {
+        console.log(`Deleted file: ${filePath}`);
+      }
+    });
+  });
+
+  classroomExist.announcement = updatedAnnouncements;
+  await classroomExist.save();
+
+  res.status(200).json({ message: "Deleted successfully" });
+});
 
 //@desc     Create classwork-type
 //@route    POST /api/eduGemini/classroom/createClasswork
@@ -374,7 +411,7 @@ export default {
   getAllClass,
   getCreatedClassroom,
   getAnnouncements,
-  // deleteAnnouncement,
+  deleteAnnouncement,
   classworkType,
   getClassworkType,
   deleteClassworkType,
@@ -382,4 +419,5 @@ export default {
   // joinedClass,
   acceptJoinStudent,
   rejectJoinStudent,
+  adminAllClass,
 };

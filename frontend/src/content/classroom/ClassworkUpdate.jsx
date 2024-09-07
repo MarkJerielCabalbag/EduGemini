@@ -12,6 +12,7 @@ import { useParams } from "react-router-dom";
 import { useQueryClient, useMutation } from "@tanstack/react-query";
 import toast from "react-hot-toast";
 import moment from "moment/moment";
+import { baseUrl } from "@/baseUrl";
 function ClassworkUpdate({ setOpenSettingModal }) {
   const { workId } = useParams();
 
@@ -42,10 +43,11 @@ function ClassworkUpdate({ setOpenSettingModal }) {
     });
 
   const roomId = localStorage.getItem("roomId");
-
+  const userId = localStorage.getItem("userId");
   async function handleUpload() {
     try {
       const formData = new FormData();
+      formData.append("userId", userId);
       formData.append("classworkTitle", classworkTitle);
       formData.append("classworkType", classworkType);
       formData.append("classworkDescription", classworkDescription);
@@ -54,11 +56,10 @@ function ClassworkUpdate({ setOpenSettingModal }) {
       formData.append("classworkAttachFile", classworkAttachFile);
 
       const response = await fetch(
-        `https://edugemini.onrender.com/classwork/updateClasswork/${roomId}/${workId}`,
+        `${baseUrl}/api/eduGemini/classwork/updateClasswork/${roomId}/${workId}`,
         {
           method: "POST",
           body: formData,
-          credentials: "include",
         }
       );
 
@@ -214,6 +215,7 @@ function ClassworkUpdate({ setOpenSettingModal }) {
               queryClient.invalidateQueries({ queryKey: ["classworks"] });
 
               await mutateAsync({
+                userId,
                 roomId,
                 classworkTitle,
                 classworkType,

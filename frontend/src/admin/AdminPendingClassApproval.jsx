@@ -43,11 +43,10 @@ function AdminPendingClassApproval() {
   };
   const userId = localStorage.getItem("userId");
   const { data, isFetching, isLoading, isPending } = useGetAllClassAdmin({
-    queryFn: () => getAllClassAdmin(userId),
     onError,
     onSuccess,
   });
-  console.log(data);
+
   return (
     <>
       {isFetching || isLoading || isPending ? (

@@ -1,19 +1,15 @@
-import React, { useEffect, useState } from "react";
-import { Link, Outlet, useParams } from "react-router-dom";
+import React, { useState } from "react";
+import { Link, useParams } from "react-router-dom";
 import MenuBar from "../MenuBar";
 import Navbar from "../Navbar";
 import { useQuery } from "@tanstack/react-query";
-import {
-  classwork,
-  getAttachments,
-  useGetAttachments,
-  useGetUser,
-} from "@/api/useApi";
-import { Calendar, File, NotebookPen, Plus, Timer, X } from "lucide-react";
+import { classwork, getAttachments, useGetAttachments } from "@/api/useApi";
+import { Calendar, File, NotebookPen, Timer, X } from "lucide-react";
 import toast from "react-hot-toast";
 import { Button } from "@/components/ui/button";
 import { useFilePicker } from "use-file-picker";
 import DocViewer, { DocViewerRenderers } from "@cyntler/react-doc-viewer";
+import { baseUrl } from "@/baseUrl";
 
 function ClassroomSubmition() {
   const [files, setFiles] = useState([]);
@@ -66,7 +62,7 @@ function ClassroomSubmition() {
         }
 
         const response = await fetch(
-          `http://localhost:3000/api/eduGemini/classwork/addFiles/${workId}`,
+          `${baseUrl}/api/eduGemini/classwork/addFiles/${workId}`,
           {
             method: "POST",
             body: formData,
@@ -89,12 +85,6 @@ function ClassroomSubmition() {
     filesContent.filter((_, fileIndex) => fileIndex !== index);
   };
 
-  const docs = [
-    {
-      uri: "https://calibre-ebook.com/downloads/demos/demo.docx",
-      fileType: "docx",
-    },
-  ];
   return (
     <div className="sm:container md:container lg:container">
       <Navbar />

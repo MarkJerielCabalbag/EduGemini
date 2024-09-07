@@ -1,42 +1,26 @@
 import { fetchClassData, useGetClass } from "@/api/useApi";
 import ApproveStudentModal from "@/components/modals/ApproveStudentModal";
 import DeclineStudentModal from "@/components/modals/DeclineStudentModal";
-
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-
-import { NotebookPen } from "lucide-react";
-
-import {
   Select,
   SelectContent,
-  SelectItem,
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-
 import {
   Table,
   TableBody,
   TableCaption,
   TableCell,
-  TableHead,
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-
+import { Avatar, AvatarImage } from "@/components/ui/avatar";
 import React, { useState } from "react";
 import { useParams } from "react-router-dom";
-
+import { baseUrl } from "@/baseUrl";
 function People() {
   const { roomId } = useParams();
   const [openStudentApproveModal, setOpenStudentApproveModal] = useState(false);
@@ -77,7 +61,7 @@ function People() {
                           {student.user_profile_path && (
                             <AvatarImage
                               className="h-10 w-10 rounded-full border-2 border-slate-900"
-                              src={`http://localhost:3000/${student.user_profile_path}/${student.user_img}`}
+                              src={`${baseUrl}/${student.user_profile_path}/${student.user_img}`}
                             />
                           )}
                         </Avatar>
@@ -206,75 +190,3 @@ function People() {
 }
 
 export default People;
-
-{
-  /* <div className="grid gap-3 mt-6 sm:grid-cols-1 md:grid-cols-3 lg:grid-cols-5">
-{roomDetails.students.map((student) => (
-  <>
-    {student.approvalStatus === "pending" ? (
-      <Card className="relative z-50">
-        <CardHeader>
-          <CardTitle className="flex gap-2 items-center">
-            <img
-              className="h-12 w-12 rounded-full border-2 border-slate-900"
-              src={`http://localhost:3000/${student.user_profile_path}/${student.user_img}`}
-            />
-            {student.user_lastname}, {student.user_firstname}{" "}
-            {student.user_middlename.charAt(0)}.
-          </CardTitle>
-          <CardDescription>{student.user_email}</CardDescription>
-          <div className="mt-2">
-            {openStudentApproveModal && (
-              <ApproveStudentModal
-                open={openStudentApproveModal}
-                onOpenChange={setOpenStudentApproveModal}
-                student={student}
-                roomDetails={roomDetails}
-              />
-            )}
-
-            {openStudentDeclineModal && (
-              <DeclineStudentModal
-                open={openStudentDeclineModal}
-                onOpenChange={setOpenStudentDeclineModal}
-                student={student}
-                roomDetails={roomDetails}
-              />
-            )}
-
-            <p>
-              <b className="italic text-slate-500">
-                {student.user_lastname}, {student.user_firstname}{" "}
-                {student.user_middlename}
-              </b>{" "}
-              requested to join your class
-            </p>
-            <div className="flex gap-2 mt-2">
-              <Button
-                className="w-1/2 bg-red-500"
-                onClick={() => setOpenStudentDeclineModal(true)}
-              >
-                Decline
-              </Button>
-              <Button
-                className="w-1/2 bg-green-500"
-                onClick={() => setOpenStudentApproveModal(true)}
-              >
-                Approve
-              </Button>
-            </div>
-          </div>
-        </CardHeader>
-        <Badge
-          className={
-            "absolute top-2 right-2 bg-yellow-500 text-slate-900"
-          }
-        >
-          {student.approvalStatus}
-        </Badge>
-      </Card>
-    ) : null}
-  </>
-))}
-</div> */
-}

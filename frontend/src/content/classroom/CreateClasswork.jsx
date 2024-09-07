@@ -1,17 +1,10 @@
-import {
-  getClassworkInformation,
-  getClassworks,
-  useGetClasswork,
-  useGetClassworkInfo,
-  useGetUser,
-} from "@/api/useApi";
+import { getClassworks, useGetClasswork, useGetUser } from "@/api/useApi";
 import noData from "../../assets/noData.png";
 import LoadingState from "@/utils/LoadingState";
-import { File, FileArchiveIcon, MinusCircle, Settings } from "lucide-react";
+import { FileArchiveIcon } from "lucide-react";
 import React from "react";
 import { Link, useParams } from "react-router-dom";
 import { useQueryClient } from "@tanstack/react-query";
-import ClassworkView from "./ClassworkView";
 function CreateClasswork({ statusBtn, cardStatus }) {
   const queryClient = useQueryClient();
   const { roomId } = useParams();

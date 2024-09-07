@@ -21,6 +21,7 @@ import CreateClasswork from "./CreateClasswork";
 
 import { useQueryClient } from "@tanstack/react-query";
 import { useParams } from "react-router-dom";
+import { baseUrl } from "@/baseUrl";
 function Classwork({ statusBtn }) {
   const queryClient = useQueryClient();
   const [openCreateClassworkModal, setOpenCreateClassworkModal] =
@@ -51,10 +52,11 @@ function Classwork({ statusBtn }) {
     });
 
   const { roomId } = useParams();
-
+  const userId = localStorage.getItem("userId");
   async function handleUpload() {
     try {
       const formData = new FormData();
+      formData.append("userId", userId);
       formData.append("classworkTitle", classworkTitle);
       formData.append("classworkType", classworkType);
       formData.append("classworkDescription", classworkDescription);
@@ -63,11 +65,10 @@ function Classwork({ statusBtn }) {
       formData.append("classworkAttachFile", classworkAttachFile);
 
       const response = await fetch(
-        `https://edugemini.onrender.com/classwork/createClasswork/${roomId}`,
+        `${baseUrl}/api/eduGemini/classwork/createClasswork/${roomId}`,
         {
           method: "POST",
           body: formData,
-          credentials: "include",
         }
       );
 
@@ -299,6 +300,7 @@ function Classwork({ statusBtn }) {
                     });
 
                     await mutateAsync({
+                      userId: userId,
                       classworkTitle,
                       classworkType,
                       classworkDescription,

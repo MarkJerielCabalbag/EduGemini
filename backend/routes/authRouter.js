@@ -1,32 +1,35 @@
 import express from "express";
-
-import { protectRoutes } from "../middlewares/authMiddleware.js";
 import User from "../models/userModel.js";
 import fs from "fs-extra";
 import multer from "multer";
 import { dirname } from "path";
 import { fileURLToPath } from "url";
 import authController from "../controllers/authController.js";
-
 import bcrypt from "bcrypt";
+import path from "path";
 const authRouter = express.Router();
 import asyncHandler from "express-async-handler";
-
-// register user
-authRouter.post("/register", authController.registerUser);
-
-//login user
-authRouter.post("/login", authController.loginUser);
-
-//logout user
-authRouter.post("/logout", authController.logoutUser);
-
-authRouter.get("/profile/:userId", authController.getUserProfile);
-
 const __dirname = dirname(fileURLToPath(import.meta.url));
+// import admin from "firebase-admin";
+// import { createRequire } from "module";
+// import { ref, deleteObject } from "firebase/storage";
+
+// import { getApp } from "firebase/app";
+// import { getStorage } from "firebase/storage";
+
+// // Get a non-default Storage bucket
+// const firebaseApp = getApp();
+// const storageFirebase = getStorage(
+//   firebaseApp,
+//   "gs://edugemini-bucket-849f9.appspot.com"
+// );
+// register user
+// authRouter.post("/register", authController.registerUser);
+
 const storage = multer.diskStorage({
   destination: async (req, file, callback) => {
-    const user = await User.findById(req.user._id);
+    const { userId } = req.params;
+    const user = await User.findById(userId);
     const locationSave = user.profile_path;
 
     callback(null, locationSave);
@@ -38,13 +41,26 @@ const storage = multer.diskStorage({
 
 const upload = multer({ storage: storage });
 
-//user profile
+const generateToken = (id) => {
+  return jwt.sign({ id }, process.env.JWT_SECRET, {
+    expiresIn: "1d",
+  });
+};
 
+//@desc     register user
+//@route    POST /api/eduGemini/register
+//@access   public
+authRouter.post("/register", authController.registerUser);
+
+//@desc     Update User Profile
+//@route    POST /api/eduGemini/profile
+//@access   private
 authRouter.post(
-  "/profile",
+  "/profile/:userId",
   upload.single("user_profile"),
   asyncHandler(async (req, res, next) => {
-    const user = await User.findById(req.user._id);
+    const { userId } = req.params;
+    const user = await User.findById(userId);
 
     if (user) {
       user.user_username = req.body.user_username || user.user_username;
@@ -53,6 +69,18 @@ authRouter.post(
       await user.save();
       if (req.file) {
         if (user.profile_path && user.profile.filename) {
+          const storage = getStorage();
+          const profileFolder = ref(storage, `profile/${user.user_email}/`);
+          const deleteRef = ref(profileFolder, `${user.profile.filename}`);
+
+          deleteObject(deleteRef)
+            .then(() => {
+              console.log("file successfully deleted");
+            })
+            .catch((error) => {
+              console.log("Uh-oh, an error occurred!", error);
+            });
+
           fs.rm(
             `${user.profile_path}/${user.profile.filename}`,
             function (err) {
@@ -63,6 +91,30 @@ authRouter.post(
         }
 
         user.profile = req.file;
+
+        // Upload new file
+        const uploadPath = `profile/${user.user_email}/${req.file.originalname}`;
+        await bucket.upload(req.file.path, {
+          destination: uploadPath,
+          metadata: {
+            contentType: req.file.mimetype,
+          },
+        });
+
+        // Generate the download URL
+        const storage = getStorage();
+        const profileFolder = ref(storage, `profile/${user.user_email}/`);
+        const fileRef = ref(profileFolder, `${user.profile.filename}`);
+
+        // Use async/await for getDownloadURL
+        try {
+          const url = await getDownloadURL(fileRef);
+          user.profile.downloadUrl = url;
+          console.log("File available at: ", url);
+        } catch (error) {
+          console.log("Error generating download URL:", error);
+        }
+
         await user.save();
       }
 
@@ -88,5 +140,13 @@ authRouter.post(
     });
   })
 );
+
+//login user
+authRouter.post("/login", authController.loginUser);
+
+//logout user
+authRouter.post("/logout", authController.logoutUser);
+
+authRouter.get("/profile/:userId", authController.getUserProfile);
 
 export default authRouter;

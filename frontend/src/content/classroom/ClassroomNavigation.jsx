@@ -4,11 +4,12 @@ import { Button } from "@/components/ui/button";
 import { useGetClass, fetchClassData } from "@/api/useApi";
 function ClassroomNavigation() {
   const { roomId } = useParams();
+
   const navigate = useNavigate();
   const { data: classworks } = useGetClass({
     queryFn: () => fetchClassData(roomId),
   });
-  console.log(classworks);
+
   return (
     <div className="my-5 flex gap-3 z-50">
       <Button

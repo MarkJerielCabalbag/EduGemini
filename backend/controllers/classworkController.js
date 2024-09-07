@@ -13,7 +13,7 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 //@access   private
 const getClassworks = asyncHandler(async (req, res, next) => {
   const { roomId } = req.params;
-  const roomExist = await Classroom.findById(req.params.roomId);
+  const roomExist = await Classroom.findById(roomId);
   if (!roomExist) {
     return res.status(404).json({ message: "No classroom found" });
   }

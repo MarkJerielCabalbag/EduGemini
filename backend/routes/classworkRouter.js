@@ -8,37 +8,26 @@ import { v4 as uuidv4 } from "uuid";
 const classworkRouter = express.Router();
 import asyncHandler from "express-async-handler";
 import Classroom from "../models/classroomModel.js";
-
 import User from "../models/userModel.js";
 import { protectRoutes } from "../middlewares/authMiddleware.js";
 import { nanoid } from "nanoid";
 import classworkController from "../controllers/classworkController.js";
 
-//post to create a classwork
-// classworkRouter.post(
-//   "/createClasswork/:userId/:roomId",
-//   classworkController.createClasswork
-// );
+const handleFileValidationError = (err, req, res, next) => {
+  if (err) {
+    return res.status(400).json({ message: err.message });
+  }
+  next();
+};
 
 // classworkRouter.use(protectRoutes);
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
-// const storage = multer.diskStorage({
-//   destination: async function (req, file, callback) {
-//     const classworksFolder = path.join(__dirname, "/classworks");
-//     callback(null, classworksFolder);
-//   },
-//   filename: function (req, file, callback) {
-//     callback(null, file.originalname);
-//   },
-// });
-
-// const classworkFiles = multer({ storage: storage });
-
-const storage = multer.diskStorage({
+const storageClasswork = multer.diskStorage({
   destination: async (req, file, callback) => {
     try {
-      const user = await User.findById(req.user._id).select("-user_password");
+      const { userId } = req.body;
+      const user = await User.findById(userId).select("-user_password");
       if (!user) {
         return callback(new Error("User not found"), null);
       }
@@ -62,14 +51,7 @@ const storage = multer.diskStorage({
         return callback(new Error("Classwork title already exists"), null);
       }
 
-      const dateCreated =
-        new Date().getMonth().toString() +
-        "-" +
-        new Date().getDate().toString() +
-        "-" +
-        new Date().getFullYear().toString();
-
-      const locationSave = `classworks/${user.user_username}/${roomExist.class_code}/${req.body.classworkTitle} ${dateCreated}/instruction`;
+      const locationSave = `classworks/${user.user_username}/${roomExist.class_code}/${req.body.classworkTitle}/instruction`;
 
       await roomExist.save();
       fs.mkdirsSync(locationSave);
@@ -83,20 +65,14 @@ const storage = multer.diskStorage({
   },
 });
 
-const upload = multer({ storage });
+const uploadClasswork = multer({ storage: storageClasswork });
 
-const handleFileValidationError = (err, req, res, next) => {
-  if (err) {
-    return res.status(400).json({ message: err.message });
-  }
-  next();
-};
 //@desc     create classwork
 //@route    POST /api/eduGemini/classwork/createClasswork/:roomId
 //@access   private
 classworkRouter.post(
   "/createClasswork/:roomId",
-  upload.single("classworkAttachFile"),
+  uploadClasswork.single("classworkAttachFile"),
   handleFileValidationError,
   asyncHandler(async (req, res, next) => {
     const {
@@ -105,6 +81,7 @@ classworkRouter.post(
       classworkDescription,
       classworkDueDate,
       classworkDueTime,
+      userId,
     } = req.body;
 
     const classworkAttachFile = req.file;
@@ -112,7 +89,7 @@ classworkRouter.post(
     const { roomId } = req.params;
 
     const roomExist = await Classroom.findById(roomId);
-    const user = await User.findById(req.user._id);
+    const user = await User.findById(userId);
 
     if (
       !classworkTitle ||
@@ -138,13 +115,6 @@ classworkRouter.post(
         .json({ message: `${classworkTitle} is already exist` });
     }
 
-    const dateCreated =
-      new Date().getMonth().toString() +
-      "-" +
-      new Date().getDate().toString() +
-      "-" +
-      new Date().getFullYear().toString();
-
     const classworkCreated = roomExist.classwork.unshift({
       _id: uuidv4(),
       classwork_title: classworkTitle,
@@ -153,7 +123,8 @@ classworkRouter.post(
       classwork_due_date: classworkDueDate,
       classwork_due_time: classworkDueTime,
       classwork_attach_file: classworkAttachFile,
-      classwork_folder_path: `classworks/${user.user_username}/${roomExist.class_code}/${classworkTitle} ${dateCreated}`,
+
+      classwork_folder_path: `classworks/${user.user_username}/${roomExist.class_code}/${classworkTitle}`,
       classwork_outputs: [],
     });
 
@@ -164,24 +135,6 @@ classworkRouter.post(
       workId: classworkCreated._id,
     });
   })
-);
-
-//get classworks
-classworkRouter.get("/getClasswork/:roomId", classworkController.getClassworks);
-
-//get classwork
-classworkRouter.get("/classworkData/:workId", classworkController.getClasswork);
-
-//get classwork info
-classworkRouter.get(
-  "/getClasswork/:roomId/:workId",
-  classworkController.getClassworkInformation
-);
-
-//remove classwork
-classworkRouter.post(
-  "/deleteClasswork/:roomId/:workId",
-  classworkController.deleteClasswork
 );
 
 //@desc     update classwork information
@@ -227,9 +180,9 @@ classworkRouter.post(
   uploadUpdatedClassworkInstruction.single("classworkAttachFile"),
   asyncHandler(async (req, res, next) => {
     const { roomId, workId } = req.params;
-
+    const { userId } = req.body;
     const classworkAttachFile = req.file;
-
+    const user = await User.findById(userId);
     const roomExist = await Classroom.findById(roomId);
 
     if (!roomExist) {
@@ -250,13 +203,12 @@ classworkRouter.post(
       console.log(classworkToUpdate.classwork_attach_file.filename);
 
       fs.rm(
-        `${classworkToUpdate.classwork_attach_file.destination}/${classworkToUpdate.classwork_attach_file.filename}`,
+        `${classworkToUpdate.classwork_folder_path}/instruction/${classworkToUpdate.classwork_attach_file.filename}`,
         function (err) {
           if (err) return console.log(err);
           console.log("file deleted successfully");
         }
       );
-
       classworkToUpdate.classwork_attach_file = classworkAttachFile;
     }
 
@@ -277,6 +229,24 @@ classworkRouter.post(
 
     res.status(200).json({ message: "Successfully updated" });
   })
+);
+
+//get classworks
+classworkRouter.get("/getClasswork/:roomId", classworkController.getClassworks);
+
+//get classwork
+classworkRouter.get("/classworkData/:workId", classworkController.getClasswork);
+
+//get classwork info
+classworkRouter.get(
+  "/getClasswork/:roomId/:workId",
+  classworkController.getClassworkInformation
+);
+
+//remove classwork
+classworkRouter.post(
+  "/deleteClasswork/:roomId/:workId",
+  classworkController.deleteClasswork
 );
 
 const storageAddfiles = multer.diskStorage({
@@ -321,6 +291,9 @@ const uploadAddedFiles = multer({
   storage: storageAddfiles,
 });
 
+//@desc   POST student works
+//@route    POST /api/eduGemini/classwork/addFiles/:workId
+//@access   private
 classworkRouter.post(
   "/addFiles/:workId",
   uploadAddedFiles.array("files"),

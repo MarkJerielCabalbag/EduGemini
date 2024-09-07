@@ -3,7 +3,7 @@ import User from "../models/userModel.js";
 import jwt from "jsonwebtoken";
 import bcrypt from "bcryptjs";
 // import generateToken from "../utils/generateToken.js";
-import fs from "fs";
+import fs from "fs-extra";
 import path from "path";
 import { dirname } from "path";
 import { fileURLToPath } from "url";
@@ -12,25 +12,22 @@ const __dirname = dirname(fileURLToPath(import.meta.url));
 //@desc     register user
 //@route    POST /api/eduGemini/register
 //@access   public
+
 const registerUser = asyncHandler(async (req, res, next) => {
-  //deconstruct all the user rquest body from client uo
   const { user_username, user_email, user_password } = req.body;
 
-  //next lets validate the request to make sure that all fields are filled out
   if (!user_email || !user_username || !user_password) {
     return res.status(400).json({ message: "All fields are required" });
   }
 
-  //find account duplication based on the user_email
   const userDuplicate = await User.findOne({ user_email });
 
   if (userDuplicate) {
     return res
       .status(400)
-      .json({ message: `${userDuplicate.user_email} has already in used` });
+      .json({ message: `${userDuplicate.user_email} is already in use` });
   }
 
-  //then encrypt the password of the created user before storing them into database
   const hashPassword = await bcrypt.hash(user_password, 10);
 
   const profileDir = path.join("profile", user_email);
@@ -42,7 +39,6 @@ const registerUser = asyncHandler(async (req, res, next) => {
   const srcImgResolvePath = path.join(profileDir, "R.png");
   fs.copyFileSync(srcImg, srcImgResolvePath);
 
-  //if no duplicate then lets create that account
   const user = await User.create({
     user_email,
     user_username,
@@ -50,7 +46,7 @@ const registerUser = asyncHandler(async (req, res, next) => {
     profile_path: `profile/${user_email}`,
     profile: {
       filename: "R.png",
-      destination: srcImgResolvePath,
+      destination: `profile/${user_email}/R.png`,
     },
   });
 
@@ -65,7 +61,7 @@ const registerUser = asyncHandler(async (req, res, next) => {
   } else {
     return res
       .status(400)
-      .json({ message: "There's seems to be a problem creating your account" });
+      .json({ message: "There's a problem creating your account" });
   }
 });
 

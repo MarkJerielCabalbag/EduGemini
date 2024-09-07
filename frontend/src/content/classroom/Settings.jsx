@@ -1,41 +1,18 @@
 import { fetchClassData, useGetClass } from "@/api/useApi";
-
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-
-import { NotebookPen } from "lucide-react";
-
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-
 import {
   Table,
   TableBody,
   TableCaption,
   TableCell,
-  TableHead,
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-
+import { Avatar, AvatarImage } from "@/components/ui/avatar";
 import React, { useState } from "react";
-import { useParams } from "react-router-dom";
-import ApproveStudentModal from "@/components/modals/ApproveStudentModal";
 import DeclineStudentModal from "@/components/modals/DeclineStudentModal";
+import { baseUrl } from "@/baseUrl";
 
 function Settings() {
   const { roomId } = useParams();
@@ -75,7 +52,7 @@ function Settings() {
                           {student.user_profile_path && (
                             <AvatarImage
                               className="h-10 w-10 rounded-full border-2 border-slate-900"
-                              src={`https://edugemini.onrender.com/${student.user_profile_path}/${student.user_img}`}
+                              src={`${baseUrl}/${student.user_profile_path}/${student.user_img}`}
                             />
                           )}
                         </Avatar>

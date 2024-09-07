@@ -29,6 +29,8 @@ function UpdateUser() {
     confirm_password: "",
   });
 
+  const userId = localStorage.getItem("userId");
+
   const [user_profile, setUserProfile] = useState([]);
   const { user_email, user_username, user_password, confirm_password } =
     updateInfo;
@@ -39,15 +41,13 @@ function UpdateUser() {
       formData.append("user_email", user_email);
       formData.append("user_username", user_username);
       formData.append("user_password", user_password);
-
       formData.append("user_profile", user_profile);
 
       const response = await fetch(
-        `http://localhost:3000/api/eduGemini/profile`,
+        `http://localhost:3000/api/eduGemini/profile/${userId}`,
         {
           method: "POST",
           body: formData,
-          credentials: "include",
         }
       );
 
@@ -59,7 +59,7 @@ function UpdateUser() {
       toast.success(data.message);
       queryClient.invalidateQueries({ queryKey: ["classworkInfo"] });
     } catch (error) {
-      toast.error(error);
+      toast.error(error.message || "An unexpected error occurred");
     }
   }
 
@@ -83,10 +83,7 @@ function UpdateUser() {
 
   const { data } = useGetUser({ onError, onSuccess });
 
-  const profile = data?.map(
-    (user) =>
-      `https://edugemini.onrender.com/${user.profile_path}/${user.profile.filename}`
-  );
+  const profile = data?.map((user) => `${user.profile.downloadUrl}`);
 
   const handleImgSrc = () => {
     try {

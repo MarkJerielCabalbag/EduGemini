@@ -91,7 +91,7 @@ const router = createBrowserRouter(
           element={<ClassworkView userStatus={"instructor"} />}
         />
         <Route
-          path="/class/classroom/announcementFile"
+          path="/class/classroom/viewAnnouncement/:roomId/:announceId"
           element={<FileViewer />}
         />
 

@@ -1,10 +1,8 @@
 import { useQuery, useMutation } from "@tanstack/react-query";
-import axios from "axios";
-
-const uri = "https://edugemini.onrender.com";
+import { baseUrl } from "@/baseUrl";
 
 async function register(formData) {
-  return await fetch("https://edugemini.onrender.com/api/eduGemini/register", {
+  return await fetch(`${baseUrl}/api/eduGemini/register`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(formData),
@@ -20,7 +18,7 @@ async function register(formData) {
 }
 
 async function login(formData) {
-  return await fetch(`https://edugemini.onrender.com/api/eduGemini/login`, {
+  return await fetch(`${baseUrl}/api/eduGemini/login`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(formData),
@@ -49,7 +47,7 @@ async function login(formData) {
 // }
 
 async function logout() {
-  return await fetch(`https://edugemini.onrender.com/api/eduGemini/logout`, {
+  return await fetch(`${baseUrl}/api/eduGemini/logout`, {
     method: "POST",
   }).then(async (res) => {
     const response = await res.json();
@@ -84,13 +82,10 @@ async function updateUser(formData) {
 }
 
 export async function getUser(userId) {
-  return await fetch(
-    `https://edugemini.onrender.com/api/eduGemini/profile/${userId}`,
-    {
-      method: "GET",
-      headers: { "Content-Type": "application/json" },
-    }
-  ).then(async (res) => {
+  return await fetch(`${baseUrl}/api/eduGemini/profile/${userId}`, {
+    method: "GET",
+    headers: { "Content-Type": "application/json" },
+  }).then(async (res) => {
     const response = await res.json();
     if (!res.ok) {
       throw new Error(response.message || "An Error Occurred");
@@ -100,13 +95,10 @@ export async function getUser(userId) {
 }
 
 export async function getAllClassroom(userId) {
-  return await fetch(
-    `http://localhost:3000/api/eduGemini/classroom/allClass/${userId}`,
-    {
-      method: "GET",
-      headers: { "Content-Type": "application/json" },
-    }
-  ).then(async (res) => {
+  return await fetch(`${baseUrl}/api/eduGemini/classroom/allClass/${userId}`, {
+    method: "GET",
+    headers: { "Content-Type": "application/json" },
+  }).then(async (res) => {
     const response = await res.json();
 
     if (!res.ok) {
@@ -118,7 +110,7 @@ export async function getAllClassroom(userId) {
 }
 
 async function createClass(formData) {
-  return await fetch(`${uri}/api/eduGemini/classroom/createClass`, {
+  return await fetch(`${baseUrl}/api/eduGemini/classroom/createClass`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(formData),
@@ -134,7 +126,7 @@ async function createClass(formData) {
 }
 
 async function allClass(userId) {
-  await fetch(`${uri}/api/eduGemini/classroom/getAllClass/${userId}`, {
+  await fetch(`${baseUrl}/api/eduGemini/classroom/getAllClass/${userId}`, {
     method: "GET",
     headers: { "Content-Type": "application/json" },
   }).then(async (res) => {
@@ -147,10 +139,13 @@ async function allClass(userId) {
 }
 
 export async function fetchAllClassData(userId) {
-  return await fetch(`${uri}/api/eduGemini/classroom/getAllClass/${userId}`, {
-    method: "GET",
-    headers: { "Content-Type": "application/json" },
-  }).then(async (res) => {
+  return await fetch(
+    `${baseUrl}/api/eduGemini/classroom/getAllClass/${userId}`,
+    {
+      method: "GET",
+      headers: { "Content-Type": "application/json" },
+    }
+  ).then(async (res) => {
     const response = await res.json();
     if (!res.ok) {
       throw new Error(response.message || "An Error Occurred");
@@ -161,7 +156,7 @@ export async function fetchAllClassData(userId) {
 
 export async function fetchClassData(roomId) {
   return await fetch(
-    `${uri}/api/eduGemini/classroom/getCreatedClassroom/${roomId}`,
+    `${baseUrl}/api/eduGemini/classroom/getCreatedClassroom/${roomId}`,
     {
       method: "GET",
       headers: { "Content-Type": "application/json" },
@@ -177,7 +172,7 @@ export async function fetchClassData(roomId) {
 
 export async function createAnnouncement(formData, roomId) {
   return await fetch(
-    `${uri}/api/eduGemini/classroom/createAnnouncement/${roomId}`,
+    `${baseUrl}/api/eduGemini/classroom/createAnnouncement/${roomId}`,
     {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -196,7 +191,7 @@ export async function createAnnouncement(formData, roomId) {
 
 export async function getAnnouncement(roomId) {
   return await fetch(
-    `${uri}/api/eduGemini/classroom/getAnnouncement/${roomId}`,
+    `${baseUrl}/api/eduGemini/classroom/getAnnouncement/${roomId}`,
     {
       method: "GET",
       headers: { "Content-Type": "application/json" },
@@ -213,7 +208,7 @@ export async function getAnnouncement(roomId) {
 export async function deleteAnnouncement(announceId, roomId) {
   try {
     const res = await fetch(
-      `${uri}/api/eduGemini/classroom/deleteAnnouncement/${roomId}`,
+      `${baseUrl}/api/eduGemini/classroom/deleteAnnouncement/${roomId}`,
       {
         method: "DELETE",
         headers: { "Content-Type": "application/json" },
@@ -233,7 +228,7 @@ export async function deleteAnnouncement(announceId, roomId) {
 }
 
 export async function createClassworkType(formData) {
-  return await fetch(`${uri}/api/eduGemini/classroom/createClasswork`, {
+  return await fetch(`${baseUrl}/api/eduGemini/classroom/createClasswork`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(formData),
@@ -250,7 +245,7 @@ export async function createClassworkType(formData) {
 
 export async function getClassworkType(roomId) {
   return await fetch(
-    `${uri}/api/eduGemini/classroom/getClassworkType/${roomId}`,
+    `${baseUrl}/api/eduGemini/classroom/getClassworkType/${roomId}`,
     {
       method: "GET",
       headers: { "Content-Type": "application/json" },
@@ -267,10 +262,13 @@ export async function getClassworkType(roomId) {
 }
 
 export async function getClassworks(roomId) {
-  return await fetch(`${uri}/api/eduGemini/classwork/getClasswork/${roomId}`, {
-    method: "GET",
-    headers: { "Content-Type": "application/json" },
-  }).then(async (res) => {
+  return await fetch(
+    `${baseUrl}/api/eduGemini/classwork/getClasswork/${roomId}`,
+    {
+      method: "GET",
+      headers: { "Content-Type": "application/json" },
+    }
+  ).then(async (res) => {
     const response = await res.json();
 
     if (!res.ok) {
@@ -283,7 +281,7 @@ export async function getClassworks(roomId) {
 
 export async function getClassworkInformation(roomId, workId) {
   return await fetch(
-    `${uri}/api/eduGemini/classwork/getClasswork/${roomId}/${workId}`,
+    `${baseUrl}/api/eduGemini/classwork/getClasswork/${roomId}/${workId}`,
     {
       method: "GET",
       headers: { "Content-Type": "application/json" },
@@ -300,7 +298,7 @@ export async function getClassworkInformation(roomId, workId) {
 }
 
 async function deleteClasswork(formData) {
-  return await fetch(`${uri}/api/eduGemini/classroom/deleteClassworkType`, {
+  return await fetch(`${baseUrl}/api/eduGemini/classroom/deleteClassworkType`, {
     method: "DELETE",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(formData),
@@ -317,7 +315,7 @@ async function deleteClasswork(formData) {
 
 export async function deleteSpecificClasswork(roomId, workId) {
   return await fetch(
-    `${uri}/api/eduGemini/classwork/deleteClasswork/${roomId}/${workId}`,
+    `${baseUrl}/api/eduGemini/classwork/deleteClasswork/${roomId}/${workId}`,
     {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -335,7 +333,7 @@ export async function deleteSpecificClasswork(roomId, workId) {
 
 //admin
 async function loginAdmin(formData) {
-  return await fetch(`${uri}/api/eduGemini/ai/admin/login`, {
+  return await fetch(`${baseUrl}/api/eduGemini/ai/admin/login`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(formData),
@@ -350,8 +348,8 @@ async function loginAdmin(formData) {
   });
 }
 
-export async function getAllClassAdmin(userId) {
-  return await fetch(`${uri}/api/eduGemini/ai/admin/allClass/${userId}`, {
+export async function getAllClassAdmin() {
+  return await fetch(`${baseUrl}/api/eduGemini/ai/admin/allClass`, {
     method: "GET",
     headers: { "Content-Type": "application/json" },
   }).then(async (res) => {
@@ -366,7 +364,7 @@ export async function getAllClassAdmin(userId) {
 }
 
 async function approveClass(formData) {
-  return await fetch(`${uri}/api/eduGemini/ai/admin/classApproval`, {
+  return await fetch(`${baseUrl}/api/eduGemini/ai/admin/classApproval`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(formData),
@@ -382,7 +380,7 @@ async function approveClass(formData) {
 }
 
 async function declineClass(formData) {
-  return await fetch(`${uri}/api/eduGemini/ai/admin/declineApproval`, {
+  return await fetch(`${baseUrl}/api/eduGemini/ai/admin/declineApproval`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(formData),
@@ -399,7 +397,7 @@ async function declineClass(formData) {
 
 //student
 async function joinClass(formData) {
-  return await fetch(`${uri}/api/eduGemini/classroom/join`, {
+  return await fetch(`${baseUrl}/api/eduGemini/classroom/join`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(formData),
@@ -415,10 +413,13 @@ async function joinClass(formData) {
 }
 
 export async function joinedClass(userId) {
-  return await fetch(`${uri}/api/eduGemini/classroom/joinedClass/${userId}`, {
-    method: "GET",
-    headers: { "Content-Type": "application/json" },
-  }).then(async (res) => {
+  return await fetch(
+    `${baseUrl}/api/eduGemini/classroom/joinedClass/${userId}`,
+    {
+      method: "GET",
+      headers: { "Content-Type": "application/json" },
+    }
+  ).then(async (res) => {
     const response = await res.json();
 
     if (!res.ok) {
@@ -430,7 +431,7 @@ export async function joinedClass(userId) {
 }
 
 async function acceptJoinStudent(formData) {
-  return await fetch(`${uri}/api/eduGemini/classroom/acceptStudent`, {
+  return await fetch(`${baseUrl}/api/eduGemini/classroom/acceptStudent`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(formData),
@@ -446,7 +447,7 @@ async function acceptJoinStudent(formData) {
 }
 
 async function rejectJoinStudent(formData) {
-  return await fetch(`${uri}/api/eduGemini/classroom/rejectStudent`, {
+  return await fetch(`${baseUrl}/api/eduGemini/classroom/rejectStudent`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(formData),
@@ -462,10 +463,13 @@ async function rejectJoinStudent(formData) {
 }
 
 export async function classwork(workId) {
-  return await fetch(`${uri}/api/eduGemini/classwork/classworkData/${workId}`, {
-    method: "GET",
-    headers: { "Content-Type": "application/json" },
-  }).then(async (res) => {
+  return await fetch(
+    `${baseUrl}/api/eduGemini/classwork/classworkData/${workId}`,
+    {
+      method: "GET",
+      headers: { "Content-Type": "application/json" },
+    }
+  ).then(async (res) => {
     const response = await res.json();
 
     if (!res.ok) {
@@ -478,7 +482,7 @@ export async function classwork(workId) {
 
 export async function getAttachments(roomId, workId, userId) {
   return await fetch(
-    `${uri}/api/eduGemini/classwork/getAttachments/${roomId}/${workId}/${userId}`,
+    `${baseUrl}/api/eduGemini/classwork/getAttachments/${roomId}/${workId}/${userId}`,
     {
       method: "GET",
       headers: { "Content-Type": "application/json" },
@@ -654,7 +658,7 @@ export const useLoginAdmin = ({ onError, onSuccess }) => {
   });
 };
 
-export const useGetAllClassAdmin = ({ queryFn, onError, onSuccess }) => {
+export const useGetAllClassAdmin = ({ onError, onSuccess }) => {
   return useQuery({
     queryKey: ["allClassAdmin"],
     queryFn: getAllClassAdmin,

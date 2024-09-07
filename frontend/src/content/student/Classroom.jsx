@@ -1,10 +1,6 @@
 import React from "react";
 import Navbar from "../Navbar";
 import MenuBar from "../MenuBar";
-import { Button } from "@/components/ui/button";
-import Stream from "../classroom/Stream";
-import GetAnnouncement from "../classroom/GetAnnouncement";
-import ClassroomDetails from "../classroom/ClassroomDetails";
 import ClassroomInfo from "../classroom/ClassroomInfo";
 import { Link, Outlet, useParams } from "react-router-dom";
 

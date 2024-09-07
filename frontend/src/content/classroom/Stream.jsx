@@ -17,6 +17,7 @@ import toast from "react-hot-toast";
 import GetAnnouncement from "./GetAnnouncement";
 import { useQueryClient } from "@tanstack/react-query";
 import DocViewer, { DocViewerRenderers } from "@cyntler/react-doc-viewer";
+import { baseUrl } from "@/baseUrl";
 function Stream({ statusBtn }) {
   const [announcement, setAnnouncement] = useState({
     title: "",
@@ -24,6 +25,7 @@ function Stream({ statusBtn }) {
   });
   const queryClient = useQueryClient();
   const roomId = localStorage.getItem("roomId");
+  const userId = localStorage.getItem("userId");
   const [files, setFiles] = useState([]);
   const [openAddModalAnnouncement, setAddModalAnnouncement] = useState(false);
   const { title, description } = announcement;
@@ -37,6 +39,7 @@ function Stream({ statusBtn }) {
   async function handleUpload() {
     try {
       const formData = new FormData();
+      formData.append("userId", userId);
       formData.append("title", title);
       formData.append("description", description);
       for (let i = 0; i < files.length; i++) {
@@ -44,11 +47,10 @@ function Stream({ statusBtn }) {
       }
 
       const response = await fetch(
-        `https://edugemini.onrender.com/classroom/createAnnouncement/${roomId}`,
+        `${baseUrl}/api/eduGemini/classroom/createAnnouncement/${roomId}`,
         {
           method: "POST",
           body: formData,
-          credentials: "include",
         }
       );
 

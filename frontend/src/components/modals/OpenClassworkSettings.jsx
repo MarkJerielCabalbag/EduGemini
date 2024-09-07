@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -10,38 +10,75 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
+import ReusableModal from "./ReusableModal";
+import ClassworkUpdate from "@/content/classroom/ClassworkUpdate";
+import { Label } from "@radix-ui/react-label";
+import { Trash2 } from "lucide-react";
+import ClassworkDelete from "@/content/classroom/ClassworkDelete";
+import { Button } from "../ui/button";
+import {
+  fetchClassData,
+  getClassworkInformation,
+  useGetClass,
+  useGetClassworkInfo,
+} from "@/api/useApi";
+import { useQueryClient } from "@tanstack/react-query";
+import { useParams } from "react-router-dom";
+import LoadingState from "@/utils/LoadingState";
 
-function OpenClassworkSettings({
-  open,
-  onOpenChange,
-  alertDialogTitle,
-  alertDialogDescription,
-  alertDialogFooter,
-  alertDialogTrigger,
-}) {
+function OpenClassworkSettings({ open, onOpenChange, classwork_title }) {
+  const [openDeleteClassworkModal, setOpenDeleteClassworkModal] =
+    useState(false);
+
   return (
-    <>
-      {open && (
-        <AlertDialog
-          open={open}
-          onOpenChange={onOpenChange}
-          className="sm:container md:container lg:container"
-        >
-          {alertDialogTrigger}
-          <AlertDialogContent>
-            <AlertDialogHeader>
-              <AlertDialogTitle className="flex items-center gap-2">
-                {alertDialogTitle}
-              </AlertDialogTitle>
-              <AlertDialogDescription>
-                {alertDialogDescription}
-              </AlertDialogDescription>
-            </AlertDialogHeader>
-            <AlertDialogFooter>{alertDialogFooter}</AlertDialogFooter>
-          </AlertDialogContent>
-        </AlertDialog>
-      )}
-    </>
+    <ReusableModal
+      open={open}
+      onOpenChange={onOpenChange}
+      alertDialogTitle={"Classwork Settings"}
+      alertDialogDescription={
+        <>
+          <div className="border-l-4 border-slate-500 p-5 shadow-md rounded mt-5 h-[330px] overflow-y-scroll">
+            <p className="mb-3">
+              Lorem ipsum dolor sit amet consectetur adipisicing elit. Quia
+              placeat soluta debitis aut totam tenetur assumenda optio est.
+              Odio, tempora?
+            </p>
+
+            <ClassworkUpdate setOpenSettingModal={onOpenChange} />
+
+            <div>
+              <Label className="font-bold italic flex items-center gap-2 mb-2">
+                <Trash2 size={20} />
+                Delete this classwork?
+              </Label>
+              {openDeleteClassworkModal && (
+                <ClassworkDelete
+                  open={openDeleteClassworkModal}
+                  onOpenChange={setOpenDeleteClassworkModal}
+                />
+              )}
+              <p className="my-2">
+                Lorem ipsum dolor sit amet consectetur, adipisicing elit.
+                Deserunt, officia!
+              </p>
+              <Button
+                className={"w-full hover:bg-red-700"}
+                onClick={() => setOpenDeleteClassworkModal(true)}
+              >
+                Delete {classwork_title}
+              </Button>
+            </div>
+          </div>
+        </>
+      }
+      alertDialogFooter={
+        <>
+          <Button className="w-full" onClick={() => onOpenChange(false)}>
+            Close
+          </Button>
+        </>
+      }
+    />
   );
 }
 
