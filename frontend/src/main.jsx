@@ -96,6 +96,11 @@ const router = createBrowserRouter(
         />
 
         <Route
+          path="/class/classroom/viewAnnouncement/:roomId/:announceId"
+          element={<FileViewer userStatus={"student"} />}
+        />
+
+        <Route
           path="/class/classwork/outputs/:roomId/:userId/:workId"
           element={<Outputs />}
         />

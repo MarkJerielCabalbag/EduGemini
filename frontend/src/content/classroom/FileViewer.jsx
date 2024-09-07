@@ -45,11 +45,11 @@ function FileViewer({ userStatus }) {
               <div className="my-5">
                 <ArrowLeft
                   onClick={() => {
-                    userStatus === "instructor"
-                      ? navigate(`/class/classroom/getCreatedClass/${roomId}`)
-                      : navigate(
+                    userStatus === "student"
+                      ? navigate(
                           `/class/classroom/getCreatedClass/${userId}/${roomId}`
-                        );
+                        )
+                      : navigate(`/class/classroom/getCreatedClass/${roomId}`);
                   }}
                 />
                 <div className="bg-slate-900 p-5 rounded-md mt-5 relative">
