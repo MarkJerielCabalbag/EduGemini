@@ -12,14 +12,14 @@ import { Bell, ExternalLink, Loader2Icon, Trash } from "lucide-react";
 import { useState } from "react";
 import DeleteAnnouncement from "@/components/modals/DeleteAnnouncement";
 import { Button } from "@/components/ui/button";
-import { Link, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 function GetAnnouncement({ statusBtn, cardStatus, userStatus }) {
   const [openDeleteAnnouncementModal, setOpenDeleteAnnouncementModal] =
     useState(false);
   const { roomId } = useParams();
   const queryClient = useQueryClient();
   const [announceId, setAnnounceId] = useState(null);
-
+  const navigate = useNavigate();
   const onSuccess = (data) => {
     toast.success(data.message);
     queryClient.invalidateQueries({ queryKey: ["announcement"] });
@@ -88,8 +88,12 @@ function GetAnnouncement({ statusBtn, cardStatus, userStatus }) {
                         className="font-bold italic opacity-90 flex gap-2 underline underline-offset-8"
                         onClick={() =>
                           userStatus === "instructor"
-                            ? `/class/classroom/getCreatedClass/viewAnnouncement/${roomId}/${item._id}`
-                            : `/class/classroom/getCreatedClass/student/${roomId}/${item._id}`
+                            ? navigate(
+                                `/class/classroom/getCreatedClass/viewAnnouncement/${roomId}/${item._id}`
+                              )
+                            : navigate(
+                                `/class/classroom/getCreatedClass/student/${roomId}/${item._id}`
+                              )
                         }
                       >
                         <ExternalLink />
