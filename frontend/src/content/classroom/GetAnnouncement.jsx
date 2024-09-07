@@ -83,23 +83,18 @@ function GetAnnouncement({ statusBtn, cardStatus, userStatus }) {
                           }`}
                         />
                       </div>
-                      {userStatus === "instructor" ? (
-                        <Link
-                          className="font-bold italic opacity-90 flex gap-2 underline underline-offset-8"
-                          to={`/class/classroom/getCreatedClass/viewAnnouncement/${roomId}/${item._id}`}
-                        >
-                          <ExternalLink />
-                          {item.title}
-                        </Link>
-                      ) : (
-                        <Link
-                          className="font-bold italic opacity-90 flex gap-2 underline underline-offset-8"
-                          to={`/class/classroom/getCreatedClass/student/${roomId}/${item._id}`}
-                        >
-                          <ExternalLink />
-                          {item.title}
-                        </Link>
-                      )}
+
+                      <Link
+                        className="font-bold italic opacity-90 flex gap-2 underline underline-offset-8"
+                        to={
+                          userStatus === "instructor"
+                            ? `/class/classroom/getCreatedClass/viewAnnouncement/${roomId}/${item._id}`
+                            : `/class/classroom/getCreatedClass/student/${roomId}/${item._id}`
+                        }
+                      >
+                        <ExternalLink />
+                        {item.title}
+                      </Link>
                     </div>
                   </>
                 ))}
