@@ -36,7 +36,7 @@ function Classwork({ statusBtn }) {
   });
   const [date, setDate] = useState(null);
   const [classworkAttachFile, setClassworkAttachFile] = useState([]);
-
+  const [time, setTime] = useState("");
   const {
     classworkTitle,
     classworkType,
@@ -61,7 +61,7 @@ function Classwork({ statusBtn }) {
       formData.append("classworkType", classworkType);
       formData.append("classworkDescription", classworkDescription);
       formData.append("classworkDueDate", classworkDueDate);
-      formData.append("classworkDueTime", classworkDueTime);
+      formData.append("classworkDueTime", time);
       formData.append("classworkAttachFile", classworkAttachFile);
 
       const response = await fetch(
@@ -261,9 +261,24 @@ function Classwork({ statusBtn }) {
                       max=""
                       value={classworkDueTime}
                       onChange={(e) => {
+                        const [hours, minutes] = e.target.value.split(":");
+                        const dueDate = new Date();
+                        dueDate.setHours(parseInt(hours));
+                        dueDate.setMinutes(parseInt(minutes));
+
+                        const formattedTime = dueDate.toLocaleTimeString(
+                          "en-US",
+                          {
+                            hour: "numeric",
+                            minute: "numeric",
+                            hour12: true,
+                          }
+                        );
+
+                        setTime(formattedTime); // Set the formatted time including AM/PM
                         setClassworkDetails({
                           ...classworkDetails,
-                          classworkDueTime: e.target.value,
+                          classworkDueTime: e.target.value, // This will keep the raw value in classworkDetails
                         });
                       }}
                     />
@@ -299,13 +314,15 @@ function Classwork({ statusBtn }) {
                       classworkDueDate: moment(date).format("MMMM Do YYYY"),
                     });
 
+                    console.log(classworkDueTime);
+                    console.log(time);
                     await mutateAsync({
                       userId: userId,
                       classworkTitle,
                       classworkType,
                       classworkDescription,
                       classworkDueDate: date,
-                      classworkDueTime,
+                      classworkDueTime: time,
                       classworkAttachFile,
                     });
                   } catch (err) {

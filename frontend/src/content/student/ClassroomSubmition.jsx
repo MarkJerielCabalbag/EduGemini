@@ -219,11 +219,23 @@ function ClassroomSubmition() {
                                         Select Files
                                       </Button>
                                       {outputs.workStatus === "shelved" ? (
-                                        <Button className="w-full">
+                                        <Button
+                                          className={`w-full ${
+                                            outputs.files.length === 0
+                                              ? "hidden"
+                                              : ""
+                                          }`}
+                                        >
                                           Turn in
                                         </Button>
                                       ) : (
-                                        <Button className="w-full">
+                                        <Button
+                                          className={`w-full ${
+                                            outputs.files.length === 0
+                                              ? "hidden"
+                                              : ""
+                                          }`}
+                                        >
                                           Cancel
                                         </Button>
                                       )}
