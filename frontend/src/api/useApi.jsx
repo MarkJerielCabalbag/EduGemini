@@ -498,6 +498,25 @@ export async function getAttachments(roomId, workId, userId) {
   });
 }
 
+export async function deleteAttachment(filename, roomId, workId, userId) {
+  return await fetch(
+    `${baseUrl}/api/eduGemini/classwork/deleteAttachment/${roomId}/${workId}/${userId}`,
+    {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ filename }),
+    }
+  ).then(async (res) => {
+    const response = await res.json();
+
+    if (!res.ok) {
+      throw new Error(response.message || "An Error Occured");
+    }
+
+    return response;
+  });
+}
+
 export const useGetClass = ({ queryFn, onSuccess, onError }) => {
   return useQuery({
     queryKey: ["room"],
@@ -729,6 +748,14 @@ export const useGetAttachments = ({ queryFn, onError, onSuccess }) => {
   return useQuery({
     queryKey: ["attachments"],
     queryFn,
+    onError,
+    onSuccess,
+  });
+};
+
+export const useDeleteAttachment = ({ mutationFn, onSuccess, onError }) => {
+  return useMutation({
+    mutationFn,
     onError,
     onSuccess,
   });

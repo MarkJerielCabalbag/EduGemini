@@ -11,10 +11,11 @@ function ClassworkDelete({ open, onOpenChange }) {
   const queryClient = useQueryClient();
   const onError = () => console.log("error");
   const roomId = localStorage.getItem("roomId");
+  const userId = localStorage.getItem("userId");
   const { workId } = useParams();
   const onSuccess = () => {
     toast.success("Successfully deleted");
-    navigate("/class/classroom/getCreatedClass/:userId/:roomId/classwork");
+    navigate(`/class/classroom/getCreatedClass/${userId}/${roomId}/classwork`);
     queryClient.invalidateQueries({ queryKey: ["room"] });
     onOpenChange(false);
   };

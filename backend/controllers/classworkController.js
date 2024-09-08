@@ -90,7 +90,7 @@ const deleteClasswork = asyncHandler(async (req, res, next) => {
 });
 
 //@desc     get classwork attachments
-//@route    POST /api/eduGemini/classwork/getAttachments/:roomId/:workId
+//@route    POST /api/eduGemini/classwork/getAttachments/:roomId/:workId/:userId
 //@access   private
 const getAttachments = asyncHandler(async (req, res, next) => {
   const { roomId, workId, userId } = req.params;
@@ -103,16 +103,81 @@ const getAttachments = asyncHandler(async (req, res, next) => {
     (outputs) => outputs._id === userId
   );
 
-  // const classworks = roomExist.map((room) =>
-  //   room.classwork.find((work) => work._id === workId)
-  // );
-  // const studentOutput = classworks.map((outputs) =>
-  //   outputs.classwork_outputs.find(
-  //     (studentAttachments) => studentAttachments._id === userId
-  //   )
-  // );
-
   res.status(200).send(studentOutputs);
+});
+
+//@desc     delete classwork attachment
+//@route    POST /api/eduGemini/classwork/deleteAttachment/:roomId/:workId/:userId
+//@access   private
+const deleteAttachment = asyncHandler(async (req, res) => {
+  const { roomId, workId, userId } = req.params;
+  const { filename } = req.body;
+
+  try {
+    const roomExist = await Classroom.findById(roomId);
+    if (!roomExist) {
+      return res.status(404).json({ message: "Classroom not found" });
+    }
+
+    const classwork = roomExist.classwork.find(
+      (work) => work._id.toString() === workId
+    );
+    if (!classwork) {
+      return res.status(404).json({ message: "Classwork not found" });
+    }
+
+    const studentOutput = classwork.classwork_outputs.find(
+      (output) => output._id.toString() === userId
+    );
+
+    if (!studentOutput) {
+      return res.status(404).json({ message: "Student output not found" });
+    }
+
+    console.log("classworks", classwork);
+    console.log("exactStudent", studentOutput);
+
+    const fileIndex = studentOutput.files.findIndex(
+      (file) => file.filename === filename
+    );
+
+    if (fileIndex === -1) {
+      return res.status(404).json({ message: "File not found" });
+    }
+
+    const exactFile = studentOutput.files[fileIndex];
+
+    const filteredFile = studentOutput.files.filter(
+      (file) => file !== exactFile
+    );
+
+    studentOutput.files = filteredFile;
+    // console.log("not filtered", studentOutput.files);
+    // console.log("filtered", filteredFile);
+    // console.log("success", studentOutput.files);
+
+    studentOutput.files = filteredFile;
+
+    //mongoose offered us a handy method called markModified() which manually marks a particular column as modified and make mongoose to update the DB accordingly.
+    roomExist.markModified("classwork");
+
+    await roomExist.save();
+
+    const filePath = `${classwork.classwork_folder_path}${studentOutput.path}/${filename}`;
+
+    try {
+      fs.unlinkSync(filePath);
+      console.log("File deleted successfully:", filePath);
+    } catch (err) {
+      console.error("Error deleting the file:", err);
+      return res.status(500).json({ message: "Error deleting the file" });
+    }
+
+    res.status(200).json({ message: `${filename} is successfully deleted` });
+  } catch (error) {
+    console.error("Error deleting attachment:", error);
+    res.status(500).json({ message: "Server error" });
+  }
 });
 
 export default {
@@ -121,4 +186,5 @@ export default {
   deleteClasswork,
   getClassworks,
   getAttachments,
+  deleteAttachment,
 };

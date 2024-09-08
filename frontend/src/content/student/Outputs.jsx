@@ -19,29 +19,20 @@ function Outputs() {
     onError,
     onSuccess,
   });
+
+  const uri = localStorage.getItem("uri");
+  const fileType = localStorage.getItem("fileType");
   return (
     <div>
-      {data?.map((info) =>
-        info._id === workId ? (
-          <>
-            {attachments?.map((outputs) => (
-              <>
-                {outputs.files.map((file) => (
-                  <DocViewer
-                    documents={[
-                      {
-                        uri: `http://localhost:3000/${info.classwork_folder_path}/${file.path}/${file.filename}`,
-                        fileType: file.filename.split(".").pop(),
-                      },
-                    ]}
-                    pluginRenderers={DocViewerRenderers}
-                  />
-                ))}
-              </>
-            ))}
-          </>
-        ) : null
-      )}
+      <DocViewer
+        documents={[
+          {
+            uri: uri,
+            fileType: fileType,
+          },
+        ]}
+        pluginRenderers={DocViewerRenderers}
+      />
     </div>
   );
 }

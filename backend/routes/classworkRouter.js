@@ -355,6 +355,7 @@ classworkRouter.post(
       const addedFiles = files.map((file) => ({
         filename: file.originalname,
         path: `/${foundStudent.user_lastname}, ${foundStudent.user_firstname} ${foundStudent.user_middlename}`,
+        size: file.size,
       }));
 
       if (studentExist) {
@@ -364,6 +365,7 @@ classworkRouter.post(
           _id: userId,
           files: addedFiles,
           workStatus: "shelved",
+          path: `/answers/${foundStudent.user_lastname}, ${foundStudent.user_firstname} ${foundStudent.user_middlename}`,
         });
       }
 
@@ -382,6 +384,12 @@ classworkRouter.post(
 classworkRouter.get(
   "/getAttachments/:roomId/:workId/:userId",
   classworkController.getAttachments
+);
+
+//delete attachment
+classworkRouter.post(
+  "/deleteAttachment/:roomId/:workId/:userId",
+  classworkController.deleteAttachment
 );
 
 export default classworkRouter;

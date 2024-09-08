@@ -1,9 +1,15 @@
 import React, { useState } from "react";
-import { Link, useParams } from "react-router-dom";
+import { Link, Navigate, useParams } from "react-router-dom";
 import MenuBar from "../MenuBar";
 import Navbar from "../Navbar";
-import { useQuery } from "@tanstack/react-query";
-import { classwork, getAttachments, useGetAttachments } from "@/api/useApi";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
+import {
+  classwork,
+  deleteAttachment,
+  getAttachments,
+  useDeleteAttachment,
+  useGetAttachments,
+} from "@/api/useApi";
 import { Calendar, File, NotebookPen, Timer, X } from "lucide-react";
 import toast from "react-hot-toast";
 import { Button } from "@/components/ui/button";
@@ -15,13 +21,23 @@ function ClassroomSubmition() {
   const [files, setFiles] = useState([]);
   const [showTurnInBtn, setShowTurnInBtn] = useState(false);
   const { workId, roomId, userId } = useParams();
+  const [filename, setFilename] = useState("");
   const { data } = useQuery({
     queryKey: ["classwork"],
     queryFn: () => classwork(workId),
   });
 
+  const queryCleint = useQueryClient();
+
   const onError = () => console.log("error");
-  const onSuccess = () => console.log("success");
+  const onSuccess = () => {
+    queryCleint.invalidateQueries({
+      queryKey: ["attachments"],
+    });
+    queryCleint.invalidateQueries({
+      queryKey: ["classwork"],
+    });
+  };
 
   const { data: attachments } = useGetAttachments({
     queryFn: () => getAttachments(roomId, workId, userId),
@@ -29,26 +45,31 @@ function ClassroomSubmition() {
     onSuccess,
   });
 
-  // const fileSizeLabel = (size) => {
-  //   if (size >= 8589934592) {
-  //     return size + " GB";
-  //   } else if (size >= 1073741824) {
-  //     return (size / 1073741824).toFixed(2) + " GB";
-  //   } else if (size >= 1048576) {
-  //     return (size / 1048576).toFixed(2) + " MB";
-  //   } else if (size >= 1024) {
-  //     return (size / 1024).toFixed(2) + " KB";
-  //   } else {
-  //     return size + " bytes";
-  //   }
-  // };
+  const { mutateAsync } = useDeleteAttachment({
+    mutationFn: () => deleteAttachment(filename, roomId, workId, userId),
+    onError,
+    onSuccess,
+  });
+
+  const fileSizeLabel = (size) => {
+    if (size >= 8589934592) {
+      return size + " GB";
+    } else if (size >= 1073741824) {
+      return (size / 1073741824).toFixed(2) + " GB";
+    } else if (size >= 1048576) {
+      return (size / 1048576).toFixed(2) + " MB";
+    } else if (size >= 1024) {
+      return (size / 1024).toFixed(2) + " KB";
+    } else {
+      return size + " bytes";
+    }
+  };
 
   const { openFilePicker, filesContent, loading, plainFiles } = useFilePicker({
     accept: [".docx", ".pdf", ".xlsx"],
     multiple: true,
     readAs: "BinaryString",
     onFilesSuccessfullySelected: async ({ plainFiles, filesContent }) => {
-      // this callback is called when there were no validation errors
       setShowTurnInBtn(true);
       console.log("onFilesSuccessfullySelected", plainFiles, filesContent);
 
@@ -66,7 +87,6 @@ function ClassroomSubmition() {
           {
             method: "POST",
             body: formData,
-            credentials: "include",
           }
         );
 
@@ -76,6 +96,9 @@ function ClassroomSubmition() {
         }
 
         toast.success(data.message);
+        queryCleint.invalidateQueries({
+          queryKey: ["attachments"],
+        });
       } catch (error) {
         toast.error(error.message);
       }
@@ -128,25 +151,24 @@ function ClassroomSubmition() {
                             ? "No description stated"
                             : info.classwork_description}
                         </p>
-                        {/* <DocViewer
-                          documents={docs}
-                          pluginRenderers={DocViewerRenderers}
-                          config={{
-                            header: {
-                              disableHeader: false,
-                              disableFileName: false,
-                              retainURLParams: false,
-                            },
-                          }}
-                        /> */}
 
                         <div className="bg-slate-400 shadow-sm shadow-white rounded my-2 p-5">
                           <h1>Your Work</h1>
                           <div className="h-96 overflow-x-auto">
                             {attachments?.length === 0 ? (
-                              <div className="h-full flex justify-center items-center">
-                                No files uploaded yet.
-                              </div>
+                              <>
+                                <div className="h-full flex justify-center items-center">
+                                  No files uploaded yet.
+                                </div>{" "}
+                                <Button
+                                  className="w-full my-2"
+                                  onClick={() => {
+                                    openFilePicker();
+                                  }}
+                                >
+                                  Select Files
+                                </Button>
+                              </>
                             ) : (
                               <>
                                 {attachments?.map((outputs) => (
@@ -156,64 +178,61 @@ function ClassroomSubmition() {
                                         key={index}
                                         className="flex gap-2 items-center justify-between bg-slate-900 text-white rounded my-2 p-5 "
                                       >
-                                        {/* <DocViewer
-                                          pluginRenderers={DocViewerRenderers}
-                                          documents={[
-                                            {
-                                              uri: "https://calibre-ebook.com/downloads/demos/demo.docx",
-                                            },
-                                          ]}
-                                          config={{
-                                            header: {
-                                              disableHeader: false,
-                                              disableFileName: false,
-                                              retainURLParams: false,
-                                            },
-                                          }}
-                                          // files.map((file) => ({
-                                          //    uri: window.URL.createObjectURL(
-                                          // http://localhost:3000/${info.classwork_folder_path}/answers${file.path}/${file.filename}
-                                          // ),,
-                                          //   fileName: file.name,
-                                          // }))
-                                        /> */}
-
                                         <div className="flex gap-2 items-center">
                                           <File />
                                           <div key={index}>
                                             <Link
                                               to={`/class/classwork/outputs/${roomId}/${userId}/${workId}`}
+                                              onClick={() => {
+                                                localStorage.setItem(
+                                                  "uri",
+                                                  `http://localhost:3000/${info.classwork_folder_path}/answers${file.path}/${file.filename}`
+                                                );
+                                                localStorage.setItem(
+                                                  "fileType",
+                                                  file.filename.split(".").pop()
+                                                );
+                                              }}
                                             >
                                               <h1>{file.filename}</h1>
                                             </Link>
+                                            <p>{fileSizeLabel(file.size)}</p>
                                           </div>
                                         </div>
                                         <X
                                           className="hover:cursor-pointer"
-                                          onClick={() =>
-                                            handleRemoveFile(index)
-                                          }
+                                          onClick={async () => {
+                                            setFilename(file.filename);
+                                            console.log(filename);
+                                            await mutateAsync({ filename });
+                                          }}
                                         />
                                       </div>
                                     ))}
+                                    <>
+                                      <Button
+                                        className="w-full my-2"
+                                        onClick={() => {
+                                          openFilePicker();
+                                        }}
+                                      >
+                                        Select Files
+                                      </Button>
+                                      {outputs.workStatus === "shelved" ? (
+                                        <Button className="w-full">
+                                          Turn in
+                                        </Button>
+                                      ) : (
+                                        <Button className="w-full">
+                                          Cancel
+                                        </Button>
+                                      )}
+                                    </>
                                   </>
                                 ))}
                               </>
                             )}
                           </div>
-                          <>
-                            <Button
-                              className="w-full my-2"
-                              onClick={() => {
-                                openFilePicker();
-                              }}
-                            >
-                              Select Files
-                            </Button>
-                            {showTurnInBtn && (
-                              <Button className="w-full">Turn In</Button>
-                            )}
-                          </>
                         </div>
 
                         <div className="bg-slate-400 shadow-sm shadow-white rounded my-2 p-5">
