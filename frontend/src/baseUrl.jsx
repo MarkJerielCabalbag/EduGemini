@@ -1,1 +1,3 @@
-export const baseUrl = "https://edugemini.onrender.com";
+const baseUrl = "https://edugemini.onrender.com";
+
+export default baseUrl;
