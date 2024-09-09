@@ -7,19 +7,31 @@ import {
   classwork,
   deleteAttachment,
   getAttachments,
+  submitAttachment,
   useDeleteAttachment,
   useGetAttachments,
+  useSubmitAttachment,
 } from "@/api/useApi";
-import { Calendar, File, NotebookPen, Timer, X } from "lucide-react";
+import {
+  Calendar,
+  File,
+  Loader2Icon,
+  NotebookPen,
+  Timer,
+  X,
+} from "lucide-react";
 import toast from "react-hot-toast";
 import { Button } from "@/components/ui/button";
 import { useFilePicker } from "use-file-picker";
 import DocViewer, { DocViewerRenderers } from "@cyntler/react-doc-viewer";
 import { baseUrl } from "@/baseUrl";
-
+import CancelSubmitionModal from "@/components/modals/CancelSubmitionModal";
+import moment from "moment";
 function ClassroomSubmition() {
   const [files, setFiles] = useState([]);
   const [showTurnInBtn, setShowTurnInBtn] = useState(false);
+  const [openCancelModal, setCancelModal] = useState(false);
+  const [time, setTime] = useState(null);
   const { workId, roomId, userId } = useParams();
   const [filename, setFilename] = useState("");
   const { data } = useQuery({
@@ -28,15 +40,20 @@ function ClassroomSubmition() {
   });
 
   const queryCleint = useQueryClient();
+  const date = moment().format("MMMM Do YYYY");
+  let options = { hour: "2-digit", minute: "2-digit", hour12: true };
+  let dateAction = new Date();
+  let timeAction = dateAction.toLocaleString("en-US", options);
 
   const onError = () => console.log("error");
-  const onSuccess = () => {
+  const onSuccess = (data) => {
     queryCleint.invalidateQueries({
       queryKey: ["attachments"],
     });
     queryCleint.invalidateQueries({
       queryKey: ["classwork"],
     });
+    toast.success(data.message);
   };
 
   const { data: attachments } = useGetAttachments({
@@ -45,8 +62,16 @@ function ClassroomSubmition() {
     onSuccess,
   });
 
-  const { mutateAsync } = useDeleteAttachment({
-    mutationFn: () => deleteAttachment(filename, roomId, workId, userId),
+  const { mutateAsync, isLoading, isPending } = useDeleteAttachment({
+    mutationFn: () =>
+      deleteAttachment(filename, date, timeAction, roomId, workId, userId),
+    onError,
+    onSuccess,
+  });
+
+  const { mutateAsync: submit } = useSubmitAttachment({
+    mutationFn: () =>
+      submitAttachment(date, timeAction, roomId, workId, userId),
     onError,
     onSuccess,
   });
@@ -77,6 +102,8 @@ function ClassroomSubmition() {
         const formData = new FormData();
         formData.append("roomId", roomId);
         formData.append("userId", userId);
+        formData.append("date", date);
+        formData.append("timeAction", timeAction);
         setFiles(plainFiles);
         for (let i = 0; i < plainFiles.length; i++) {
           formData.append(`files`, plainFiles[i]);
@@ -104,9 +131,16 @@ function ClassroomSubmition() {
       }
     },
   });
-  const handleRemoveFile = (index) => {
-    filesContent.filter((_, fileIndex) => fileIndex !== index);
-  };
+
+  const workBadge = attachments?.map((output) => {
+    if (output.workStatus === "Turned in") {
+      return "bg-green-500";
+    } else if (output.workStatus === "shelved") {
+      return "bg-sky-500";
+    } else if (output.workStatus === "cancelled") {
+      return "bg-red-500";
+    }
+  });
 
   return (
     <div className="sm:container md:container lg:container">
@@ -128,10 +162,25 @@ function ClassroomSubmition() {
                               {info.classwork_title}
                             </span>
                           </div>
+                          <div className="flex gap-2 items-center">
+                            <span className="inline-flex items-center rounded-md bg-gray-50 px-2 py-1 text-xs font-medium text-gray-600 ring-1 ring-inset ring-gray-500/10">
+                              {info.classwork_type}
+                            </span>
 
-                          <span className="inline-flex items-center rounded-md bg-gray-50 px-2 py-1 text-xs font-medium text-gray-600 ring-1 ring-inset ring-gray-500/10">
-                            {info.classwork_type}
-                          </span>
+                            <span
+                              className={`${attachments?.map((output) =>
+                                output.files.length === 0
+                                  ? "bg-yellow-500"
+                                  : workBadge
+                              )} inline-flex items-center rounded-md px-2 py-1 text-xs font-medium text-white ring-1 ring-inset ring-gray-500/10`}
+                            >
+                              {attachments?.map((output) =>
+                                output.files.length === 0
+                                  ? "No attachments"
+                                  : output.workStatus
+                              )}
+                            </span>
+                          </div>
                         </h1>
 
                         <div className="flex items-center justify-between my-2">
@@ -154,10 +203,10 @@ function ClassroomSubmition() {
 
                         <div className="bg-slate-400 shadow-sm shadow-white rounded my-2 p-5">
                           <h1>Your Work</h1>
-                          <div className="h-96 overflow-x-auto">
+                          <div className="h-full overflow-x-auto">
                             {attachments?.length === 0 ? (
                               <>
-                                <div className="h-full flex justify-center items-center">
+                                <div className="flex justify-center items-center">
                                   No files uploaded yet.
                                 </div>{" "}
                                 <Button
@@ -180,8 +229,9 @@ function ClassroomSubmition() {
                                       >
                                         <div className="flex gap-2 items-center">
                                           <File />
-                                          <div key={index}>
+                                          <div key={index} className="w-full">
                                             <Link
+                                              target="_blank"
                                               to={`/class/classwork/outputs/${roomId}/${userId}/${workId}`}
                                               onClick={() => {
                                                 localStorage.setItem(
@@ -194,42 +244,72 @@ function ClassroomSubmition() {
                                                 );
                                               }}
                                             >
-                                              <h1>{file.filename}</h1>
+                                              <p className="line-clamp-1">
+                                                {file.filename}
+                                              </p>
                                             </Link>
                                             <p>{fileSizeLabel(file.size)}</p>
                                           </div>
                                         </div>
-                                        <X
-                                          className="hover:cursor-pointer"
-                                          onClick={async () => {
-                                            setFilename(file.filename);
-                                            console.log(filename);
-                                            await mutateAsync({ filename });
-                                          }}
-                                        />
+                                        {isLoading || isPending ? (
+                                          <Loader2Icon className="animate-spin" />
+                                        ) : (
+                                          <X
+                                            size={50}
+                                            className={`max-h-96 hover:cursor-pointer ${
+                                              outputs.workStatus === "Turned in"
+                                                ? "hidden"
+                                                : ""
+                                            }`}
+                                            onClick={async () => {
+                                              setFilename(file.filename);
+                                              console.log(filename);
+                                              await mutateAsync({
+                                                filename,
+                                                date,
+                                                timeAction,
+                                              });
+                                            }}
+                                          />
+                                        )}
                                       </div>
                                     ))}
                                     <>
                                       <Button
-                                        className="w-full my-2"
+                                        className={`w-full my-2 ${
+                                          outputs.workStatus === "Turned in"
+                                            ? "hidden"
+                                            : ""
+                                        }`}
                                         onClick={() => {
                                           openFilePicker();
                                         }}
                                       >
                                         Select Files
                                       </Button>
-                                      {outputs.workStatus === "shelved" ? (
+                                      {openCancelModal && (
+                                        <CancelSubmitionModal
+                                          open={openCancelModal}
+                                          onOpenChange={setCancelModal}
+                                        />
+                                      )}
+                                      {outputs.workStatus === "shelved" ||
+                                      outputs.workStatus === "cancelled" ? (
                                         <Button
                                           className={`w-full ${
                                             outputs.files.length === 0
                                               ? "hidden"
                                               : ""
                                           }`}
+                                          onClick={async () =>
+                                            await submit({ date, timeAction })
+                                          }
                                         >
                                           Turn in
                                         </Button>
                                       ) : (
                                         <Button
+                                          onClick={() => setCancelModal(true)}
                                           className={`w-full ${
                                             outputs.files.length === 0
                                               ? "hidden"

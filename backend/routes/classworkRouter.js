@@ -301,7 +301,7 @@ classworkRouter.post(
   asyncHandler(async (req, res) => {
     try {
       const { workId } = req.params;
-      const { roomId, userId } = req.body;
+      const { roomId, userId, date, timeAction } = req.body;
       const files = req.files;
 
       const roomExist = await Classroom.findById(roomId);
@@ -360,16 +360,23 @@ classworkRouter.post(
 
       if (studentExist) {
         studentExist.files.push(...addedFiles);
+        studentExist.workStatus = "shelved";
+        studentExist.timeSubmition = `${date}, ${timeAction}`;
       } else {
         workIndex.classwork_outputs.unshift({
           _id: userId,
           files: addedFiles,
           workStatus: "shelved",
           path: `/answers/${foundStudent.user_lastname}, ${foundStudent.user_firstname} ${foundStudent.user_middlename}`,
+          timeSubmition: `${date}, ${timeAction}`,
+          feedback: null,
         });
       }
 
+      console.log(`shelved : ${date}, ${timeAction}`);
+
       roomExist.classwork[findClasswork] = workIndex;
+
       await roomExist.save();
 
       res.status(200).json({ message: "Files uploaded successfully" });
@@ -390,6 +397,18 @@ classworkRouter.get(
 classworkRouter.post(
   "/deleteAttachment/:roomId/:workId/:userId",
   classworkController.deleteAttachment
+);
+
+//submit classwork
+classworkRouter.post(
+  "/submit/:roomId/:workId/:userId",
+  classworkController.submitAttachment
+);
+
+//cancel classwork submition
+classworkRouter.post(
+  "/cancel/:roomId/:workId/:userId",
+  classworkController.cancelSubmition
 );
 
 export default classworkRouter;

@@ -111,7 +111,7 @@ const getAttachments = asyncHandler(async (req, res, next) => {
 //@access   private
 const deleteAttachment = asyncHandler(async (req, res) => {
   const { roomId, workId, userId } = req.params;
-  const { filename } = req.body;
+  const { filename, date, timeAction } = req.body;
 
   try {
     const roomExist = await Classroom.findById(roomId);
@@ -134,8 +134,8 @@ const deleteAttachment = asyncHandler(async (req, res) => {
       return res.status(404).json({ message: "Student output not found" });
     }
 
-    console.log("classworks", classwork);
-    console.log("exactStudent", studentOutput);
+    // console.log("classworks", classwork);
+    // console.log("exactStudent", studentOutput);
 
     const fileIndex = studentOutput.files.findIndex(
       (file) => file.filename === filename
@@ -152,11 +152,11 @@ const deleteAttachment = asyncHandler(async (req, res) => {
     );
 
     studentOutput.files = filteredFile;
+    studentOutput.timeSubmition = `${date}, ${timeAction}`;
     // console.log("not filtered", studentOutput.files);
     // console.log("filtered", filteredFile);
     // console.log("success", studentOutput.files);
-
-    studentOutput.files = filteredFile;
+    console.log(`deleted ${filename}: ${date}, ${timeAction}`);
 
     //mongoose offered us a handy method called markModified() which manually marks a particular column as modified and make mongoose to update the DB accordingly.
     roomExist.markModified("classwork");
@@ -182,6 +182,100 @@ const deleteAttachment = asyncHandler(async (req, res) => {
   }
 });
 
+//@desc     turn in classwork attachment
+//@route    POST /api/eduGemini/classwork/submit/:roomId/:workId/:userId
+//@access   private
+const submitAttachment = asyncHandler(async (req, res, next) => {
+  const { roomId, workId, userId } = req.params;
+
+  const { date, timeAction } = req.body;
+
+  const roomExist = await Classroom.findById(roomId);
+  if (!roomExist) {
+    return res.status(400).json({ message: `${roomId} id does not exist` });
+  }
+
+  const foundStudent = roomExist.students.find(
+    (student) => student._id.toString() === userId
+  );
+  if (!foundStudent) {
+    return res.status(400).json({ message: `Student ${userId} not found` });
+  }
+
+  const findClasswork = roomExist.classwork.findIndex(
+    (classwork) => classwork._id.toString() === workId
+  );
+
+  if (findClasswork === -1) {
+    return res.status(400).json({ message: `Classwork ${workId} not found` });
+  }
+
+  const workIndex = roomExist.classwork[findClasswork];
+
+  let studentExist = workIndex.classwork_outputs.find(
+    (output) => output._id.toString() === userId
+  );
+
+  studentExist.workStatus = "Turned in";
+  studentExist.timeSubmition = `${date}, ${timeAction}`;
+  studentExist.feedback = "";
+  console.log(studentExist.workStatus, `: ${studentExist.timeSubmition}`);
+  roomExist.classwork[findClasswork] = workIndex;
+
+  await roomExist.save();
+
+  return res.status(200).json({
+    message: `You ${studentExist.workStatus} the ${findClasswork.classwork_title}`,
+  });
+});
+
+//@desc     cancel classwork attachment
+//@route    POST /api/eduGemini/classwork/cancel/:roomId/:workId/:userId
+//@access   private
+const cancelSubmition = asyncHandler(async (req, res, next) => {
+  const { roomId, workId, userId } = req.params;
+
+  const { date, timeAction } = req.body;
+
+  const roomExist = await Classroom.findById(roomId);
+  if (!roomExist) {
+    return res.status(400).json({ message: `${roomId} id does not exist` });
+  }
+
+  const foundStudent = roomExist.students.find(
+    (student) => student._id.toString() === userId
+  );
+  if (!foundStudent) {
+    return res.status(400).json({ message: `Student ${userId} not found` });
+  }
+
+  const findClasswork = roomExist.classwork.findIndex(
+    (classwork) => classwork._id.toString() === workId
+  );
+
+  if (findClasswork === -1) {
+    return res.status(400).json({ message: `Classwork ${workId} not found` });
+  }
+
+  const workIndex = roomExist.classwork[findClasswork];
+
+  let studentExist = workIndex.classwork_outputs.find(
+    (output) => output._id.toString() === userId
+  );
+
+  studentExist.workStatus = "cancelled";
+  studentExist.timeSubmition = `${date}, ${timeAction}`;
+  studentExist.feedback = "";
+  console.log(studentExist.workStatus, `: ${studentExist.timeSubmition}`);
+
+  roomExist.classwork[findClasswork] = workIndex;
+
+  await roomExist.save();
+
+  return res.status(200).json({
+    message: `You ${studentExist.workStatus} the ${findClasswork.classwork_title}`,
+  });
+});
 export default {
   getClasswork,
   getClassworkInformation,
@@ -189,4 +283,6 @@ export default {
   getClassworks,
   getAttachments,
   deleteAttachment,
+  submitAttachment,
+  cancelSubmition,
 };

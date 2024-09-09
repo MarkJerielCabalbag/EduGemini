@@ -498,13 +498,70 @@ export async function getAttachments(roomId, workId, userId) {
   });
 }
 
-export async function deleteAttachment(filename, roomId, workId, userId) {
+export async function deleteAttachment(
+  filename,
+  date,
+  timeAction,
+  roomId,
+  workId,
+  userId
+) {
   return await fetch(
     `${baseUrl}/api/eduGemini/classwork/deleteAttachment/${roomId}/${workId}/${userId}`,
     {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ filename }),
+      body: JSON.stringify({ filename, date, timeAction }),
+    }
+  ).then(async (res) => {
+    const response = await res.json();
+
+    if (!res.ok) {
+      throw new Error(response.message || "An Error Occured");
+    }
+
+    return response;
+  });
+}
+
+export async function submitAttachment(
+  date,
+  timeAction,
+  roomId,
+  workId,
+  userId
+) {
+  return await fetch(
+    `${baseUrl}/api/eduGemini/classwork/submit/${roomId}/${workId}/${userId}`,
+    {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ date, timeAction }),
+    }
+  ).then(async (res) => {
+    const response = await res.json();
+
+    if (!res.ok) {
+      throw new Error(response.message || "An Error Occured");
+    }
+
+    return response;
+  });
+}
+
+export async function cancelSubmition(
+  date,
+  timeAction,
+  roomId,
+  workId,
+  userId
+) {
+  return await fetch(
+    `${baseUrl}/api/eduGemini/classwork/cancel/${roomId}/${workId}/${userId}`,
+    {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ date, timeAction }),
     }
   ).then(async (res) => {
     const response = await res.json();
@@ -754,6 +811,22 @@ export const useGetAttachments = ({ queryFn, onError, onSuccess }) => {
 };
 
 export const useDeleteAttachment = ({ mutationFn, onSuccess, onError }) => {
+  return useMutation({
+    mutationFn,
+    onError,
+    onSuccess,
+  });
+};
+
+export const useSubmitAttachment = ({ mutationFn, onSuccess, onError }) => {
+  return useMutation({
+    mutationFn,
+    onError,
+    onSuccess,
+  });
+};
+
+export const useCancelSubmition = ({ mutationFn, onError, onSuccess }) => {
   return useMutation({
     mutationFn,
     onError,
