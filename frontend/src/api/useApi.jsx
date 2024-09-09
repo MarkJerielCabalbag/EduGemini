@@ -1,6 +1,6 @@
 import { useQuery, useMutation } from "@tanstack/react-query";
-import { baseUrl } from "@/baseUrl";
-
+import { baseUrl } from "../baseUrl";
+console.log(baseUrl);
 async function register(formData) {
   return await fetch(`${baseUrl}/api/eduGemini/register`, {
     method: "POST",

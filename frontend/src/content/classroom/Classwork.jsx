@@ -51,6 +51,8 @@ function Classwork({ statusBtn }) {
       [e.target.name]: e.target.value,
     });
 
+  console.log(baseUrl);
+
   const { roomId } = useParams();
   const userId = localStorage.getItem("userId");
   async function handleUpload() {
