@@ -106,6 +106,7 @@ function JoinClass({ open, onOpenChange }) {
                       name="user_lastname"
                       value={user_lastname}
                       onChange={handleChange}
+                      placeholder="Enter Lastname"
                       className={`${isError ? "border-red-500" : ""}`}
                     />
                     <p
@@ -130,6 +131,7 @@ function JoinClass({ open, onOpenChange }) {
                       name="user_firstname"
                       value={user_firstname}
                       onChange={handleChange}
+                      placeholder="Enter Firstname"
                       className={`${isError ? "border-red-500" : ""}`}
                     />
                     <p
@@ -155,6 +157,7 @@ function JoinClass({ open, onOpenChange }) {
                     name="user_middlename"
                     value={user_middlename}
                     onChange={handleChange}
+                    placeholder="Enter Middlename"
                     className={`${isError ? "border-red-500" : ""}`}
                   />
                   <p
@@ -209,6 +212,7 @@ function JoinClass({ open, onOpenChange }) {
                     name="class_code"
                     value={class_code}
                     onChange={handleChange}
+                    placeholder="Enter Classcode"
                     className={`${isError ? "border-red-500" : ""}`}
                   />
                   <p

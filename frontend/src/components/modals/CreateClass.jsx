@@ -26,13 +26,12 @@ function CreateClass({ open, onOpenChange }) {
     console.log(data.mesage);
   };
   const onError = (error) => {
-    toast.error(error.message);
-    console.log(error.message);
+    console.log(error);
   };
 
   const userId = localStorage.getItem("userId");
 
-  const { mutate, isLoading, isPending, isError } = useCreateClassroom({
+  const { mutateAsync, isError, isLoading, isPending } = useCreateClassroom({
     onSuccess,
     onError,
   });
@@ -54,7 +53,6 @@ function CreateClass({ open, onOpenChange }) {
               Classname
             </Label>
             <Input
-              type="text"
               value={classname}
               name="classname"
               onChange={handleChange}
@@ -80,7 +78,6 @@ function CreateClass({ open, onOpenChange }) {
               Section
             </Label>
             <Input
-              type="text"
               value={section}
               name="section"
               onChange={handleChange}
@@ -106,7 +103,6 @@ function CreateClass({ open, onOpenChange }) {
               Subject
             </Label>
             <Input
-              type="text"
               value={subject}
               name="subject"
               onChange={handleChange}
@@ -132,7 +128,6 @@ function CreateClass({ open, onOpenChange }) {
               Room
             </Label>
             <Input
-              type="text"
               value={room}
               name="room"
               onChange={handleChange}
@@ -160,7 +155,7 @@ function CreateClass({ open, onOpenChange }) {
         <>
           <Button onClick={() => onOpenChange(false)}>Cancel</Button>
           <Button
-            onClick={() => {
+            onClick={async () => {
               try {
                 const formData = {
                   userId,
@@ -169,12 +164,11 @@ function CreateClass({ open, onOpenChange }) {
                   subject,
                   room,
                 };
-                onOpenChange(false);
-
-                mutate(formData);
+                onOpenChange(true);
+                await mutateAsync(formData);
               } catch (err) {
                 console.log("Error", err);
-                toast.error(err);
+                toast.error(err.message);
               }
             }}
           >

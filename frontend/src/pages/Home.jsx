@@ -1,13 +1,23 @@
 import MenuBar from "@/content/MenuBar";
 import Navbar from "../content/Navbar";
-
+import Video from "@/utils/Video";
+import mainbg from "../assets/main-bg.mp4";
 function Home() {
   return (
-    <div className="container sm:container md:container lg:container">
+    <>
       <MenuBar />
-      <h1>EduGemini: AI Assistant for CCS ISPSC</h1>
+      <Video
+        src={mainbg}
+        className={"w-screen h-screen absolute top-0 -z-50"}
+      />
+      <div className="sm:container md:container lg:container">
+        <div>
+          <h1>Edu-Gemini</h1>
+          <p></p>
+        </div>
+      </div>
       <Navbar />
-    </div>
+    </>
   );
 }
 
