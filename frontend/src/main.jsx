@@ -17,7 +17,7 @@ import PrivateRoute from "./utils/PrivateRoute.jsx";
 import Profile from "./pages/Profile.jsx";
 import FileViewer from "./content/classroom/FileViewer.jsx";
 import Settings from "./pages/Settings.jsx";
-import CreateClass from "./pages/CreateClass.jsx";
+
 import ClassroomDetails from "./content/classroom/ClassroomDetails.jsx";
 import Stream from "./content/classroom/Stream.jsx";
 import Classwork from "./content/classroom/Classwork.jsx";
@@ -110,7 +110,6 @@ const router = createBrowserRouter(
         <Route path="/enrolled/classroom/:wordId" />
         <Route path="/profile" element={<Profile />} />
         <Route path="/settings" element={<Settings />} />
-        <Route path="/createClass" element={<CreateClass />} />
 
         <Route
           path="/class/classroom/getCreatedClass/:roomId"

@@ -29,8 +29,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import OpenClassworkSettings from "@/components/modals/OpenClassworkSettings";
 import { Button } from "@/components/ui/button";
 import { Label } from "@radix-ui/react-label";
-import ClassworkDelete from "./ClassworkDelete";
-import ClassworkUpdate from "./ClassworkUpdate";
+
 import { useQueryClient } from "@tanstack/react-query";
 import { toast } from "react-hot-toast";
 import { baseUrl } from "@/baseUrl";
@@ -119,10 +118,12 @@ function ClassworkView({ userStatus }) {
                       <p className="font-bold text-slate-200">Due date</p>
                       <p className="italic text-slate-100 opacity-80 flex items-center gap-2">
                         <Clock size={18} />
-                        {classroomInfo.classwork_due_date},{" "}
+                        {classroomInfo.classwork_due_date}
+                        {", "}
                         {classroomInfo.classwork_due_time}
                       </p>
                     </div>
+
                     <div>
                       <p className="font-bold text-slate-200">Classname</p>
                       <p className="italic text-slate-100 opacity-80 flex items-center gap-2">

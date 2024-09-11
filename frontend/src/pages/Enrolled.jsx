@@ -60,15 +60,23 @@ function Enrolled() {
               <img src={noData} style={{ width: "300px" }} />
 
               <p className="my-2">You currently have no joined class</p>
-              <Button onClick={() => setOpenJoinClassModal(true)}>
-                JoinClass
+              <Button
+                onClick={() => setOpenJoinClassModal(true)}
+                className="flex gap-2 items-center my-6"
+              >
+                <Plus />
+                Join Class
               </Button>
             </div>
           ) : (
             <>
               <div>
-                <Button onClick={() => setOpenJoinClassModal(true)}>
-                  JoinClass
+                <Button
+                  onClick={() => setOpenJoinClassModal(true)}
+                  className="flex gap-2 items-center my-6"
+                >
+                  <Plus />
+                  Join Class
                 </Button>
                 <div className="grid gap-3 mt-6 sm:grid-cols-1 md:grid-cols-3 lg:grid-cols-5">
                   {classData?.map((classroom) => (

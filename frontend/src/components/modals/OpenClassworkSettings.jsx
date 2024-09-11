@@ -1,30 +1,10 @@
 import React, { useState } from "react";
-import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-  AlertDialogTrigger,
-} from "@/components/ui/alert-dialog";
 import ReusableModal from "./ReusableModal";
 import ClassworkUpdate from "@/content/classroom/ClassworkUpdate";
 import { Label } from "@radix-ui/react-label";
 import { Trash2 } from "lucide-react";
-import ClassworkDelete from "@/content/classroom/ClassworkDelete";
 import { Button } from "../ui/button";
-import {
-  fetchClassData,
-  getClassworkInformation,
-  useGetClass,
-  useGetClassworkInfo,
-} from "@/api/useApi";
-import { useQueryClient } from "@tanstack/react-query";
-import { useParams } from "react-router-dom";
-import LoadingState from "@/utils/LoadingState";
+import DeleteClassworkModal from "./DeleteClassworkModal";
 
 function OpenClassworkSettings({ open, onOpenChange, classwork_title }) {
   const [openDeleteClassworkModal, setOpenDeleteClassworkModal] =
@@ -52,9 +32,9 @@ function OpenClassworkSettings({ open, onOpenChange, classwork_title }) {
                 Delete this classwork?
               </Label>
               {openDeleteClassworkModal && (
-                <ClassworkDelete
-                  open={openDeleteClassworkModal}
+                <DeleteClassworkModal
                   onOpenChange={setOpenDeleteClassworkModal}
+                  open={openDeleteClassworkModal}
                 />
               )}
               <p className="my-2">

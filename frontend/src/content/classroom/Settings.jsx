@@ -13,6 +13,7 @@ import { Avatar, AvatarImage } from "@/components/ui/avatar";
 import React, { useState } from "react";
 import DeclineStudentModal from "@/components/modals/DeclineStudentModal";
 import { baseUrl } from "@/baseUrl";
+import { useParams } from "react-router-dom";
 
 function Settings() {
   const { roomId } = useParams();

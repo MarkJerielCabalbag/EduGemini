@@ -5,40 +5,29 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-
 import { Label } from "@radix-ui/react-label";
 import { Button } from "@/components/ui/button";
-import {
-  getClassworkType,
-  useCreateClassworkType,
-  useDeleteClassworkType,
-  useGetClassworkType,
-} from "@/api/useApi";
+import { getClassworkType, useGetClassworkType } from "@/api/useApi";
 import { useState } from "react";
 import AddClassworkType from "@/components/modals/AddClassworkType";
-import { Input } from "@/components/ui/input";
 import toast from "react-hot-toast";
-import { Info, Loader2, LoaderCircle, MinusCircle } from "lucide-react";
-import { useQueryClient } from "@tanstack/react-query";
+import { LoaderCircle, MinusCircle } from "lucide-react";
 import DeleteClassworkType from "@/components/modals/DeleteClassworkType";
 
 function ClassworkTypeField({ setClassworkDetails, classworkDetails }) {
   const [openAddClassworkTypeModal, setAddClassworkTypeModal] = useState(false);
   const [openDeleteClassworkTypeModal, setDeleteClassworkTypeModal] =
     useState(false);
+  const [selectedClassworkType, setSelectedClassworkType] = useState(null);
 
   const [classwork, setClasswork] = useState("");
   const [classworkId, setClassworkId] = useState(null);
-  const [selectedClassworkType, setSelectedClassworkType] = useState(null);
 
   const roomId = localStorage.getItem("roomId");
-  const queryClient = useQueryClient();
 
   const onSuccess = (data) => {
     toast.success(data.message);
     setAddClassworkTypeModal(false);
-    queryClient.invalidateQueries({ queryKey: ["classworkType"] });
-    queryClient.invalidateQueries({ queryKey: ["classworkField"] });
     setClasswork("");
   };
 
@@ -55,19 +44,12 @@ function ClassworkTypeField({ setClassworkDetails, classworkDetails }) {
   };
 
   const {
-    mutateAsync: createClassworkType,
-    isPending,
+    data: classworkType,
+    isFetching,
     isLoading,
-    isError,
-  } = useCreateClassworkType({ onError, onSuccess });
-
-  const { data: classworkType, isFetching } = useGetClassworkType({
+    isPending,
+  } = useGetClassworkType({
     queryFn: () => getClassworkType(roomId),
-    onError,
-    onSuccess,
-  });
-
-  const { mutateAsync: deleteClassworkType } = useDeleteClassworkType({
     onError,
     onSuccess,
   });
@@ -78,73 +60,8 @@ function ClassworkTypeField({ setClassworkDetails, classworkDetails }) {
         <AddClassworkType
           onOpenChange={setAddClassworkTypeModal}
           open={openAddClassworkTypeModal}
-          alertDialogDescription={
-            <>
-              <p>
-                Lorem ipsum dolor sit amet consectetur adipisicing elit. Animi
-                debitis dolores illo. Cum itaque illo aliquid eius, labore omnis
-                minima?
-              </p>
-              <form onSubmit={(e) => e.preventDefault()}>
-                <div className="mt-5">
-                  <Label className="font-bold italic flex items-center gap-2 mb-2">
-                    New Classwork type
-                  </Label>
-                  <Input
-                    type="text"
-                    name="classwork"
-                    className={`${isError ? "border-red-500" : ""}`}
-                    value={
-                      classwork.charAt(0).toUpperCase() +
-                      classwork.slice(1).toLowerCase()
-                    }
-                    onChange={(e) => setClasswork(e.target.value)}
-                    placeholder="What classwork type this might be?"
-                  />
-
-                  <p
-                    className={`${
-                      isError ? "show" : " "
-                    }hidden text-red-500 text-xs italic mt-2`}
-                  >
-                    {isError ? (
-                      <div className="flex items-center gap-1">
-                        <Info size={13} />
-                        Fill out all fields
-                      </div>
-                    ) : (
-                      ""
-                    )}
-                  </p>
-                </div>
-              </form>
-            </>
-          }
-          alertDialogTitle={"Add new classwork type"}
-          alertDialogFooter={
-            <>
-              <Button onClick={() => setAddClassworkTypeModal(false)}>
-                Close
-              </Button>
-              <Button
-                onClick={async () => {
-                  try {
-                    const formData = { classwork, roomId };
-                    await createClassworkType(formData);
-                    setAddClassworkTypeModal(false);
-                  } catch (error) {
-                    toast.error(error.message);
-                  }
-                }}
-              >
-                {isLoading || isPending ? (
-                  <Loader2 className="animate-spin" />
-                ) : (
-                  "Add"
-                )}
-              </Button>
-            </>
-          }
+          setClassworkDetails={setClassworkDetails}
+          classworkDetails={classworkDetails}
         />
       )}
       <div className="w-full">
@@ -211,26 +128,7 @@ function ClassworkTypeField({ setClassworkDetails, classworkDetails }) {
         <DeleteClassworkType
           onOpenChange={setDeleteClassworkTypeModal}
           open={openDeleteClassworkTypeModal}
-          alertDialogTitle={"Delete Classwork"}
-          alertDialogDescription={
-            <>Are you sure to delete this classwork type?</>
-          }
-          alertDialogFooter={
-            <>
-              <Button onClick={() => setDeleteClassworkTypeModal(false)}>
-                Close
-              </Button>
-              <Button
-                onClick={async () => {
-                  const formData = { roomId, classworkId };
-                  await deleteClassworkType(formData);
-                  setDeleteClassworkTypeModal(false);
-                }}
-              >
-                Delete
-              </Button>
-            </>
-          }
+          classworkId={classworkId}
         />
       )}
     </div>

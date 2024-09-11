@@ -25,7 +25,8 @@ function ClassworkUpdate({ setOpenSettingModal }) {
     classworkDueDate: null,
     classworkDueTime: "",
   });
-  const [date, setDate] = useState(null);
+  const [date, setDate] = useState("");
+  const [time, setTime] = useState("");
   const [classworkAttachFile, setClassworkAttachFile] = useState([]);
 
   const {
@@ -44,16 +45,27 @@ function ClassworkUpdate({ setOpenSettingModal }) {
 
   const roomId = localStorage.getItem("roomId");
   const userId = localStorage.getItem("userId");
-  async function handleUpload() {
+  const handleUpload = async () => {
     try {
       const formData = new FormData();
       formData.append("userId", userId);
       formData.append("classworkTitle", classworkTitle);
       formData.append("classworkType", classworkType);
       formData.append("classworkDescription", classworkDescription);
-      formData.append("classworkDueDate", classworkDueDate);
-      formData.append("classworkDueTime", classworkDueTime);
-      formData.append("classworkAttachFile", classworkAttachFile);
+
+      if (date) {
+        formData.append(
+          "classworkDueDate",
+          moment(date).format("MMMM Do YYYY")
+        );
+      }
+      if (time) {
+        formData.append("classworkDueTime", time);
+      }
+
+      if (classworkAttachFile) {
+        formData.append("classworkAttachFile", classworkAttachFile);
+      }
 
       const response = await fetch(
         `${baseUrl}/api/eduGemini/classwork/updateClasswork/${roomId}/${workId}`,
@@ -73,7 +85,7 @@ function ClassworkUpdate({ setOpenSettingModal }) {
     } catch (error) {
       toast.error(error.message);
     }
-  }
+  };
 
   const onSuccess = (data) => {
     setClassworkDetails({
@@ -179,7 +191,13 @@ function ClassworkUpdate({ setOpenSettingModal }) {
             <Label className="font-bold italic flex items-center gap-2 mb-2">
               New Due date
             </Label>
-            <DatePickerDemo date={date} setDate={setDate} />
+            {/* <DatePickerDemo date={date} setDate={setDate} /> */}
+            <Input
+              type="date"
+              value={date}
+              name="classworkDueDate"
+              onChange={(e) => setDate(e.target.value)}
+            />
             <p></p>
           </div>
 
@@ -190,10 +208,21 @@ function ClassworkUpdate({ setOpenSettingModal }) {
             <input
               type="time"
               className="flex flex-row-reverse justify-between"
-              min=""
-              max=""
               value={classworkDueTime}
+              name="classworkDueTime"
               onChange={(e) => {
+                const [hours, minutes] = e.target.value.split(":");
+                const dueDate = new Date();
+                dueDate.setHours(parseInt(hours));
+                dueDate.setMinutes(parseInt(minutes));
+
+                const formattedTime = dueDate.toLocaleTimeString("en-US", {
+                  hour: "numeric",
+                  minute: "numeric",
+                  hour12: true,
+                });
+
+                setTime(formattedTime);
                 setClassworkDetails({
                   ...classworkDetails,
                   classworkDueTime: e.target.value,
@@ -210,9 +239,8 @@ function ClassworkUpdate({ setOpenSettingModal }) {
               setClassworkDetails({
                 ...classworkDetails,
                 classworkDueDate: moment(date).format("MMMM Do YYYY"),
+                classworkDueTime: time,
               });
-
-              queryClient.invalidateQueries({ queryKey: ["classworks"] });
 
               await mutateAsync({
                 userId,
@@ -220,8 +248,8 @@ function ClassworkUpdate({ setOpenSettingModal }) {
                 classworkTitle,
                 classworkType,
                 classworkDescription,
-                classworkDueDate: date,
-                classworkDueTime,
+                classworkDueDate: moment(date).format("MMMM Do YYYY"),
+                classworkDueTime: time,
                 classworkAttachFile,
               });
             } catch (err) {

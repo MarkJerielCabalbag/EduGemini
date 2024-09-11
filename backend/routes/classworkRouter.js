@@ -12,6 +12,7 @@ import User from "../models/userModel.js";
 import { protectRoutes } from "../middlewares/authMiddleware.js";
 import { nanoid } from "nanoid";
 import classworkController from "../controllers/classworkController.js";
+import moment from "moment";
 
 const handleFileValidationError = (err, req, res, next) => {
   if (err) {
@@ -211,23 +212,28 @@ classworkRouter.post(
       );
       classworkToUpdate.classwork_attach_file = classworkAttachFile;
     }
-
     classworkToUpdate.classwork_title =
       req.body.classworkTitle || classworkToUpdate.classwork_title;
     classworkToUpdate.classwork_type =
       req.body.classworkType || classworkToUpdate.classwork_type;
     classworkToUpdate.classwork_description =
       req.body.classworkDescription || classworkToUpdate.classwork_description;
-    classworkToUpdate.classwork_due_date =
-      req.body.classworkDueDate || classworkToUpdate.classwork_due_date;
-    classworkToUpdate.classwork_due_time =
-      req.body.classworkDueTime || classworkToUpdate.classwork_due_time;
+
+    if (req.body.classworkDueDate) {
+      classworkToUpdate.classwork_due_date = req.body.classworkDueDate;
+    }
+
+    if (req.body.classworkDueTime) {
+      classworkToUpdate.classwork_due_time = req.body.classworkDueTime;
+    }
 
     getIdFromRoom[classworkIndex] = classworkToUpdate;
 
     await roomExist.save();
 
-    res.status(200).json({ message: "Successfully updated" });
+    console.log(classworkToUpdate);
+
+    return res.status(200).json({ message: "Successfully updated" });
   })
 );
 
@@ -361,7 +367,9 @@ classworkRouter.post(
       if (studentExist) {
         studentExist.files.push(...addedFiles);
         studentExist.workStatus = "shelved";
+
         studentExist.timeSubmition = `${date}, ${timeAction}`;
+        studentExist.feedback = "";
       } else {
         workIndex.classwork_outputs.unshift({
           _id: userId,
@@ -410,5 +418,8 @@ classworkRouter.post(
   "/cancel/:roomId/:workId/:userId",
   classworkController.cancelSubmition
 );
+
+//student list
+classworkRouter.get("/students/:workId", classworkController.studentList);
 
 export default classworkRouter;

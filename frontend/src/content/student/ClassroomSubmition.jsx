@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { Link, Navigate, useParams } from "react-router-dom";
 import MenuBar from "../MenuBar";
 import Navbar from "../Navbar";
@@ -32,6 +32,8 @@ function ClassroomSubmition() {
   const [showTurnInBtn, setShowTurnInBtn] = useState(false);
   const [openCancelModal, setCancelModal] = useState(false);
   const [time, setTime] = useState(null);
+  const [isDisabled, setDisabled] = useState(false);
+  const [disableTurnIn, setDisableTurnIn] = useState(false);
   const { workId, roomId, userId } = useParams();
   const [filename, setFilename] = useState("");
   const { data } = useQuery({
@@ -95,7 +97,6 @@ function ClassroomSubmition() {
     multiple: true,
     readAs: "BinaryString",
     onFilesSuccessfullySelected: async ({ plainFiles, filesContent }) => {
-      setShowTurnInBtn(true);
       console.log("onFilesSuccessfullySelected", plainFiles, filesContent);
 
       try {
@@ -142,6 +143,15 @@ function ClassroomSubmition() {
     }
   });
 
+  const dateNow = new Date();
+  const now = moment(dateNow).format("MMM Do YYY");
+
+  const formattedTime = dateNow.toLocaleTimeString("en-US", {
+    hour: "numeric",
+    minute: "numeric",
+    hour12: true,
+  });
+
   return (
     <div className="sm:container md:container lg:container">
       <Navbar />
@@ -176,7 +186,7 @@ function ClassroomSubmition() {
                             >
                               {attachments?.map((output) =>
                                 output.files.length === 0
-                                  ? "No attachments"
+                                  ? "No Attachments"
                                   : output.workStatus
                               )}
                             </span>
@@ -210,12 +220,25 @@ function ClassroomSubmition() {
                                   No files uploaded yet.
                                 </div>{" "}
                                 <Button
-                                  className="w-full my-2"
-                                  onClick={() => {
-                                    openFilePicker();
-                                  }}
+                                  disabled={
+                                    now > info.classwork_due_date ||
+                                    (formattedTime > info.classwork_due_time &&
+                                      now === info.classwork_due_date) ||
+                                    formattedTime > info.classwork_due_time
+                                  }
+                                  className={`w-full my-2 ${
+                                    now > info.classwork_due_date ||
+                                    (formattedTime > info.classwork_due_time &&
+                                      now === info.classwork_due_date) ||
+                                    formattedTime > info.classwork_due_time
+                                      ? "opacity-50"
+                                      : "show"
+                                  }`}
+                                  onClick={() => openFilePicker()}
                                 >
-                                  Select Files
+                                  {attachments?.length === 0
+                                    ? "Select Files"
+                                    : "Add More Files"}
                                 </Button>
                               </>
                             ) : (
@@ -255,7 +278,17 @@ function ClassroomSubmition() {
                                           <Loader2Icon className="animate-spin" />
                                         ) : (
                                           <X
-                                            size={50}
+                                            size={
+                                              now > info.classwork_due_date ||
+                                              (formattedTime >
+                                                info.classwork_due_time &&
+                                                now ===
+                                                  info.classwork_due_date) ||
+                                              formattedTime >
+                                                info.classwork_due_time
+                                                ? 0
+                                                : 30
+                                            }
                                             className={`max-h-96 hover:cursor-pointer ${
                                               outputs.workStatus === "Turned in"
                                                 ? "hidden"
@@ -276,16 +309,41 @@ function ClassroomSubmition() {
                                     ))}
                                     <>
                                       <Button
+                                        disabled={
+                                          now > info.classwork_due_date ||
+                                          (formattedTime >
+                                            info.classwork_due_time &&
+                                            now === info.classwork_due_date) ||
+                                          formattedTime >
+                                            info.classwork_due_time
+                                        }
                                         className={`w-full my-2 ${
                                           outputs.workStatus === "Turned in"
                                             ? "hidden"
                                             : ""
+                                        } ${
+                                          now > info.classwork_due_date ||
+                                          (formattedTime >
+                                            info.classwork_due_time &&
+                                            now === info.classwork_due_date) ||
+                                          formattedTime >
+                                            info.classwork_due_time
+                                            ? "opacity-50"
+                                            : "show"
                                         }`}
                                         onClick={() => {
                                           openFilePicker();
                                         }}
                                       >
-                                        Select Files
+                                        {now > info.classwork_due_date ||
+                                        (formattedTime >
+                                          info.classwork_due_time &&
+                                          now === info.classwork_due_date) ||
+                                        (formattedTime >
+                                          info.classwork_due_time &&
+                                          outputs.files.length === 0)
+                                          ? "Missing"
+                                          : "Select Files"}
                                       </Button>
                                       {openCancelModal && (
                                         <CancelSubmitionModal
@@ -296,10 +354,29 @@ function ClassroomSubmition() {
                                       {outputs.workStatus === "shelved" ||
                                       outputs.workStatus === "cancelled" ? (
                                         <Button
+                                          disabled={
+                                            now > info.classwork_due_date ||
+                                            (formattedTime >
+                                              info.classwork_due_time &&
+                                              now ===
+                                                info.classwork_due_date) ||
+                                            formattedTime >
+                                              info.classwork_due_time
+                                          }
                                           className={`w-full ${
                                             outputs.files.length === 0
                                               ? "hidden"
                                               : ""
+                                          } ${
+                                            now > info.classwork_due_date ||
+                                            (formattedTime >
+                                              info.classwork_due_time &&
+                                              now ===
+                                                info.classwork_due_date) ||
+                                            formattedTime >
+                                              info.classwork_due_time
+                                              ? "opacity-50"
+                                              : "show"
                                           }`}
                                           onClick={async () =>
                                             await submit({ date, timeAction })

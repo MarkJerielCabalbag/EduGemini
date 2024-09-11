@@ -170,25 +170,6 @@ export async function fetchClassData(roomId) {
   });
 }
 
-export async function createAnnouncement(formData, roomId) {
-  return await fetch(
-    `${baseUrl}/api/eduGemini/classroom/createAnnouncement/${roomId}`,
-    {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(formData),
-    }
-  ).then(async (res) => {
-    const response = await res.json();
-
-    if (!res.ok) {
-      throw new Error(response.message || "An Error Occured");
-    }
-
-    return response;
-  });
-}
-
 export async function getAnnouncement(roomId) {
   return await fetch(
     `${baseUrl}/api/eduGemini/classroom/getAnnouncement/${roomId}`,

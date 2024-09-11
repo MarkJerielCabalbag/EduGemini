@@ -247,7 +247,7 @@ function JoinClass({ open, onOpenChange }) {
                       user_gender: user_gender,
                       class_code: class_code,
                     });
-                    onOpenChange(true);
+                    onOpenChange(false);
                   } catch (error) {
                     toast.error(error.message);
                   }

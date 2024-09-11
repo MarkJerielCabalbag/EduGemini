@@ -1,45 +1,62 @@
-import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-  AlertDialogTrigger,
-} from "@/components/ui/alert-dialog";
+import { useQueryClient } from "@tanstack/react-query";
+import ReusableModal from "./ReusableModal";
+import { deleteAnnouncement, useDeleteAnnouncement } from "@/api/useApi";
+import { Loader2Icon } from "lucide-react";
+import toast from "react-hot-toast";
+import { useParams } from "react-router-dom";
+import { Button } from "../ui/button";
 
-function DeleteAnnouncement({
-  open,
-  onOpenChange,
-  alertDialogTitle,
-  alertDialogDescription,
-  alertDialogFooter,
-  alertDialogTrigger,
-}) {
+function DeleteAnnouncement({ open, onOpenChange, announceId }) {
+  const { roomId } = useParams();
+  const queryClient = useQueryClient();
+  const onSuccess = (data) => {
+    toast.success(data.message);
+    queryClient.invalidateQueries({ queryKey: ["announcement"] });
+  };
+
+  const onError = (error) => {
+    toast.error(error.message);
+  };
+  const { mutateAsync, isPending, isLoading } = useDeleteAnnouncement({
+    mutationFn: () => deleteAnnouncement(announceId, roomId),
+    onError,
+    onSuccess,
+  });
   return (
     <>
-      {open && (
-        <AlertDialog
-          open={open}
-          onOpenChange={onOpenChange}
-          className="sm:container md:container lg:container"
-        >
-          {alertDialogTrigger}
-          <AlertDialogContent>
-            <AlertDialogHeader>
-              <AlertDialogTitle className="flex items-center gap-2">
-                {alertDialogTitle}
-              </AlertDialogTitle>
-              <AlertDialogDescription>
-                {alertDialogDescription}
-              </AlertDialogDescription>
-            </AlertDialogHeader>
-            <AlertDialogFooter>{alertDialogFooter}</AlertDialogFooter>
-          </AlertDialogContent>
-        </AlertDialog>
-      )}
+      <ReusableModal
+        open={open}
+        onOpenChange={onOpenChange}
+        alertDialogTitle={"Delete Announcement"}
+        alertDialogDescription={
+          <>
+            <p>Are you sure you want to delete this announcement?</p>
+          </>
+        }
+        alertDialogFooter={
+          <>
+            <Button onClick={() => onOpenChange(false)}>Cancel</Button>
+            <Button
+              onClick={async () => {
+                try {
+                  await mutateAsync(announceId);
+                  isLoading || isPending
+                    ? onOpenChange(true)
+                    : onOpenChange(!open);
+                } catch (error) {
+                  console.error("Error deleting announcement:", error);
+                }
+              }}
+            >
+              {isLoading || isPending ? (
+                <Loader2Icon className="animate-spin" />
+              ) : (
+                "Delete"
+              )}
+            </Button>
+          </>
+        }
+      />
     </>
   );
 }

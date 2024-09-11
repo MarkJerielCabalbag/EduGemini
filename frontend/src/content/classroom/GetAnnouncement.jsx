@@ -1,18 +1,13 @@
-import {
-  deleteAnnouncement,
-  getAnnouncement,
-  useDeleteAnnouncement,
-  useGetannouncement,
-} from "@/api/useApi";
+import { getAnnouncement, useGetannouncement } from "@/api/useApi";
 import noData from "../../assets/noData.png";
 import LoadingState from "@/utils/LoadingState";
 import { useQueryClient } from "@tanstack/react-query";
 import toast from "react-hot-toast";
-import { Bell, ExternalLink, Loader2Icon, Trash } from "lucide-react";
+import { Bell, ExternalLink, Trash } from "lucide-react";
 import { useState } from "react";
 import DeleteAnnouncement from "@/components/modals/DeleteAnnouncement";
 import { Button } from "@/components/ui/button";
-import { Link, useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 function GetAnnouncement({ statusBtn, cardStatus, userStatus }) {
   const [openDeleteAnnouncementModal, setOpenDeleteAnnouncementModal] =
     useState(false);
@@ -29,14 +24,8 @@ function GetAnnouncement({ statusBtn, cardStatus, userStatus }) {
     toast.error(error.message);
   };
 
-  const { data, isFetching } = useGetannouncement({
+  const { data, isFetching, isLoading, isPending } = useGetannouncement({
     queryFn: () => getAnnouncement(roomId),
-    onError,
-    onSuccess,
-  });
-
-  const { mutateAsync, isPending, isLoading } = useDeleteAnnouncement({
-    mutationFn: () => deleteAnnouncement(announceId, roomId),
     onError,
     onSuccess,
   });
@@ -109,39 +98,7 @@ function GetAnnouncement({ statusBtn, cardStatus, userStatus }) {
             <DeleteAnnouncement
               onOpenChange={setOpenDeleteAnnouncementModal}
               open={openDeleteAnnouncementModal}
-              alertDialogTitle={"Delete Announcement"}
-              alertDialogDescription={
-                <>
-                  <p>Are you sure you want to delete this announcement?</p>
-                </>
-              }
-              alertDialogFooter={
-                <>
-                  <Button onClick={() => setOpenDeleteAnnouncementModal(false)}>
-                    Cancel
-                  </Button>
-                  <Button
-                    onClick={async () => {
-                      try {
-                        await mutateAsync(announceId);
-                        isLoading || isPending
-                          ? setOpenDeleteAnnouncementModal(true)
-                          : setOpenDeleteAnnouncementModal(
-                              !openDeleteAnnouncementModal
-                            );
-                      } catch (error) {
-                        console.error("Error deleting announcement:", error);
-                      }
-                    }}
-                  >
-                    {isLoading || isPending ? (
-                      <Loader2Icon className="animate-spin" />
-                    ) : (
-                      "Delete"
-                    )}
-                  </Button>
-                </>
-              }
+              announceId={announceId}
             />
           )}
         </>

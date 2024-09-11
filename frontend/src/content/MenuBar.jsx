@@ -14,10 +14,14 @@ import { useLogout, useGetUser, getUser } from "@/api/useApi";
 import toast from "react-hot-toast";
 import { Skeleton } from "@/components/ui/skeleton";
 import { baseUrl } from "@/baseUrl";
+import { useState } from "react";
+import CreateClass from "@/components/modals/CreateClass";
+import JoinClass from "@/components/modals/JoinClass";
 
 function MenuBar() {
   const navigate = useNavigate();
-
+  const [openCreateClassModal, setOpenCreateClassModal] = useState(false);
+  const [openJoinClassModal, setJoinClassModal] = useState(false);
   const onSuccess = (data) => {
     toast.success("Success Logout!");
     console.log(data.message);
@@ -43,6 +47,15 @@ function MenuBar() {
   const { mutateAsync } = useLogout({ onSuccess, onError });
   return (
     <div className="w-full flex justify-center mt-4">
+      {openCreateClassModal && (
+        <CreateClass
+          open={openCreateClassModal}
+          onOpenChange={setOpenCreateClassModal}
+        />
+      )}
+      {openJoinClassModal && (
+        <JoinClass open={openJoinClassModal} onOpenChange={setJoinClassModal} />
+      )}
       <Menubar className="shadow-lg w-2/4 flex justify-center">
         <MenubarMenu>
           <MenubarTrigger>
@@ -59,7 +72,7 @@ function MenuBar() {
           <MenubarContent>
             <MenubarItem
               className="flex justify-between items-center"
-              onClick={() => navigate("/createClass")}
+              onClick={() => setOpenCreateClassModal(true)}
             >
               Create Class
               <PlusCircle
@@ -67,7 +80,10 @@ function MenuBar() {
                 className="bg-black text-white p-1 rounded"
               />
             </MenubarItem>
-            <MenubarItem className="flex justify-between items-center">
+            <MenubarItem
+              className="flex justify-between items-center"
+              onClick={() => setJoinClassModal(true)}
+            >
               Join Class
               <Share size={25} className="bg-black text-white p-1 rounded" />
             </MenubarItem>

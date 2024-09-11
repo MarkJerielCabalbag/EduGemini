@@ -7,6 +7,7 @@ import path from "path";
 import multer from "multer";
 import { rimraf } from "rimraf";
 import { fileURLToPath } from "url";
+import moment from "moment";
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 //@desc     get classwork
 //@route    GET /api/eduGemini/classwork/getClasswork/:roomId
@@ -103,7 +104,7 @@ const getAttachments = asyncHandler(async (req, res, next) => {
     (outputs) => outputs._id === userId
   );
 
-  res.status(200).send(studentOutputs);
+  return res.status(200).send(studentOutputs);
 });
 
 //@desc     delete classwork attachment
@@ -216,10 +217,35 @@ const submitAttachment = asyncHandler(async (req, res, next) => {
     (output) => output._id.toString() === userId
   );
 
-  studentExist.workStatus = "Turned in";
-  studentExist.timeSubmition = `${date}, ${timeAction}`;
-  studentExist.feedback = "";
-  console.log(studentExist.workStatus, `: ${studentExist.timeSubmition}`);
+  const dueTime = workIndex.classwork_due_time;
+  const dueDate = workIndex.classwork_due_date;
+
+  const dateNow = new Date();
+  const now = moment(dateNow).format("MMM Do YYY");
+
+  const formattedTime = dateNow.toLocaleTimeString("en-US", {
+    hour: "numeric",
+    minute: "numeric",
+    hour12: true,
+  });
+
+  if (
+    (now > dueDate || (now === dueDate && formattedTime > dueTime)) &&
+    (!studentExist || studentExist.files.length === 0)
+  ) {
+    studentExist.workStatus = "Missing";
+  } else if (studentExist) {
+    studentExist.workStatus = "Turned in";
+    studentExist.timeSubmition = `${date}, ${timeAction}`;
+    studentExist.feedback = "";
+  } else {
+    studentExist.workStatus = "No action yet";
+  }
+
+  // studentExist.workStatus = "Turned in";
+  // studentExist.timeSubmition = `${date}, ${timeAction}`;
+  // studentExist.feedback = "";
+  // console.log(studentExist.workStatus, `: ${studentExist.timeSubmition}`);
   roomExist.classwork[findClasswork] = workIndex;
 
   await roomExist.save();
@@ -263,10 +289,30 @@ const cancelSubmition = asyncHandler(async (req, res, next) => {
     (output) => output._id.toString() === userId
   );
 
-  studentExist.workStatus = "cancelled";
-  studentExist.timeSubmition = `${date}, ${timeAction}`;
-  studentExist.feedback = "";
-  console.log(studentExist.workStatus, `: ${studentExist.timeSubmition}`);
+  const dueTime = workIndex.classwork_due_time;
+  const dueDate = workIndex.classwork_due_date;
+
+  const dateNow = new Date();
+  const now = moment(dateNow).format("MMM Do YYY");
+
+  const formattedTime = dateNow.toLocaleTimeString("en-US", {
+    hour: "numeric",
+    minute: "numeric",
+    hour12: true,
+  });
+
+  if (
+    (now > dueDate || (now === dueDate && formattedTime > dueTime)) &&
+    (!studentExist || studentExist?.files?.length === 0)
+  ) {
+    studentExist.workStatus = "Missing";
+  } else if (studentExist) {
+    studentExist.workStatus = "cancelled";
+    studentExist.timeSubmition = `${date}, ${timeAction}`;
+    studentExist.feedback = "";
+  } else {
+    studentExist.workStatus = "No action yet";
+  }
 
   roomExist.classwork[findClasswork] = workIndex;
 
@@ -275,6 +321,82 @@ const cancelSubmition = asyncHandler(async (req, res, next) => {
   return res.status(200).json({
     message: `You ${studentExist.workStatus} the ${findClasswork.classwork_title}`,
   });
+});
+
+//@desc     get student list of activities
+//@route    POST /api/eduGemini/classwork/students/:roomId/:workId/:userId
+//@access   private
+const studentList = asyncHandler(async (req, res, next) => {
+  const { workId } = req.params;
+  const { roomId } = req.body;
+
+  const roomExist = await Classroom.findById(roomId);
+
+  const listOfStudent = roomExist.students.map((student) => student);
+
+  const listOfClasswork = roomExist.classwork.map((work) => work);
+
+  const targetClasswork = listOfClasswork.find(
+    (targetId) => targetId._id === workId
+  );
+
+  const studentHasActivities = targetClasswork.classwork_outputs.map(
+    (student) => ({
+      _id: student._id,
+      workStatus: student.workStatus,
+      files: student.files,
+    })
+  );
+
+  const listedStudent = listOfStudent.map((student) => {
+    const studentActivity = studentHasActivities.find(
+      (activity) => activity._id === student._id
+    );
+
+    const dueTime = targetClasswork.classwork_due_time;
+    const dueDate = targetClasswork.classwork_due_date;
+
+    const date = new Date();
+    const now = moment(date).format("MMM Do YYY");
+
+    const formattedTime = date.toLocaleTimeString("en-US", {
+      hour: "numeric",
+      minute: "numeric",
+      hour12: true,
+    });
+
+    const workStatuses = () => {
+      if (
+        (dueDate > now &&
+          dueTime > formattedTime &&
+          studentActivity?.files?.length === 0) ||
+        (dueDate === now &&
+          dueTime > formattedTime &&
+          studentActivity?.files?.length === 0)
+      ) {
+        return studentActivity ? studentActivity?.workStatus : "";
+      } else if (studentActivity) {
+        return studentActivity ? studentActivity?.workStatus : "";
+      } else {
+        return "Missing";
+      }
+    };
+
+    return {
+      studentName: `${student.user_lastname}, ${student.user_firstname} ${
+        student.user_middlename ? student.user_middlename.charAt(0) + "." : ""
+      }`,
+      workStatus: workStatuses(),
+    };
+  });
+
+  // console.log("\n listOfStudent", listOfStudent);
+  // console.log("\n listofclasswork", listOfClasswork);
+  // console.log("\n targetclasswork", targetClasswork);
+  // console.log("\n studentHasActivities", studentHasActivities);
+  // console.log("\n", listOfStudentActiities);
+
+  res.status(200).send(listedStudent);
 });
 export default {
   getClasswork,
@@ -285,4 +407,5 @@ export default {
   deleteAttachment,
   submitAttachment,
   cancelSubmition,
+  studentList,
 };
