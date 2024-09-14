@@ -339,9 +339,9 @@ function ClassroomSubmition() {
                                         (formattedTime >
                                           info.classwork_due_time &&
                                           now === info.classwork_due_date) ||
-                                        (formattedTime >
-                                          info.classwork_due_time &&
-                                          outputs.files.length === 0)
+                                        formattedTime >
+                                          info.classwork_due_time ||
+                                        outputs.length === 0
                                           ? "Missing"
                                           : "Select Files"}
                                       </Button>

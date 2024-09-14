@@ -555,6 +555,24 @@ export async function cancelSubmition(
   });
 }
 
+export async function getListedStudents(roomId, workId) {
+  return await fetch(
+    `${baseUrl}/api/eduGemini/classwork/students/${workId}/${roomId}`,
+    {
+      method: "GET",
+      headers: { "Content-Type": "application/json" },
+    }
+  ).then(async (res) => {
+    const response = await res.json();
+
+    if (!res.ok) {
+      throw new Error(response.message || "An Error Occured");
+    }
+
+    return response;
+  });
+}
+
 export const useGetClass = ({ queryFn, onSuccess, onError }) => {
   return useQuery({
     queryKey: ["room"],
@@ -810,6 +828,15 @@ export const useSubmitAttachment = ({ mutationFn, onSuccess, onError }) => {
 export const useCancelSubmition = ({ mutationFn, onError, onSuccess }) => {
   return useMutation({
     mutationFn,
+    onError,
+    onSuccess,
+  });
+};
+
+export const useGetListedStudent = ({ queryFn, onSuccess, onError }) => {
+  return useQuery({
+    queryKey: ["listedStudents"],
+    queryFn,
     onError,
     onSuccess,
   });

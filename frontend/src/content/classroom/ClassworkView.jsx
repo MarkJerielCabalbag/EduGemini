@@ -3,6 +3,8 @@ import {
   useGetClassworkInfo,
   useGetClass,
   fetchClassData,
+  useGetListedStudent,
+  getListedStudents,
 } from "@/api/useApi";
 import CopyFunctionality from "@/utils/CopyFunctionality";
 import LoadingState from "@/utils/LoadingState";
@@ -34,6 +36,9 @@ import { useQueryClient } from "@tanstack/react-query";
 import { toast } from "react-hot-toast";
 import { baseUrl } from "@/baseUrl";
 import { Badge } from "@/components/ui/badge";
+import DataTable from "../table/DataTable";
+
+import { setStudentListCol } from "../table/useTable";
 
 function ClassworkView({ userStatus }) {
   const navigate = useNavigate();
@@ -61,6 +66,14 @@ function ClassworkView({ userStatus }) {
     onError,
     onSuccess,
   });
+
+  const { data: dataTable } = useGetListedStudent({
+    queryFn: () => getListedStudents(roomId, workId),
+    onError,
+    onSuccess,
+  });
+
+  console.log(dataTable);
 
   if (isFetching || isLoading || isPending) {
     return (
@@ -189,6 +202,7 @@ function ClassworkView({ userStatus }) {
                   content={<p>Open Settings</p>}
                 />
               </div>
+              <DataTable dataTable={dataTable} columns={setStudentListCol} />
             </div>
           ))}
           {openClassworkSettingModal && (

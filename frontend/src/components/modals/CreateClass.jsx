@@ -3,11 +3,11 @@ import ReusableModal from "./ReusableModal";
 import { useCreateClassroom } from "@/api/useApi";
 import { useState } from "react";
 import { Info, Loader2Icon } from "lucide-react";
-
 import { Label } from "@radix-ui/react-label";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import toast from "react-hot-toast";
+import { useQueryClient } from "@tanstack/react-query";
 function CreateClass({ open, onOpenChange }) {
   const [classroom, setClassroom] = useState({
     classname: "",
@@ -15,6 +15,8 @@ function CreateClass({ open, onOpenChange }) {
     subject: "",
     room: "",
   });
+
+  const queryClient = useQueryClient();
 
   const { classname, section, subject, room } = classroom;
 
@@ -24,6 +26,7 @@ function CreateClass({ open, onOpenChange }) {
   const onSuccess = (data) => {
     toast.success(data.message);
     console.log(data.mesage);
+    queryClient.invalidateQueries({ queryKey: ["classroom"] });
   };
   const onError = (error) => {
     console.log(error);
@@ -164,7 +167,7 @@ function CreateClass({ open, onOpenChange }) {
                   subject,
                   room,
                 };
-                onOpenChange(true);
+                onOpenChange(false);
                 await mutateAsync(formData);
               } catch (err) {
                 console.log("Error", err);

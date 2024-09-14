@@ -420,6 +420,9 @@ classworkRouter.post(
 );
 
 //student list
-classworkRouter.get("/students/:workId", classworkController.studentList);
+classworkRouter.get(
+  "/students/:workId/:roomId",
+  classworkController.studentList
+);
 
 export default classworkRouter;

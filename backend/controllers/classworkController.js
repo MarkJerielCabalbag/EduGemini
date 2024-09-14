@@ -324,15 +324,12 @@ const cancelSubmition = asyncHandler(async (req, res, next) => {
 });
 
 //@desc     get student list of activities
-//@route    POST /api/eduGemini/classwork/students/:roomId/:workId/:userId
+//@route    POST /api/eduGemini/classwork/students/:workId/:roomId
 //@access   private
 const studentList = asyncHandler(async (req, res, next) => {
-  const { workId } = req.params;
-  const { roomId } = req.body;
+  const { workId, roomId } = req.params;
 
   const roomExist = await Classroom.findById(roomId);
-
-  const listOfStudent = roomExist.students.map((student) => student);
 
   const listOfClasswork = roomExist.classwork.map((work) => work);
 
@@ -340,61 +337,63 @@ const studentList = asyncHandler(async (req, res, next) => {
     (targetId) => targetId._id === workId
   );
 
-  const studentHasActivities = targetClasswork.classwork_outputs.map(
-    (student) => ({
-      _id: student._id,
-      workStatus: student.workStatus,
-      files: student.files,
-    })
+  const {
+    classwork_outputs: classworkOutputs,
+    classwork_due_time: dueTime,
+    classwork_due_date: dueDate,
+  } = targetClasswork;
+
+  const now = moment();
+  const formattedTime = now.format("h:mm A");
+  const formattedDate = now.format("MMM Do YYYY");
+
+  const isOverdue = now.isAfter(
+    moment(`${dueDate} ${dueTime}`, "MMM Do YYYY h:mm A")
   );
 
-  const listedStudent = listOfStudent.map((student) => {
-    const studentActivity = studentHasActivities.find(
-      (activity) => activity._id === student._id
+  const listedStudent = roomExist.students.map((student) => {
+    const studentActivity = classworkOutputs.find(
+      (output) => output._id.toString() === student._id.toString()
     );
 
-    const dueTime = targetClasswork.classwork_due_time;
-    const dueDate = targetClasswork.classwork_due_date;
-
-    const date = new Date();
-    const now = moment(date).format("MMM Do YYY");
-
-    const formattedTime = date.toLocaleTimeString("en-US", {
-      hour: "numeric",
-      minute: "numeric",
-      hour12: true,
-    });
-
-    const workStatuses = () => {
+    let workStatus = "No Actions made";
+    if (studentActivity) {
       if (
-        (dueDate > now &&
-          dueTime > formattedTime &&
-          studentActivity?.files?.length === 0) ||
-        (dueDate === now &&
-          dueTime > formattedTime &&
-          studentActivity?.files?.length === 0)
+        (isOverdue && !studentActivity.files) ||
+        (isOverdue && studentActivity?.files?.length === 0) ||
+        (isOverdue && studentActivity.files.length !== 0)
       ) {
-        return studentActivity ? studentActivity?.workStatus : "";
-      } else if (studentActivity) {
-        return studentActivity ? studentActivity?.workStatus : "";
+        workStatus = "Missing";
       } else {
-        return "Missing";
+        workStatus = studentActivity.workStatus;
       }
-    };
+    } else if (isOverdue && !studentActivity?.files) {
+      workStatus = "Missing";
+    } else if (isOverdue && studentActivity?.files !== 0) {
+      workStatus = "Missing";
+    } else {
+      workStatus = studentActivity.workStatus;
+    }
 
     return {
+      _id: student._id,
       studentName: `${student.user_lastname}, ${student.user_firstname} ${
         student.user_middlename ? student.user_middlename.charAt(0) + "." : ""
       }`,
-      workStatus: workStatuses(),
+      workStatus,
+      files: !studentActivity?.files?.length ? [] : studentActivity?.files,
+      timeSubmition: !studentActivity?.timeSubmition
+        ? "No time save"
+        : studentActivity?.timeSubmition,
+      path: !studentActivity?.path
+        ? "No path available"
+        : studentActivity?.path,
+      feedback: !studentActivity?.feedback
+        ? "No feedback available"
+        : studentActivity?.feedback,
+      user_img: `${student.user_profile_path}/${student.user_img}`,
     };
   });
-
-  // console.log("\n listOfStudent", listOfStudent);
-  // console.log("\n listofclasswork", listOfClasswork);
-  // console.log("\n targetclasswork", targetClasswork);
-  // console.log("\n studentHasActivities", studentHasActivities);
-  // console.log("\n", listOfStudentActiities);
 
   res.status(200).send(listedStudent);
 });
