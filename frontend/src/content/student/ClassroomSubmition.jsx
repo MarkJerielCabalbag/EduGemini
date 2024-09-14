@@ -159,169 +159,79 @@ function ClassroomSubmition() {
       <div className="h-screen w-full mt-5 grid sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-2">
         <div className="px-4 py-4 bg-primary rounded">
           <div className="p-5 text-white">
-            {data?.map((classworkInfo) => (
-              <div>
-                {classworkInfo.classwork.map((info) => (
-                  <>
-                    {info._id === workId ? (
-                      <div>
-                        <h1 className="flex gap-2 justify-between items-center">
-                          <div className="flex gap-2 items-center">
-                            <NotebookPen size={30} />
-                            <span className="font-bold text-lg">
-                              {info.classwork_title}
-                            </span>
-                          </div>
-                          <div className="flex gap-2 items-center">
-                            <span className="inline-flex items-center rounded-md bg-gray-50 px-2 py-1 text-xs font-medium text-gray-600 ring-1 ring-inset ring-gray-500/10">
-                              {info.classwork_type}
-                            </span>
+            {data?.map((classworkInfo) => {
+              return (
+                <>
+                  <div>
+                    {classworkInfo.classwork.map((info) => {
+                      const now = moment();
+                      const isOverdue = now.isAfter(
+                        moment(
+                          `${info.classwork_due_date} ${info.classwork_due_time}`,
+                          "MMM Do YYYY h:mm A"
+                        )
+                      );
+                      return (
+                        <>
+                          {info._id === workId ? (
+                            <div>
+                              <h1 className="flex gap-2 justify-between items-center">
+                                <div className="flex gap-2 items-center">
+                                  <NotebookPen size={30} />
+                                  <span className="font-bold text-lg">
+                                    {info.classwork_title}
+                                  </span>
+                                </div>
+                                <div className="flex gap-2 items-center">
+                                  <span className="inline-flex items-center rounded-md bg-gray-50 px-2 py-1 text-xs font-medium text-gray-600 ring-1 ring-inset ring-gray-500/10">
+                                    {info.classwork_type}
+                                  </span>
 
-                            <span
-                              className={`${attachments?.map((output) =>
-                                output.files.length === 0
-                                  ? "bg-yellow-500"
-                                  : workBadge
-                              )} inline-flex items-center rounded-md px-2 py-1 text-xs font-medium text-white ring-1 ring-inset ring-gray-500/10`}
-                            >
-                              {attachments?.map((output) =>
-                                output.files.length === 0
-                                  ? "No Attachments"
-                                  : output.workStatus
-                              )}
-                            </span>
-                          </div>
-                        </h1>
+                                  <span
+                                    className={`${attachments?.map((output) =>
+                                      output.files.length === 0
+                                        ? "bg-yellow-500"
+                                        : workBadge
+                                    )} inline-flex items-center rounded-md px-2 py-1 text-xs font-medium text-white ring-1 ring-inset ring-gray-500/10`}
+                                  >
+                                    {attachments?.map((output) =>
+                                      output.files.length === 0
+                                        ? "No Attachments"
+                                        : output.workStatus
+                                    )}
+                                  </span>
+                                </div>
+                              </h1>
 
-                        <div className="flex items-center justify-between my-2">
-                          <p className="flex gap-2 items-center">
-                            <Calendar />
-                            {info.classwork_due_date}
-                          </p>
-                          <p className="flex gap-2 items-center">
-                            <Timer />
-                            {info.classwork_due_time}
-                          </p>
-                        </div>
+                              <div className="flex items-center justify-between my-2">
+                                <p className="flex gap-2 items-center">
+                                  <Calendar />
+                                  {info.classwork_due_date}
+                                </p>
+                                <p className="flex gap-2 items-center">
+                                  <Timer />
+                                  {info.classwork_due_time}
+                                </p>
+                              </div>
 
-                        <p className="font-light italic my-2">
-                          Description:{" "}
-                          {info.classwork_description === null
-                            ? "No description stated"
-                            : info.classwork_description}
-                        </p>
+                              <p className="font-light italic my-2">
+                                Description:{" "}
+                                {info.classwork_description === null
+                                  ? "No description stated"
+                                  : info.classwork_description}
+                              </p>
 
-                        <div className="bg-slate-400 shadow-sm shadow-white rounded my-2 p-5">
-                          <h1>Your Work</h1>
-                          <div className="h-full overflow-x-auto">
-                            {attachments?.length === 0 ? (
-                              <>
-                                <div className="flex justify-center items-center">
-                                  No files uploaded yet.
-                                </div>{" "}
-                                <Button
-                                  disabled={
-                                    now > info.classwork_due_date ||
-                                    (formattedTime > info.classwork_due_time &&
-                                      now === info.classwork_due_date) ||
-                                    formattedTime > info.classwork_due_time
-                                  }
-                                  className={`w-full my-2 ${
-                                    now > info.classwork_due_date ||
-                                    (formattedTime > info.classwork_due_time &&
-                                      now === info.classwork_due_date) ||
-                                    formattedTime > info.classwork_due_time
-                                      ? "opacity-50"
-                                      : "show"
-                                  }`}
-                                  onClick={() => openFilePicker()}
-                                >
-                                  {attachments?.length === 0
-                                    ? "Select Files"
-                                    : "Add More Files"}
-                                </Button>
-                              </>
-                            ) : (
-                              <>
-                                {attachments?.map((outputs) => (
-                                  <>
-                                    {outputs.files.map((file, index) => (
-                                      <div
-                                        key={index}
-                                        className="flex gap-2 items-center justify-between bg-slate-900 text-white rounded my-2 p-5 "
-                                      >
-                                        <div className="flex gap-2 items-center">
-                                          <File />
-                                          <div key={index} className="w-full">
-                                            <Link
-                                              target="_blank"
-                                              to={`/class/classwork/outputs/${roomId}/${userId}/${workId}`}
-                                              onClick={() => {
-                                                localStorage.setItem(
-                                                  "uri",
-                                                  `http://localhost:3000/${info.classwork_folder_path}/answers${file.path}/${file.filename}`
-                                                );
-                                                localStorage.setItem(
-                                                  "fileType",
-                                                  file.filename.split(".").pop()
-                                                );
-                                              }}
-                                            >
-                                              <p className="line-clamp-1">
-                                                {file.filename}
-                                              </p>
-                                            </Link>
-                                            <p>{fileSizeLabel(file.size)}</p>
-                                          </div>
-                                        </div>
-                                        {isLoading || isPending ? (
-                                          <Loader2Icon className="animate-spin" />
-                                        ) : (
-                                          <X
-                                            size={
-                                              now > info.classwork_due_date ||
-                                              (formattedTime >
-                                                info.classwork_due_time &&
-                                                now ===
-                                                  info.classwork_due_date) ||
-                                              formattedTime >
-                                                info.classwork_due_time
-                                                ? 0
-                                                : 30
-                                            }
-                                            className={`max-h-96 hover:cursor-pointer ${
-                                              outputs.workStatus === "Turned in"
-                                                ? "hidden"
-                                                : ""
-                                            }`}
-                                            onClick={async () => {
-                                              setFilename(file.filename);
-                                              console.log(filename);
-                                              await mutateAsync({
-                                                filename,
-                                                date,
-                                                timeAction,
-                                              });
-                                            }}
-                                          />
-                                        )}
-                                      </div>
-                                    ))}
+                              <div className="bg-slate-400 shadow-sm shadow-white rounded my-2 p-5">
+                                <h1>Your Work</h1>
+                                <div className="h-full overflow-x-auto">
+                                  {attachments?.length === 0 ? (
                                     <>
+                                      <div className="flex justify-center items-center">
+                                        No files uploaded yet.
+                                      </div>{" "}
                                       <Button
-                                        disabled={
-                                          now > info.classwork_due_date ||
-                                          (formattedTime >
-                                            info.classwork_due_time &&
-                                            now === info.classwork_due_date) ||
-                                          formattedTime >
-                                            info.classwork_due_time
-                                        }
+                                        disabled={isOverdue}
                                         className={`w-full my-2 ${
-                                          outputs.workStatus === "Turned in"
-                                            ? "hidden"
-                                            : ""
-                                        } ${
                                           now > info.classwork_due_date ||
                                           (formattedTime >
                                             info.classwork_due_time &&
@@ -331,89 +241,165 @@ function ClassroomSubmition() {
                                             ? "opacity-50"
                                             : "show"
                                         }`}
-                                        onClick={() => {
-                                          openFilePicker();
-                                        }}
+                                        onClick={() => openFilePicker()}
                                       >
-                                        {now > info.classwork_due_date ||
-                                        (formattedTime >
-                                          info.classwork_due_time &&
-                                          now === info.classwork_due_date) ||
-                                        formattedTime >
-                                          info.classwork_due_time ||
-                                        outputs.length === 0
-                                          ? "Missing"
-                                          : "Select Files"}
+                                        {attachments?.length === 0
+                                          ? "Select Files"
+                                          : "Add More Files"}
                                       </Button>
-                                      {openCancelModal && (
-                                        <CancelSubmitionModal
-                                          open={openCancelModal}
-                                          onOpenChange={setCancelModal}
-                                        />
-                                      )}
-                                      {outputs.workStatus === "shelved" ||
-                                      outputs.workStatus === "cancelled" ? (
-                                        <Button
-                                          disabled={
-                                            now > info.classwork_due_date ||
-                                            (formattedTime >
-                                              info.classwork_due_time &&
-                                              now ===
-                                                info.classwork_due_date) ||
-                                            formattedTime >
-                                              info.classwork_due_time
-                                          }
-                                          className={`w-full ${
-                                            outputs.files.length === 0
-                                              ? "hidden"
-                                              : ""
-                                          } ${
-                                            now > info.classwork_due_date ||
-                                            (formattedTime >
-                                              info.classwork_due_time &&
-                                              now ===
-                                                info.classwork_due_date) ||
-                                            formattedTime >
-                                              info.classwork_due_time
-                                              ? "opacity-50"
-                                              : "show"
-                                          }`}
-                                          onClick={async () =>
-                                            await submit({ date, timeAction })
-                                          }
-                                        >
-                                          Turn in
-                                        </Button>
-                                      ) : (
-                                        <Button
-                                          onClick={() => setCancelModal(true)}
-                                          className={`w-full ${
-                                            outputs.files.length === 0
-                                              ? "hidden"
-                                              : ""
-                                          }`}
-                                        >
-                                          Cancel
-                                        </Button>
-                                      )}
                                     </>
-                                  </>
-                                ))}
-                              </>
-                            )}
-                          </div>
-                        </div>
+                                  ) : (
+                                    <>
+                                      {attachments?.map((outputs) => (
+                                        <>
+                                          {outputs.files.map((file, index) => (
+                                            <div
+                                              key={index}
+                                              className="flex gap-2 items-center justify-between bg-slate-900 text-white rounded my-2 p-5 "
+                                            >
+                                              <div className="flex gap-2 items-center">
+                                                <File />
+                                                <div
+                                                  key={index}
+                                                  className="w-full"
+                                                >
+                                                  <Link
+                                                    target="_blank"
+                                                    to={`/class/classwork/outputs/${roomId}/${userId}/${workId}`}
+                                                    onClick={() => {
+                                                      localStorage.setItem(
+                                                        "uri",
+                                                        `http://localhost:3000/${info.classwork_folder_path}/answers${file.path}/${file.filename}`
+                                                      );
+                                                      localStorage.setItem(
+                                                        "fileType",
+                                                        file.filename
+                                                          .split(".")
+                                                          .pop()
+                                                      );
+                                                    }}
+                                                  >
+                                                    <p className="line-clamp-1">
+                                                      {file.filename}
+                                                    </p>
+                                                  </Link>
+                                                  <p>
+                                                    {fileSizeLabel(file.size)}
+                                                  </p>
+                                                </div>
+                                              </div>
+                                              {isLoading || isPending ? (
+                                                <Loader2Icon className="animate-spin" />
+                                              ) : (
+                                                <X
+                                                  size={isOverdue ? 0 : 30}
+                                                  className={`max-h-96 hover:cursor-pointer ${
+                                                    outputs.workStatus ===
+                                                    "Turned in"
+                                                      ? "hidden"
+                                                      : ""
+                                                  }`}
+                                                  onClick={async () => {
+                                                    setFilename(file.filename);
+                                                    console.log(filename);
+                                                    await mutateAsync({
+                                                      filename,
+                                                      date,
+                                                      timeAction,
+                                                    });
+                                                  }}
+                                                />
+                                              )}
+                                            </div>
+                                          ))}
+                                          <>
+                                            <Button
+                                              disabled={isOverdue}
+                                              className={`w-full my-2 ${
+                                                outputs.workStatus ===
+                                                "Turned in"
+                                                  ? "hidden"
+                                                  : ""
+                                              } ${
+                                                isOverdue
+                                                  ? "opacity-50"
+                                                  : "show"
+                                              }`}
+                                              onClick={() => {
+                                                openFilePicker();
+                                              }}
+                                            >
+                                              {(isOverdue &&
+                                                formattedTime >
+                                                  info.classwork_due_time) ||
+                                              outputs.length === 0
+                                                ? "Missing"
+                                                : "Select Files"}
+                                            </Button>
+                                            {openCancelModal && (
+                                              <CancelSubmitionModal
+                                                open={openCancelModal}
+                                                onOpenChange={setCancelModal}
+                                              />
+                                            )}
+                                            {outputs.workStatus === "shelved" ||
+                                            outputs.workStatus ===
+                                              "cancelled" ? (
+                                              <Button
+                                                disabled={isOverdue}
+                                                className={`w-full ${
+                                                  outputs.files.length === 0
+                                                    ? "hidden"
+                                                    : ""
+                                                } ${
+                                                  isOverdue
+                                                    ? "opacity-50"
+                                                    : "show"
+                                                }`}
+                                                onClick={async () =>
+                                                  await submit({
+                                                    date,
+                                                    timeAction,
+                                                  })
+                                                }
+                                              >
+                                                Turn in
+                                              </Button>
+                                            ) : (
+                                              <Button
+                                                onClick={() =>
+                                                  setCancelModal(true)
+                                                }
+                                                className={`w-full ${
+                                                  outputs.files.length === 0
+                                                    ? "hidden"
+                                                    : ""
+                                                }`}
+                                              >
+                                                Cancel
+                                              </Button>
+                                            )}
+                                          </>
+                                        </>
+                                      ))}
+                                    </>
+                                  )}
+                                </div>
+                              </div>
 
-                        <div className="bg-slate-400 shadow-sm shadow-white rounded my-2 p-5">
-                          <h1>Private Comment</h1>
-                          <input></input>
-                        </div>
-                      </div>
-                    ) : null}
-                  </>
-                ))}
-              </div>
-            ))}
+                              <div className="bg-slate-400 shadow-sm shadow-white rounded my-2 p-5">
+                                <h1>Private Comment</h1>
+                                <input></input>
+                              </div>
+                            </div>
+                          ) : null}
+                        </>
+                      );
+                    })}
+                  </div>
+                </>
+              );
+            })}
           </div>
         </div>
         <div className="mt-5 md:mt-0 lg:mt-0 px-4 ">
