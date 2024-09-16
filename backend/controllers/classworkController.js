@@ -43,7 +43,7 @@ const getClassworkInformation = asyncHandler(async (req, res, next) => {
 
   const classworkInformation = getIdFromRoom[classworkIndex];
 
-  res.status(200).send([classworkInformation]);
+  return res.status(200).send([classworkInformation]);
 });
 
 //@desc     get classwork information
@@ -217,30 +217,12 @@ const submitAttachment = asyncHandler(async (req, res, next) => {
     (output) => output._id.toString() === userId
   );
 
-  const dueTime = workIndex.classwork_due_time;
-  const dueDate = workIndex.classwork_due_date;
-
-  const dateNow = new Date();
-  const now = moment(dateNow).format("MMM Do YYY");
-
-  const formattedTime = dateNow.toLocaleTimeString("en-US", {
-    hour: "numeric",
-    minute: "numeric",
-    hour12: true,
-  });
-
-  if (
-    (now > dueDate || (now === dueDate && formattedTime > dueTime)) &&
-    (!studentExist || studentExist.files.length === 0)
-  ) {
-    studentExist.workStatus = "Missing";
-  } else if (studentExist) {
-    studentExist.workStatus = "Turned in";
-    studentExist.timeSubmition = `${date}, ${timeAction}`;
-    studentExist.feedback = "";
-  } else {
-    studentExist.workStatus = "No action yet";
-  }
+  studentExist.workStatus = {
+    id: 3,
+    name: "Turned in",
+  };
+  studentExist.timeSubmition = `${date}, ${timeAction}`;
+  studentExist.feedback = "";
 
   // studentExist.workStatus = "Turned in";
   // studentExist.timeSubmition = `${date}, ${timeAction}`;
@@ -251,7 +233,7 @@ const submitAttachment = asyncHandler(async (req, res, next) => {
   await roomExist.save();
 
   return res.status(200).json({
-    message: `You ${studentExist.workStatus} the ${findClasswork.classwork_title}`,
+    message: `You ${studentExist.workStatus.name} the ${findClasswork.classwork_title}`,
   });
 });
 
@@ -289,37 +271,17 @@ const cancelSubmition = asyncHandler(async (req, res, next) => {
     (output) => output._id.toString() === userId
   );
 
-  const dueTime = workIndex.classwork_due_time;
-  const dueDate = workIndex.classwork_due_date;
-
-  const dateNow = new Date();
-  const now = moment(dateNow).format("MMM Do YYY");
-
-  const formattedTime = dateNow.toLocaleTimeString("en-US", {
-    hour: "numeric",
-    minute: "numeric",
-    hour12: true,
-  });
-
-  if (
-    (now > dueDate || (now === dueDate && formattedTime > dueTime)) &&
-    (!studentExist || studentExist?.files?.length === 0)
-  ) {
-    studentExist.workStatus = "Missing";
-  } else if (studentExist) {
-    studentExist.workStatus = "cancelled";
-    studentExist.timeSubmition = `${date}, ${timeAction}`;
-    studentExist.feedback = "";
-  } else {
-    studentExist.workStatus = "No action yet";
-  }
+  studentExist.workStatus = {
+    id: 4,
+    name: "Cancelled",
+  };
 
   roomExist.classwork[findClasswork] = workIndex;
 
   await roomExist.save();
 
   return res.status(200).json({
-    message: `You ${studentExist.workStatus} the ${findClasswork.classwork_title}`,
+    message: `You ${studentExist.workStatus.name} the ${findClasswork.classwork_title}`,
   });
 });
 
@@ -337,12 +299,9 @@ const studentList = asyncHandler(async (req, res, next) => {
     (targetId) => targetId._id === workId
   );
 
-  const {
-    classwork_outputs: classworkOutputs,
-    classwork_due_time: dueTime,
-    classwork_due_date: dueDate,
-  } = targetClasswork;
-
+  const classworkOutputs = targetClasswork.classwork_outputs;
+  const dueTime = targetClasswork.classwork_due_time;
+  const dueDate = targetClasswork.classwork_due_date;
   const now = moment();
   const formattedTime = now.format("h:mm A");
   const formattedDate = now.format("MMM Do YYYY");
@@ -356,21 +315,21 @@ const studentList = asyncHandler(async (req, res, next) => {
       (output) => output._id.toString() === student._id.toString()
     );
 
-    let workStatus = "No Actions made";
-    if (studentActivity) {
-      if (
-        (isOverdue && !studentActivity.files) ||
-        (isOverdue && studentActivity?.files?.length === 0) ||
-        (isOverdue && studentActivity.files.length !== 0)
-      ) {
-        workStatus = "Missing";
-      } else {
-        workStatus = studentActivity.workStatus;
-      }
-    } else if (isOverdue && !studentActivity?.files) {
-      workStatus = "Missing";
-    } else if (isOverdue && studentActivity?.files !== 0) {
-      workStatus = "Missing";
+    let workStatus;
+
+    if (
+      (isOverdue && !studentActivity?.files) ||
+      (isOverdue && studentActivity?.files?.length !== 0)
+    ) {
+      workStatus = {
+        id: 1,
+        name: "Missing",
+      };
+    } else if (!studentActivity) {
+      workStatus = {
+        id: 5,
+        name: "No Action Yet",
+      };
     } else {
       workStatus = studentActivity.workStatus;
     }
@@ -394,6 +353,8 @@ const studentList = asyncHandler(async (req, res, next) => {
       user_img: `${student.user_profile_path}/${student.user_img}`,
     };
   });
+
+  console.log(listedStudent);
 
   res.status(200).send(listedStudent);
 });

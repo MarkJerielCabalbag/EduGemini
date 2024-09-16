@@ -134,11 +134,11 @@ function ClassroomSubmition() {
   });
 
   const workBadge = attachments?.map((output) => {
-    if (output.workStatus === "Turned in") {
+    if (output.workStatus.name === "Turned in") {
       return "bg-green-500";
-    } else if (output.workStatus === "shelved") {
+    } else if (output.workStatus.name === "Shelved") {
       return "bg-sky-500";
-    } else if (output.workStatus === "cancelled") {
+    } else if (output.workStatus.name === "Cancelled") {
       return "bg-red-500";
     }
   });
@@ -197,7 +197,7 @@ function ClassroomSubmition() {
                                     {attachments?.map((output) =>
                                       output.files.length === 0
                                         ? "No Attachments"
-                                        : output.workStatus
+                                        : output.workStatus.name
                                     )}
                                   </span>
                                 </div>
@@ -232,14 +232,7 @@ function ClassroomSubmition() {
                                       <Button
                                         disabled={isOverdue}
                                         className={`w-full my-2 ${
-                                          now > info.classwork_due_date ||
-                                          (formattedTime >
-                                            info.classwork_due_time &&
-                                            now === info.classwork_due_date) ||
-                                          formattedTime >
-                                            info.classwork_due_time
-                                            ? "opacity-50"
-                                            : "show"
+                                          isOverdue ? "opacity-50" : "show"
                                         }`}
                                         onClick={() => openFilePicker()}
                                       >
@@ -294,7 +287,7 @@ function ClassroomSubmition() {
                                                 <X
                                                   size={isOverdue ? 0 : 30}
                                                   className={`max-h-96 hover:cursor-pointer ${
-                                                    outputs.workStatus ===
+                                                    outputs.workStatus.name ===
                                                     "Turned in"
                                                       ? "hidden"
                                                       : ""
@@ -316,7 +309,7 @@ function ClassroomSubmition() {
                                             <Button
                                               disabled={isOverdue}
                                               className={`w-full my-2 ${
-                                                outputs.workStatus ===
+                                                outputs.workStatus.name ===
                                                 "Turned in"
                                                   ? "hidden"
                                                   : ""
@@ -342,9 +335,10 @@ function ClassroomSubmition() {
                                                 onOpenChange={setCancelModal}
                                               />
                                             )}
-                                            {outputs.workStatus === "shelved" ||
-                                            outputs.workStatus ===
-                                              "cancelled" ? (
+                                            {outputs.workStatus.name ===
+                                              "Shelved" ||
+                                            outputs.workStatus.name ===
+                                              "Cancelled" ? (
                                               <Button
                                                 disabled={isOverdue}
                                                 className={`w-full ${

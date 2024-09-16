@@ -1,9 +1,12 @@
 import {
   flexRender,
   getCoreRowModel,
+  getFilteredRowModel,
   getPaginationRowModel,
   getSortedRowModel,
   useReactTable,
+  getFacetedRowModel,
+  getFacetedUniqueValues,
 } from "@tanstack/react-table";
 import React, { useMemo, useState } from "react";
 import {
@@ -15,68 +18,71 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { Collapsible } from "@radix-ui/react-collapsible";
-import {
-  CollapsibleContent,
-  CollapsibleTrigger,
-} from "@/components/ui/collapsible";
+import { fuzzyFilter, statusFilter } from "./useFilter";
 import RowExpandView from "./studentListRow/RowExpandView";
 import TableDataHeader from "./TableDataHeader";
 import Pagination from "./Pagination";
+import Filters from "./Filters";
 
-const DataTable = ({ dataTable, columns }) => {
+const DataTable = ({ dataTable, columns, statuses }) => {
   const [columnVisibility, setColumnVisibility] = useState({
     files: false,
     path: false,
     time: false,
     feedback: false,
   });
-  const memoizedColumns = useMemo(() => columns, []);
+  const [columnFilters, setColumnFilters] = useState([]);
+  const memoizedColumns = useMemo(() => columns, [columns]);
+  const memorizedData = useMemo(() => dataTable, [dataTable]);
   const [data, setData] = useState(dataTable);
+  console.log(columnFilters);
   const table = useReactTable({
-    data: dataTable,
+    data: memorizedData,
     columns: memoizedColumns,
     getCoreRowModel: getCoreRowModel(),
     state: {
-      columnVisibility,
+      // columnVisibility,
+      columnFilters,
     },
-    onColumnVisibilityChange: setColumnVisibility,
+    onColumnFiltersChange: setColumnFilters,
+    // onColumnVisibilityChange: setColumnVisibility,
     getRowCanExpand: () => true,
     getSortedRowModel: getSortedRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
+    getFilteredRowModel: getFilteredRowModel(),
   });
 
   return (
     <div className="w-full h-full">
+      <Filters
+        table={table}
+        setColumnFilters={setColumnFilters}
+        columnFilters={columnFilters}
+      />
       <Table>
         <TableHeader>
           {table.getHeaderGroups().map((headerGroup) => (
             <TableRow key={headerGroup.id} className="w-auto">
               {headerGroup.headers.map((header) => (
-                <TableDataHeader header={header} />
+                <TableDataHeader key={header.id} header={header} />
               ))}
             </TableRow>
           ))}
         </TableHeader>
         <TableBody className="w-auto">
           {table.getRowModel().rows.map((row) => (
-            <>
-              <TableRow key={row.id} className="w-auto">
+            <React.Fragment key={row.id}>
+              <TableRow className="w-auto">
                 {row.getVisibleCells().map((cell) => (
-                  <>
-                    <TableCell key={cell.id} className="w-auto">
-                      {flexRender(
-                        cell.column.columnDef.cell,
-                        cell.getContext()
-                      )}
-                    </TableCell>
-                  </>
+                  <TableCell key={cell.id} className="w-auto">
+                    {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                  </TableCell>
                 ))}
               </TableRow>
-              <TableRow className="col-span-auto">
+              <>
                 {row.getIsExpanded() && <RowExpandView user={row.original} />}
-              </TableRow>
-            </>
+              </>
+            </React.Fragment>
           ))}
         </TableBody>
       </Table>

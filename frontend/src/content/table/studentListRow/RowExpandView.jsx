@@ -28,7 +28,7 @@ const RowExpandView = ({ user }) => {
     }
   };
   return (
-    <div className="p-5 w-min-full">
+    <div className="p-5 w-full">
       <div>
         <div className="flex gap-3 items-center">
           <Avatar>
@@ -46,12 +46,12 @@ const RowExpandView = ({ user }) => {
           <div className="my-5 flex gap-5 items-center">
             <Badge
               className={` ${
-                user.workStatus === "Missing" ? "bg-red-500" : ""
-              } ${user.workStatus === "shelved" ? "bg-sky-500" : ""} ${
-                user.workStatus === "cancelled" ? "bg-red-900" : ""
-              } ${user.workStatus === "Turned in" ? "bg-green-500" : ""}`}
+                user.workStatus.name === "Missing" ? "bg-red-500" : ""
+              } ${user.workStatus.name === "shelved" ? "bg-sky-500" : ""} ${
+                user.workStatus.name === "cancelled" ? "bg-red-900" : ""
+              } ${user.workStatus.name === "Turned in" ? "bg-green-500" : ""}`}
             >
-              {user.workStatus}
+              {user.workStatus.name}
             </Badge>
             <p className="flex gap-1 items-center italic text-slate-400">
               <Clock size={15} />

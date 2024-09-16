@@ -6,10 +6,11 @@ import {
   useGetListedStudent,
   getListedStudents,
 } from "@/api/useApi";
+import { studentListStatus } from "../table/studentListRow/sudentListStatus";
 import CopyFunctionality from "@/utils/CopyFunctionality";
 import LoadingState from "@/utils/LoadingState";
 import ToolTipComponent from "@/utils/ToolTipComponent";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   ArrowLeft,
   Bell,
@@ -39,6 +40,7 @@ import { Badge } from "@/components/ui/badge";
 import DataTable from "../table/DataTable";
 
 import { setStudentListCol } from "../table/useTable";
+import axios from "axios";
 
 function ClassworkView({ userStatus }) {
   const navigate = useNavigate();
@@ -54,6 +56,7 @@ function ClassworkView({ userStatus }) {
   const [isCopied, setIsCopied] = useState(false);
 
   const [openClassworkSettingModal, setOpenSettingModal] = useState(false);
+  const [dataTableValue, setDataTableValue] = useState(null);
 
   const { data, isFetching, isLoading, isPending } = useGetClassworkInfo({
     queryFn: () => getClassworkInformation(roomId, workId),
@@ -67,13 +70,12 @@ function ClassworkView({ userStatus }) {
     onSuccess,
   });
 
-  const { data: dataTable } = useGetListedStudent({
-    queryFn: () => getListedStudents(roomId, workId),
+  const dataTable = useGetListedStudent({
+    queryFn: () => getListedStudents(workId, roomId),
     onError,
     onSuccess,
   });
-
-  console.log(dataTable);
+  console.log(dataTable.data);
 
   if (isFetching || isLoading || isPending) {
     return (
@@ -83,7 +85,7 @@ function ClassworkView({ userStatus }) {
 
   return (
     <>
-      {data.map((classroomInfo) => (
+      {data?.map((classroomInfo) => (
         <div className="container sm:container md:container lg:container">
           {room?.map((roomInfo) => (
             <div className="my-5">
@@ -202,7 +204,15 @@ function ClassworkView({ userStatus }) {
                   content={<p>Open Settings</p>}
                 />
               </div>
-              <DataTable dataTable={dataTable} columns={setStudentListCol} />
+
+              {isLoading || isPending || isFetching ? (
+                <>loading</>
+              ) : (
+                <DataTable
+                  dataTable={dataTable.data}
+                  columns={setStudentListCol}
+                />
+              )}
             </div>
           ))}
           {openClassworkSettingModal && (

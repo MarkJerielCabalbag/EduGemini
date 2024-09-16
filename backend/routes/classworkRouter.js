@@ -366,7 +366,10 @@ classworkRouter.post(
 
       if (studentExist) {
         studentExist.files.push(...addedFiles);
-        studentExist.workStatus = "shelved";
+        studentExist.workStatus = {
+          id: 1,
+          name: "Shelved",
+        };
 
         studentExist.timeSubmition = `${date}, ${timeAction}`;
         studentExist.feedback = "";
@@ -374,7 +377,10 @@ classworkRouter.post(
         workIndex.classwork_outputs.unshift({
           _id: userId,
           files: addedFiles,
-          workStatus: "shelved",
+          workStatus: {
+            id: 1,
+            name: "Shelved",
+          },
           path: `/answers/${foundStudent.user_lastname}, ${foundStudent.user_firstname} ${foundStudent.user_middlename}`,
           timeSubmition: `${date}, ${timeAction}`,
           feedback: null,

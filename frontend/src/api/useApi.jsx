@@ -555,7 +555,7 @@ export async function cancelSubmition(
   });
 }
 
-export async function getListedStudents(roomId, workId) {
+export async function getListedStudents(workId, roomId) {
   return await fetch(
     `${baseUrl}/api/eduGemini/classwork/students/${workId}/${roomId}`,
     {

@@ -11,7 +11,6 @@ export const setStudentListCol = [
     id: "avatar",
     header: "Avatar",
     cell: (row) => <img src={`${baseUrl}/${row.user_img}`} />,
-    enableSorting: false,
   }),
   columnHelper.accessor("studentName", {
     id: "name",
@@ -19,22 +18,29 @@ export const setStudentListCol = [
     cell: (info) => (
       <h1 className="font-bold text-slate-900 italic">{info.getValue()}</h1>
     ),
+    enableColumnFilter: true,
+    filterFn: "includesString",
   }),
   columnHelper.accessor((row) => row.workStatus, {
     id: "status",
     cell: (info) => (
       <Badge
-        className={`${info.getValue() === "Missing" ? "bg-red-500" : ""} ${
-          info.getValue() === "Missing" ? "bg-red-500" : ""
-        } ${info.getValue() === "shelved" ? "bg-sky-500" : ""} ${
-          info.getValue() === "cancelled" ? "bg-red-900" : ""
-        } ${info.getValue() === "Turned in" ? "bg-green-500" : ""}`}
+        className={`${
+          info.getValue().name === "Missing" ? "bg-red-500" : ""
+        }  ${info.getValue().name === "Shelved" ? "bg-sky-500" : ""} ${
+          info.getValue().name === "Cancelled" ? "bg-red-900" : ""
+        } ${info.getValue().name === "Turned in" ? "bg-green-500" : ""}`}
       >
-        {info.getValue()}
+        {info.getValue().name}
       </Badge>
     ),
     header: () => "Status",
-    enableSorting: false,
+    enableColumnFilter: true,
+    filterFn: (row, columnId, filterStatuses) => {
+      if (filterStatuses.length === 0) return true;
+      const status = row.getValue(columnId);
+      return filterStatuses.includes(status?.id);
+    },
   }),
   columnHelper.accessor((row) => `${row.files.map((file) => file?.filename)}`, {
     id: "files",
