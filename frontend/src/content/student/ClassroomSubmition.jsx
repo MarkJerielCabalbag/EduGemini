@@ -55,6 +55,7 @@ function ClassroomSubmition() {
     queryCleint.invalidateQueries({
       queryKey: ["classwork"],
     });
+    queryClient.invalidateQueries({ queryKey: ["listedStudents"] });
     toast.success(data.message);
   };
 

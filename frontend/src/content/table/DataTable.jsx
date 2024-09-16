@@ -5,8 +5,6 @@ import {
   getPaginationRowModel,
   getSortedRowModel,
   useReactTable,
-  getFacetedRowModel,
-  getFacetedUniqueValues,
 } from "@tanstack/react-table";
 import React, { useMemo, useState } from "react";
 import {
@@ -32,8 +30,8 @@ const DataTable = ({ dataTable, columns, statuses }) => {
     feedback: false,
   });
   const [columnFilters, setColumnFilters] = useState([]);
-  const memoizedColumns = useMemo(() => columns, [columns]);
-  const memorizedData = useMemo(() => dataTable, [dataTable]);
+  const memoizedColumns = useMemo(() => columns || [], [columns]);
+  const memorizedData = useMemo(() => dataTable || [], [dataTable]);
   const [data, setData] = useState(dataTable);
   console.log(columnFilters);
   const table = useReactTable({
@@ -41,11 +39,11 @@ const DataTable = ({ dataTable, columns, statuses }) => {
     columns: memoizedColumns,
     getCoreRowModel: getCoreRowModel(),
     state: {
-      // columnVisibility,
+      columnVisibility,
       columnFilters,
     },
     onColumnFiltersChange: setColumnFilters,
-    // onColumnVisibilityChange: setColumnVisibility,
+    onColumnVisibilityChange: setColumnVisibility,
     getRowCanExpand: () => true,
     getSortedRowModel: getSortedRowModel(),
     getPaginationRowModel: getPaginationRowModel(),

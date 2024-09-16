@@ -82,6 +82,7 @@ function ClassworkUpdate({ setOpenSettingModal }) {
 
       toast.success(data.message);
       queryClient.invalidateQueries({ queryKey: ["classworkInfo"] });
+      queryClient.invalidateQueries({ queryKey: ["classworks"] });
     } catch (error) {
       toast.error(error.message);
     }
