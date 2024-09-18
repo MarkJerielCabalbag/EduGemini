@@ -20,6 +20,7 @@ function DeclineStudentModal({ open, onOpenChange, studentID }) {
     toast.success(data.message);
     onOpenChange(false);
     queryClient.invalidateQueries({ queryKey: ["room"] });
+    queryClient.invalidateQueries({ queryKey: ["allClassroom"] });
   };
   const { mutateAsync, isLoading, isPending } = useRejectStudentJoin({
     onError,

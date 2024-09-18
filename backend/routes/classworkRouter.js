@@ -370,9 +370,7 @@ classworkRouter.post(
           id: 1,
           name: "Shelved",
         };
-
         studentExist.timeSubmition = `${date}, ${timeAction}`;
-        studentExist.feedback = "";
       } else {
         workIndex.classwork_outputs.unshift({
           _id: userId,
@@ -384,6 +382,8 @@ classworkRouter.post(
           path: `/answers/${foundStudent.user_lastname}, ${foundStudent.user_firstname} ${foundStudent.user_middlename}`,
           timeSubmition: `${date}, ${timeAction}`,
           feedback: null,
+          score: null,
+          chancesResubmition: 3,
         });
       }
 

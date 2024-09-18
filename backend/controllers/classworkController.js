@@ -1,13 +1,14 @@
 import asyncHandler from "express-async-handler";
 import Classroom from "../models/classroomModel.js";
 import User from "../models/userModel.js";
-
+import { parseOffice, parseOfficeAsync } from "officeparser";
 import fs from "fs";
 import path from "path";
 import multer from "multer";
 import { rimraf } from "rimraf";
 import { fileURLToPath } from "url";
 import moment from "moment";
+import readFileType from "../utils/readFile.js";
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 //@desc     get classwork
 //@route    GET /api/eduGemini/classwork/getClasswork/:roomId
@@ -199,6 +200,7 @@ const submitAttachment = asyncHandler(async (req, res, next) => {
   const foundStudent = roomExist.students.find(
     (student) => student._id.toString() === userId
   );
+
   if (!foundStudent) {
     return res.status(400).json({ message: `Student ${userId} not found` });
   }
@@ -216,18 +218,43 @@ const submitAttachment = asyncHandler(async (req, res, next) => {
   let studentExist = workIndex.classwork_outputs.find(
     (output) => output._id.toString() === userId
   );
+  //student files
+  const studentFiles = studentExist.files;
+  //student folder path
+  const studentFolderpath = studentExist.files.path;
+  //classwork folder path
+  const classworkPath = workIndex.classwork_folder_path;
+  //classwork attach file
+  const classworkAttachFile = workIndex.classwork_attach_file.originalname;
+
+  console.log(
+    "instruction folder path",
+    `${classworkPath}/instruction/${classworkAttachFile}`
+  );
+
+  studentFiles.forEach((file) => {
+    readFileType(
+      `./${classworkPath}/answers${file.path}/${file.filename}`,
+      file.filename.split(".").pop()
+    );
+    // const answers = fs.readFileSync(
+    //   `./${classworkPath}/answers${file.path}/${file.filename}`
+    // );
+    // parseOffice(answers, function (data, err) {
+    //   if (err) {
+    //     console.log(err);
+    //     return;
+    //   }
+    //   console.log(data);
+    // });
+  });
 
   studentExist.workStatus = {
     id: 3,
     name: "Turned in",
   };
   studentExist.timeSubmition = `${date}, ${timeAction}`;
-  studentExist.feedback = "";
 
-  // studentExist.workStatus = "Turned in";
-  // studentExist.timeSubmition = `${date}, ${timeAction}`;
-  // studentExist.feedback = "";
-  // console.log(studentExist.workStatus, `: ${studentExist.timeSubmition}`);
   roomExist.classwork[findClasswork] = workIndex;
 
   await roomExist.save();
@@ -275,6 +302,10 @@ const cancelSubmition = asyncHandler(async (req, res, next) => {
     id: 4,
     name: "Cancelled",
   };
+
+  let chances = studentExist.chancesResubmition - 1;
+
+  studentExist.chancesResubmition = chances < 0 ? 0 : chances;
 
   roomExist.classwork[findClasswork] = workIndex;
 
@@ -351,6 +382,10 @@ const studentList = asyncHandler(async (req, res, next) => {
         ? "No feedback available"
         : studentActivity?.feedback,
       user_img: `${student.user_profile_path}/${student.user_img}`,
+      chancesResubmition:
+        studentActivity?.chancesResubmition === undefined
+          ? "No Action Yet"
+          : studentActivity?.chancesResubmition,
     };
   });
 

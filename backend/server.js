@@ -18,6 +18,7 @@ const __dirname = dirname(fileURLToPath(import.meta.url));
 
 app.use(express.static("announcements"));
 app.use(express.static("profile"));
+app.use(express.static("classworks"));
 
 app.use("/api/eduGemini", authRouter);
 app.use("/api/eduGemini/classroom", classRouter);

@@ -22,17 +22,21 @@ import { Avatar } from "@radix-ui/react-avatar";
 import { AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import noData from "../assets/noData.png";
+import { useQueryClient } from "@tanstack/react-query";
 function Enrolled() {
+  const queryClient = useQueryClient();
   const { userId } = useParams();
   const [openJoinClassModal, setOpenJoinClassModal] = useState(false);
   const onError = () => console.log("error");
-  const onSuccess = () => console.log("success");
-  // const { data: classData, isFetching } = useGetJoinedClass({
-  //   queryFn: () => joinedClass(userId),
-  //   onError,
-  //   onSuccess,
-  // });
-  const { data: classData, isFetching } = useGetAllClassroom({
+  const onSuccess = () => {
+    queryClient.invalidateQueries({ queryKey: "allClassroom" });
+  };
+
+  const {
+    data: classData,
+    isFetching,
+    isPending,
+  } = useGetAllClassroom({
     queryFn: () => getAllClassroom(userId),
     onError,
     onSuccess,
@@ -101,6 +105,11 @@ function Enrolled() {
                                       <h1>{classroom.owner_name}</h1>
                                     </CardTitle>
                                     <CardDescription>
+                                      {isPending && (
+                                        <p style={{ opacity: 0.5 }}>
+                                          {variables}
+                                        </p>
+                                      )}
                                       <Badge className="my-2">Instructor</Badge>
                                       <p>{classroom.subject}</p>
                                       {student.approvalStatus === "pending" ||

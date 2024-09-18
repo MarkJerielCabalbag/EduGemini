@@ -17,7 +17,6 @@ import PrivateRoute from "./utils/PrivateRoute.jsx";
 import Profile from "./pages/Profile.jsx";
 import FileViewer from "./content/classroom/FileViewer.jsx";
 import Settings from "./pages/Settings.jsx";
-
 import ClassroomDetails from "./content/classroom/ClassroomDetails.jsx";
 import Stream from "./content/classroom/Stream.jsx";
 import Classwork from "./content/classroom/Classwork.jsx";
@@ -33,6 +32,7 @@ import Classroom from "./content/student/Classroom.jsx";
 import ClassroomSubmition from "./content/student/ClassroomSubmition.jsx";
 import { useGetUser } from "./api/useApi.jsx";
 import Outputs from "./content/student/Outputs.jsx";
+import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 const queryClient = new QueryClient();
 
 const router = createBrowserRouter(
@@ -153,6 +153,7 @@ ReactDOM.createRoot(document.getElementById("root")).render(
   <React.StrictMode>
     <QueryClientProvider client={queryClient}>
       <RouterProvider router={router} />
+      <ReactQueryDevtools initialIsOpen={false} />
     </QueryClientProvider>
   </React.StrictMode>
 );

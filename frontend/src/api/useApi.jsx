@@ -784,11 +784,19 @@ export const useGetAllClassroom = ({ queryFn, onError, onSuccess }) => {
   });
 };
 
-export const useAcceptStudentJoin = ({ onError, onSuccess }) => {
+export const useAcceptStudentJoin = ({
+  onError,
+  onSuccess,
+  onMutate,
+  onSettled,
+}) => {
   return useMutation({
+    mutationKey: ["acceptStudent"],
     mutationFn: acceptJoinStudent,
     onError,
     onSuccess,
+    onMutate,
+    onSettled,
   });
 };
 

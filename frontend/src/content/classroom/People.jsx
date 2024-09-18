@@ -21,6 +21,8 @@ import { Avatar, AvatarImage } from "@/components/ui/avatar";
 import React, { useState } from "react";
 import { useParams } from "react-router-dom";
 import { baseUrl } from "@/baseUrl";
+import LoadingState from "@/utils/LoadingState";
+import { useMutationState } from "@tanstack/react-query";
 function People() {
   const { roomId } = useParams();
   const [openStudentApproveModal, setOpenStudentApproveModal] = useState(false);

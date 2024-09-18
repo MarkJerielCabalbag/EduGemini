@@ -55,9 +55,10 @@ function JoinClass({ open, onOpenChange }) {
       class_code: "",
       _id: "",
     });
-
+    queryClient.invalidateQueries({ queryKey: ["room"] });
     queryClient.invalidateQueries({ queryKey: ["allClassroom"] });
   };
+
   const { data } = useGetUser({
     onError,
     onSuccess,

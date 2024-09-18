@@ -3,12 +3,13 @@ import ReusableModal from "./ReusableModal";
 import { Button } from "../ui/button";
 import {
   fetchClassData,
+  getAllClassroom,
   useAcceptStudentJoin,
   useGetClass,
 } from "@/api/useApi";
 import toast from "react-hot-toast";
 import { Loader2Icon } from "lucide-react";
-import { useQueryClient } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useParams } from "react-router-dom";
 
 function ApproveStudentModal({ open, onOpenChange, studentID }) {
@@ -19,8 +20,14 @@ function ApproveStudentModal({ open, onOpenChange, studentID }) {
   const onSuccess = (data) => {
     toast.success(data.message);
     onOpenChange(false);
-    queryClient.invalidateQueries({ queryKey: ["room"] });
+    queryClient.invalidateQueries({
+      queryKey: ["allClassroom"],
+    });
+    queryClient.invalidateQueries({
+      queryKey: ["room"],
+    });
   };
+
   const { mutateAsync, isLoading, isPending } = useAcceptStudentJoin({
     onError,
     onSuccess,

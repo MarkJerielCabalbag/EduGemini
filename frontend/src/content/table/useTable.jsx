@@ -1,12 +1,25 @@
 import { baseUrl } from "@/baseUrl";
 import { Badge } from "@/components/ui/badge";
 import { createColumnHelper } from "@tanstack/react-table";
-import { Divide, Minus, Plus } from "lucide-react";
+import { ChevronDown, ChevronRight, Divide, Minus, Plus } from "lucide-react";
 import { useMemo } from "react";
 
 const columnHelper = createColumnHelper();
 
 export const setStudentListCol = [
+  columnHelper.display({
+    id: "plus",
+
+    header: () => <Plus />,
+    cell: ({ row }) =>
+      row.getCanExpand() ? (
+        row.getIsExpanded() ? (
+          <ChevronDown onClick={row.getToggleExpandedHandler()} />
+        ) : (
+          <ChevronRight onClick={row.getToggleExpandedHandler()} />
+        )
+      ) : null,
+  }),
   columnHelper.display({
     id: "avatar",
     header: "Avatar",
@@ -42,6 +55,11 @@ export const setStudentListCol = [
       return filterStatuses.includes(status?.id);
     },
   }),
+  columnHelper.accessor("chancesResubmition", {
+    id: "chances",
+    header: "Resubmition Left",
+    cell: (row) => <p className="font-bold">{row.getValue()}</p>,
+  }),
   columnHelper.accessor((row) => `${row.files.map((file) => file?.filename)}`, {
     id: "files",
   }),
@@ -56,17 +74,5 @@ export const setStudentListCol = [
   columnHelper.accessor("feedback", {
     id: "feedback",
     header: "Feedback",
-  }),
-  columnHelper.display({
-    id: "plus",
-    header: () => <Plus />,
-    cell: ({ row }) =>
-      row.getCanExpand() ? (
-        row.getIsExpanded() ? (
-          <Minus onClick={row.getToggleExpandedHandler()} />
-        ) : (
-          <Plus onClick={row.getToggleExpandedHandler()} />
-        )
-      ) : null,
   }),
 ];

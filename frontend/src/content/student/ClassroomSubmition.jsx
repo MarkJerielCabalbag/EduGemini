@@ -15,6 +15,7 @@ import {
 import {
   Calendar,
   File,
+  Info,
   Loader2Icon,
   NotebookPen,
   Timer,
@@ -144,15 +145,6 @@ function ClassroomSubmition() {
     }
   });
 
-  const dateNow = new Date();
-  const now = moment(dateNow).format("MMM Do YYY");
-
-  const formattedTime = dateNow.toLocaleTimeString("en-US", {
-    hour: "numeric",
-    minute: "numeric",
-    hour12: true,
-  });
-
   return (
     <div className="sm:container md:container lg:container">
       <Navbar />
@@ -229,7 +221,7 @@ function ClassroomSubmition() {
                                     <>
                                       <div className="flex justify-center items-center">
                                         No files uploaded yet.
-                                      </div>{" "}
+                                      </div>
                                       <Button
                                         disabled={isOverdue}
                                         className={`w-full my-2 ${
@@ -308,7 +300,10 @@ function ClassroomSubmition() {
                                           ))}
                                           <>
                                             <Button
-                                              disabled={isOverdue}
+                                              disabled={
+                                                isOverdue &&
+                                                outputs.chancesResubmition === 0
+                                              }
                                               className={`w-full my-2 ${
                                                 outputs.workStatus.name ===
                                                 "Turned in"
@@ -323,10 +318,7 @@ function ClassroomSubmition() {
                                                 openFilePicker();
                                               }}
                                             >
-                                              {(isOverdue &&
-                                                formattedTime >
-                                                  info.classwork_due_time) ||
-                                              outputs.length === 0
+                                              {isOverdue && outputs.length === 0
                                                 ? "Missing"
                                                 : "Select Files"}
                                             </Button>
@@ -341,7 +333,11 @@ function ClassroomSubmition() {
                                             outputs.workStatus.name ===
                                               "Cancelled" ? (
                                               <Button
-                                                disabled={isOverdue}
+                                                disabled={
+                                                  isOverdue ||
+                                                  outputs.chancesResubmition ===
+                                                    0
+                                                }
                                                 className={`w-full ${
                                                   outputs.files.length === 0
                                                     ? "hidden"
@@ -361,20 +357,38 @@ function ClassroomSubmition() {
                                                 Turn in
                                               </Button>
                                             ) : (
-                                              <Button
-                                                onClick={() =>
-                                                  setCancelModal(true)
-                                                }
-                                                className={`w-full ${
-                                                  outputs.files.length === 0
-                                                    ? "hidden"
-                                                    : ""
-                                                }`}
-                                              >
-                                                Cancel
-                                              </Button>
+                                              <>
+                                                <Button
+                                                  onClick={() =>
+                                                    setCancelModal(true)
+                                                  }
+                                                  className={`w-full ${
+                                                    outputs.files.length === 0
+                                                      ? "hidden"
+                                                      : ""
+                                                  }`}
+                                                >
+                                                  Cancel
+                                                </Button>
+                                              </>
                                             )}
                                           </>
+                                          <p className="mt-5 italic opacity-80 text-pretty">
+                                            <div className="flex items-center gap-2 font-extrabold">
+                                              <Info size={18} /> Note
+                                            </div>
+                                            Once you submit, you have{" "}
+                                            <span className="font-bold">
+                                              {outputs.chancesResubmition}
+                                            </span>{" "}
+                                            chances of{" "}
+                                            <span className="font-bold">
+                                              resubmitions
+                                            </span>{" "}
+                                            left to resubmit if you cancel your
+                                            submission or need to make changes
+                                            after turning it in
+                                          </p>
                                         </>
                                       ))}
                                     </>
