@@ -431,4 +431,9 @@ classworkRouter.get(
   classworkController.studentList
 );
 
+//get all student scores
+classworkRouter.get(
+  "/allactivities/:roomId",
+  classworkController.getAllActivities
+);
 export default classworkRouter;

@@ -6,7 +6,7 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import { Button } from "@/components/ui/button";
-import { studentListStatus } from "./studentListRow/sudentListStatus";
+
 import { Filter } from "lucide-react";
 
 const SetStatus = ({ status, setColumnFilters, isActive }) => {
@@ -46,7 +46,7 @@ const SetStatus = ({ status, setColumnFilters, isActive }) => {
   );
 };
 
-const Filters = ({ setColumnFilters, columnFilters }) => {
+const Filters = ({ setColumnFilters, columnFilters, statuses }) => {
   const onFilterChange = (id, value) =>
     setColumnFilters((prev) =>
       prev.filter((f) => f.id !== id).concat({ id, value })
@@ -70,7 +70,7 @@ const Filters = ({ setColumnFilters, columnFilters }) => {
         </PopoverTrigger>
         <PopoverContent>
           <h1 className="text-slate-900 font-bold mb-5">Filter By Status:</h1>
-          {studentListStatus.map((status) => (
+          {statuses.map((status) => (
             <SetStatus
               key={status.id}
               status={status}

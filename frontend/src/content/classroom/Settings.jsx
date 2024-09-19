@@ -1,127 +1,90 @@
-import { fetchClassData, useGetClass } from "@/api/useApi";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
 import {
-  Table,
-  TableBody,
-  TableCaption,
-  TableCell,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
-import { Avatar, AvatarImage } from "@/components/ui/avatar";
-import React, { useState } from "react";
-import DeclineStudentModal from "@/components/modals/DeclineStudentModal";
-import { baseUrl } from "@/baseUrl";
+  fetchClassData,
+  getAllActivities,
+  useGetAllActivities,
+  useGetClass,
+} from "@/api/useApi";
+import DataTable from "../table/DataTable";
 import { useParams } from "react-router-dom";
+import { useState } from "react";
+import { createColumnHelper } from "@tanstack/react-table";
+import { studentGender } from "../table/studentListRow/sudentListStatus";
 
 function Settings() {
   const { roomId } = useParams();
   const [openStudentDeclineModal, setOpenStudentDeclineModal] = useState(false);
   const onError = () => console.log("error");
   const onSuccess = () => console.log("success");
+  const columnHelper = createColumnHelper();
+
   const { data, isLoading, isPending, isFetching } = useGetClass({
     queryFn: () => fetchClassData(roomId),
     onError,
     onSuccess,
   });
+
+  const { data: dataTable } = useGetAllActivities({
+    queryFn: () => getAllActivities(roomId),
+    onError,
+    onSuccess,
+  });
+
+  const getClassworkTitles = (data) => {
+    const titles = new Set();
+    if (data) {
+      data.forEach((student) => {
+        student.classwork.forEach((cw) => titles.add(cw.title));
+      });
+    }
+    return Array.from(titles);
+  };
+
+  const classworkTitles = dataTable ? getClassworkTitles(dataTable) : [];
+
+  const setGetAllActivities = [
+    columnHelper.accessor("studentNames", {
+      id: "name",
+      header: "Name",
+      cell: (info) => (
+        <h1 className="font-bold text-slate-900 italic">{info.getValue()}</h1>
+      ),
+      enableColumnFilter: true,
+      filterFn: "includesString",
+    }),
+    columnHelper.accessor((row) => row.gender.name, {
+      id: "status",
+      header: () => "Gender",
+      cell: (info) => <p>{info.getValue()}</p>,
+      enableColumnFilter: true,
+      filterFn: (row, columnId, filterStatuses) => {
+        if (filterStatuses.length === 0) return true;
+        const status = row.getValue(columnId);
+        return filterStatuses.includes(status?.id);
+      },
+    }),
+    //dynamic columns
+    ...classworkTitles.map((title) =>
+      columnHelper.accessor(
+        (row) => {
+          const classwork = row.classwork.find((cw) => cw.title === title);
+          return classwork ? classwork.scores : null;
+        },
+        {
+          id: title,
+          header: title.charAt(0).toUpperCase() + title.slice(1),
+          cell: (info) => <p>{info.getValue()}</p>,
+        }
+      )
+    ),
+  ];
+
   return (
     <div className="h-full w-full">
-      <Table>
-        <TableCaption>A list of student approval</TableCaption>
-        <TableHeader>
-          <TableRow>
-            <TableCell>Student</TableCell>
-            <TableCell>Email</TableCell>
-            <TableCell>Status</TableCell>
-            <TableCell>Lastname</TableCell>
-            <TableCell>Firstname</TableCell>
-            <TableCell>Middlename</TableCell>
-            <TableCell>Gender</TableCell>
-            <TableCell>Action</TableCell>
-          </TableRow>
-        </TableHeader>
-        {data?.map((roomDetails) => (
-          <>
-            {roomDetails.students.map((student) => (
-              <>
-                {student.approvalStatus === "approved" ? (
-                  <TableBody>
-                    <TableRow>
-                      <TableCell className="flex gap-2 items-center">
-                        <Avatar>
-                          {student.user_profile_path && (
-                            <AvatarImage
-                              className="h-10 w-10 rounded-full border-2 border-slate-900"
-                              src={`${baseUrl}/${student.user_profile_path}/${student.user_img}`}
-                            />
-                          )}
-                        </Avatar>
-
-                        <div>
-                          {student.user_lastname}, {student.user_firstname}
-                          {student.user_middlename.charAt(0)}.
-                        </div>
-                      </TableCell>
-                      <TableCell>{student.user_email}</TableCell>
-                      <TableCell>
-                        {student.approvalStatus === "pending" ? (
-                          <>
-                            <Badge className={"bg-yellow-500"}>
-                              {student.approvalStatus}
-                            </Badge>
-                          </>
-                        ) : (
-                          <>
-                            {student.approvalStatus === "approved" ||
-                            student.approvalStatus === "declined" ? (
-                              <Badge
-                                className={`${
-                                  student.approvalStatus === "approved"
-                                    ? "bg-green-500"
-                                    : "bg-red-500"
-                                } `}
-                              >
-                                {student.approvalStatus}
-                              </Badge>
-                            ) : null}
-                          </>
-                        )}
-                      </TableCell>
-                      <TableCell>{student.user_lastname}</TableCell>
-                      <TableCell>{student.user_firstname}</TableCell>
-                      <TableCell>{student.user_middlename}</TableCell>
-                      <TableCell>{student.user_gender}</TableCell>
-                      <TableCell>
-                        <Button
-                          value="decline"
-                          className={`${
-                            student.approvalStatus === "pending"
-                              ? "hide"
-                              : "show "
-                          } w-full bg-red-600 hover:bg-red-300 text-slate-900 `}
-                          onClick={() => setOpenStudentDeclineModal(true)}
-                        >
-                          Decline
-                        </Button>
-                      </TableCell>
-                    </TableRow>
-                  </TableBody>
-                ) : null}
-
-                {openStudentDeclineModal && (
-                  <DeclineStudentModal
-                    open={openStudentDeclineModal}
-                    onOpenChange={setOpenStudentDeclineModal}
-                    student={student}
-                    roomDetails={roomDetails}
-                  />
-                )}
-              </>
-            ))}
-          </>
-        ))}
-      </Table>
+      <DataTable
+        dataTable={dataTable}
+        columns={setGetAllActivities}
+        statuses={studentGender}
+      />
     </div>
   );
 }

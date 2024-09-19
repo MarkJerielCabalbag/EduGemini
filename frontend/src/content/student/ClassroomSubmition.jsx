@@ -28,6 +28,7 @@ import DocViewer, { DocViewerRenderers } from "@cyntler/react-doc-viewer";
 import { baseUrl } from "@/baseUrl";
 import CancelSubmitionModal from "@/components/modals/CancelSubmitionModal";
 import moment from "moment";
+import Feedback from "./Feedback";
 function ClassroomSubmition() {
   const [files, setFiles] = useState([]);
   const [showTurnInBtn, setShowTurnInBtn] = useState(false);
@@ -50,13 +51,9 @@ function ClassroomSubmition() {
 
   const onError = () => console.log("error");
   const onSuccess = (data) => {
-    queryCleint.invalidateQueries({
-      queryKey: ["attachments"],
-    });
-    queryCleint.invalidateQueries({
-      queryKey: ["classwork"],
-    });
-    queryClient.invalidateQueries({ queryKey: ["listedStudents"] });
+    queryCleint.invalidateQueries({ queryKey: ["attachments"] });
+    queryCleint.invalidateQueries({ queryKey: ["classwork"] });
+
     toast.success(data.message);
   };
 
@@ -95,7 +92,7 @@ function ClassroomSubmition() {
   };
 
   const { openFilePicker, filesContent, loading, plainFiles } = useFilePicker({
-    accept: [".docx", ".pdf", ".xlsx"],
+    accept: [".docx", ".pdf", ".xlsx", ".pptx"],
     multiple: true,
     readAs: "BinaryString",
     onFilesSuccessfullySelected: async ({ plainFiles, filesContent }) => {
@@ -354,7 +351,11 @@ function ClassroomSubmition() {
                                                   })
                                                 }
                                               >
-                                                Turn in
+                                                {isLoading || isPending ? (
+                                                  <Loader2Icon className="animate-spin" />
+                                                ) : (
+                                                  "Turn in"
+                                                )}
                                               </Button>
                                             ) : (
                                               <>
@@ -412,7 +413,9 @@ function ClassroomSubmition() {
           </div>
         </div>
         <div className="mt-5 md:mt-0 lg:mt-0 px-4 ">
-          <div className="px-4"></div>
+          <div className="px-4 h-full">
+            <Feedback />
+          </div>
         </div>
       </div>
     </div>

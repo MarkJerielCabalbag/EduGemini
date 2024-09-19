@@ -1,9 +1,9 @@
 import officeParser from "officeparser";
 import fs from "fs";
-async function readFileType(path, format) {
+export async function readFileType(path, format) {
+  let files;
   try {
     let finalPath = fs.readFileSync(`./${path}`);
-    let file;
 
     if (
       format === "docx" ||
@@ -11,13 +11,10 @@ async function readFileType(path, format) {
       format === "xlsx" ||
       format === "pdf"
     ) {
-      file = await officeParser.parseOfficeAsync(finalPath);
+      files = await officeParser.parseOfficeAsync(finalPath);
     }
-
-    console.log(file);
+    console.log(files);
   } catch (error) {
     console.log(error);
   }
 }
-
-export default readFileType;

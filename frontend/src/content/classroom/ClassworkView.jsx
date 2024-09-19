@@ -161,7 +161,7 @@ function ClassworkView({ userStatus }) {
                 <>
                   <div className="bg-slate-700 rounded-sm p-4 text-slate-50 flex flex-col justify-center items-end">
                     <p className="text-6xl font-extrabold text-slate-50">
-                      {roomInfo.students.length}
+                      {roomInfo.acceptedStudents.length}
                     </p>
                     <p className="italic opacity-80">Students</p>
                   </div>
@@ -211,6 +211,7 @@ function ClassworkView({ userStatus }) {
                 <DataTable
                   dataTable={dataTable.data}
                   columns={setStudentListCol}
+                  statuses={studentListStatus}
                 />
               )}
             </div>

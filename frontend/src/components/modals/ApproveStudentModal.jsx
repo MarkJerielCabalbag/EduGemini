@@ -20,12 +20,7 @@ function ApproveStudentModal({ open, onOpenChange, studentID }) {
   const onSuccess = (data) => {
     toast.success(data.message);
     onOpenChange(false);
-    queryClient.invalidateQueries({
-      queryKey: ["allClassroom"],
-    });
-    queryClient.invalidateQueries({
-      queryKey: ["room"],
-    });
+    queryClient.invalidateQueries({ queryKey: ["room"] });
   };
 
   const { mutateAsync, isLoading, isPending } = useAcceptStudentJoin({
@@ -34,7 +29,7 @@ function ApproveStudentModal({ open, onOpenChange, studentID }) {
   });
 
   const { roomId } = useParams();
-  const { data, isFetching } = useGetClass({
+  const { data } = useGetClass({
     queryFn: () => fetchClassData(roomId),
     onError,
     onSuccess,

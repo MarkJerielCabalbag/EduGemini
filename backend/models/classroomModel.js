@@ -20,6 +20,10 @@ const classroomSchema = new Schema(
       type: Array,
       required: false,
     },
+    acceptedStudents: {
+      type: Array,
+      required: false,
+    },
     classname: {
       type: String,
     },

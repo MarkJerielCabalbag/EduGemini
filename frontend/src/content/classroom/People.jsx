@@ -22,14 +22,16 @@ import React, { useState } from "react";
 import { useParams } from "react-router-dom";
 import { baseUrl } from "@/baseUrl";
 import LoadingState from "@/utils/LoadingState";
-import { useMutationState } from "@tanstack/react-query";
+import { useMutationState, useQueryClient } from "@tanstack/react-query";
 function People() {
   const { roomId } = useParams();
   const [openStudentApproveModal, setOpenStudentApproveModal] = useState(false);
   const [openStudentDeclineModal, setOpenStudentDeclineModal] = useState(false);
-
+  const queryClient = useQueryClient();
   const onError = () => console.log("error");
-  const onSuccess = () => console.log("success");
+  const onSuccess = () => {
+    queryClient.invalidateQueries({ queryKey: ["room"] });
+  };
   const { data, isLoading, isPending, isFetching } = useGetClass({
     queryFn: () => fetchClassData(roomId),
     onError,

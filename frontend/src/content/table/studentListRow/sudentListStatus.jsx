@@ -1,8 +1,8 @@
 export const studentListStatus = [
-  { id: 1, name: "Missing" },
+  { id: 1, name: "Shelved" },
   {
     id: 2,
-    name: "Shelved",
+    name: "Missing",
   },
   {
     id: 3,
@@ -13,4 +13,15 @@ export const studentListStatus = [
     name: "Cancelled",
   },
   { id: 5, name: "No Action Yet" },
+];
+
+export const studentGender = [
+  {
+    id: 1,
+    name: "Male",
+  },
+  {
+    id: 2,
+    name: "Female",
+  },
 ];

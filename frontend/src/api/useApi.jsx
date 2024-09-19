@@ -573,6 +573,24 @@ export async function getListedStudents(workId, roomId) {
   });
 }
 
+export async function getAllActivities(roomId) {
+  return await fetch(
+    `${baseUrl}/api/eduGemini/classwork/allactivities/${roomId}`,
+    {
+      method: "GET",
+      headers: { "Content-Type": "application/json" },
+    }
+  ).then(async (res) => {
+    const response = await res.json();
+
+    if (!res.ok) {
+      throw new Error(response.message || "An Error Occured");
+    }
+
+    return response;
+  });
+}
+
 export const useGetClass = ({ queryFn, onSuccess, onError }) => {
   return useQuery({
     queryKey: ["room"],
@@ -808,12 +826,18 @@ export const useRejectStudentJoin = ({ onError, onSuccess }) => {
   });
 };
 
-export const useGetAttachments = ({ queryFn, onError, onSuccess }) => {
+export const useGetAttachments = ({
+  queryFn,
+  onError,
+  onSuccess,
+  refetchInterval,
+}) => {
   return useQuery({
     queryKey: ["attachments"],
     queryFn,
     onError,
     onSuccess,
+    refetchInterval,
   });
 };
 
@@ -844,6 +868,15 @@ export const useCancelSubmition = ({ mutationFn, onError, onSuccess }) => {
 export const useGetListedStudent = ({ queryFn, onSuccess, onError }) => {
   return useQuery({
     queryKey: ["listedStudents"],
+    queryFn,
+    onError,
+    onSuccess,
+  });
+};
+
+export const useGetAllActivities = ({ queryFn, onSuccess, onError }) => {
+  return useQuery({
+    queryKey: ["allActivities"],
     queryFn,
     onError,
     onSuccess,

@@ -1,14 +1,12 @@
 import asyncHandler from "express-async-handler";
 import Classroom from "../models/classroomModel.js";
-import User from "../models/userModel.js";
-import { parseOffice, parseOfficeAsync } from "officeparser";
 import fs from "fs";
 import path from "path";
-import multer from "multer";
-import { rimraf } from "rimraf";
 import { fileURLToPath } from "url";
 import moment from "moment";
-import readFileType from "../utils/readFile.js";
+import { GoogleGenerativeAI } from "@google/generative-ai";
+import officeParser from "officeparser";
+
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 //@desc     get classwork
 //@route    GET /api/eduGemini/classwork/getClasswork/:roomId
@@ -155,6 +153,7 @@ const deleteAttachment = asyncHandler(async (req, res) => {
 
     studentOutput.files = filteredFile;
     studentOutput.timeSubmition = `${date}, ${timeAction}`;
+
     // console.log("not filtered", studentOutput.files);
     // console.log("filtered", filteredFile);
     // console.log("success", studentOutput.files);
@@ -227,26 +226,70 @@ const submitAttachment = asyncHandler(async (req, res, next) => {
   //classwork attach file
   const classworkAttachFile = workIndex.classwork_attach_file.originalname;
 
-  console.log(
-    "instruction folder path",
-    `${classworkPath}/instruction/${classworkAttachFile}`
-  );
+  studentFiles.forEach(async (file) => {
+    let studentFiles;
+    try {
+      let answerPath = fs.readFileSync(
+        `./${classworkPath}/answers${file.path}/${file.filename}`
+      );
 
-  studentFiles.forEach((file) => {
-    readFileType(
-      `./${classworkPath}/answers${file.path}/${file.filename}`,
-      file.filename.split(".").pop()
-    );
-    // const answers = fs.readFileSync(
-    //   `./${classworkPath}/answers${file.path}/${file.filename}`
-    // );
-    // parseOffice(answers, function (data, err) {
-    //   if (err) {
-    //     console.log(err);
-    //     return;
-    //   }
-    //   console.log(data);
-    // });
+      let answerformat = file.filename.split(".").pop();
+
+      if (
+        answerformat === "docx" ||
+        answerformat === "pptx" ||
+        answerformat === "xlsx" ||
+        answerformat === "pdf"
+      ) {
+        studentFiles = await officeParser.parseOfficeAsync(answerPath);
+      }
+
+      let instructionFile;
+      let instructionPath = fs.readFileSync(
+        `./${classworkPath}/instruction/${classworkAttachFile}`
+      );
+
+      let instructionFormat = classworkAttachFile.split(".").pop();
+
+      if (
+        instructionFormat === "docx" ||
+        instructionFormat === "pdf" ||
+        instructionFormat === "txt"
+      ) {
+        instructionFile = await officeParser.parseOfficeAsync(instructionPath);
+      }
+
+      console.log("INSTRUCTION FILE", instructionFile);
+
+      const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
+
+      const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+
+      async function run() {
+        const prompt = `comapre this ${instructionFile} and ${studentFiles} and give constructive feedback and try to score the answers`;
+        const result = await model.generateContent(prompt);
+        const response = await result.response;
+        const text = response.text();
+        console.log(text);
+        console.log(
+          "######################################################################################################################################################"
+        );
+        const scorePrompt = `So, what is the total score of the output ${studentFiles} from the ${instructionFile}, return the accumulated points of the students from that activity as a number `;
+        const resultScore = await model.generateContent(scorePrompt);
+        const scoreResponse = await resultScore.response;
+        const scoretext = scoreResponse.text();
+        console.log(scoretext);
+        studentExist.feedback = text;
+        studentExist.score = scoretext;
+        roomExist.classwork[findClasswork] = workIndex;
+
+        await roomExist.save();
+      }
+
+      run();
+    } catch (error) {
+      console.log(error);
+    }
   });
 
   studentExist.workStatus = {
@@ -305,6 +348,9 @@ const cancelSubmition = asyncHandler(async (req, res, next) => {
 
   let chances = studentExist.chancesResubmition - 1;
 
+  studentExist.feedback = "";
+  studentExist.score = "";
+
   studentExist.chancesResubmition = chances < 0 ? 0 : chances;
 
   roomExist.classwork[findClasswork] = workIndex;
@@ -341,7 +387,7 @@ const studentList = asyncHandler(async (req, res, next) => {
     moment(`${dueDate} ${dueTime}`, "MMM Do YYYY h:mm A")
   );
 
-  const listedStudent = roomExist.students.map((student) => {
+  const listedStudent = roomExist.acceptedStudents.map((student) => {
     const studentActivity = classworkOutputs.find(
       (output) => output._id.toString() === student._id.toString()
     );
@@ -349,11 +395,13 @@ const studentList = asyncHandler(async (req, res, next) => {
     let workStatus;
 
     if (
-      (isOverdue && !studentActivity?.files) ||
-      (isOverdue && studentActivity?.files?.length !== 0)
+      isOverdue &&
+      !studentActivity?.files &&
+      isOverdue &&
+      studentActivity?.files?.length !== 0
     ) {
       workStatus = {
-        id: 1,
+        id: 2,
         name: "Missing",
       };
     } else if (!studentActivity) {
@@ -361,8 +409,8 @@ const studentList = asyncHandler(async (req, res, next) => {
         id: 5,
         name: "No Action Yet",
       };
-    } else {
-      workStatus = studentActivity.workStatus;
+    } else if (studentActivity) {
+      workStatus = studentActivity?.workStatus;
     }
 
     return {
@@ -393,6 +441,46 @@ const studentList = asyncHandler(async (req, res, next) => {
 
   res.status(200).send(listedStudent);
 });
+
+//@desc     get all classworks activities
+//@route    POST /api/eduGemini/classwork/allactivities/:roomId
+//@access   private
+export const getAllActivities = asyncHandler(async (req, res, next) => {
+  const { roomId } = req.params;
+
+  const roomExist = await Classroom.findById(roomId);
+
+  const allactivities = roomExist.acceptedStudents.map((student) => {
+    const eachClassworkTitle = () =>
+      roomExist.classwork.map((classwork) => {
+        const title = classwork.classwork_title;
+        const score = classwork.classwork_outputs.find(
+          (s) => s._id.toString() === student._id.toString()
+        );
+
+        let scores = score?.score ? score?.score : 0;
+
+        return { title, scores };
+      });
+    return {
+      studentNames: `${student.user_lastname}, ${
+        student.user_firstname
+      } ${student.user_middlename.charAt(0)}`,
+      classwork: eachClassworkTitle(),
+      gender:
+        student.user_gender === "male"
+          ? {
+              id: 1,
+              name: "Male",
+            }
+          : {
+              id: 2,
+              name: "Female",
+            },
+    };
+  });
+  res.send(allactivities);
+});
 export default {
   getClasswork,
   getClassworkInformation,
@@ -403,4 +491,5 @@ export default {
   submitAttachment,
   cancelSubmition,
   studentList,
+  getAllActivities,
 };

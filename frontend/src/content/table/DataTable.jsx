@@ -56,6 +56,7 @@ const DataTable = ({ dataTable, columns, statuses }) => {
         table={table}
         setColumnFilters={setColumnFilters}
         columnFilters={columnFilters}
+        statuses={statuses}
       />
       <Table>
         <TableHeader>

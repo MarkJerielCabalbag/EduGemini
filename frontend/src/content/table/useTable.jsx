@@ -1,10 +1,13 @@
+import { getAllActivities, useGetAllActivities } from "@/api/useApi";
 import { baseUrl } from "@/baseUrl";
 import { Badge } from "@/components/ui/badge";
 import { createColumnHelper } from "@tanstack/react-table";
+import axios from "axios";
 import { ChevronDown, ChevronRight, Divide, Minus, Plus } from "lucide-react";
 import { useMemo } from "react";
 
 const columnHelper = createColumnHelper();
+const roomId = localStorage.getItem("roomId");
 
 export const setStudentListCol = [
   columnHelper.display({

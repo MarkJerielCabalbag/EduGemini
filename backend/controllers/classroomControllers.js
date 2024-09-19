@@ -366,15 +366,28 @@ const acceptJoinStudent = asyncHandler(async (req, res, next) => {
   const roomExist = await Classroom.findOne({ _id: roomId });
   const getStudent = roomExist.students;
   const studentIndex = roomExist.students.findIndex(
-    (student) => student._id === userId
+    (student) => student._id.toString() === userId
   );
 
   const studentToBeUpdated = getStudent[studentIndex];
-
   studentToBeUpdated.approvalStatus = "approved";
-
   getStudent[studentIndex] = studentToBeUpdated;
 
+  roomExist.students.find((student) => {
+    roomExist.acceptedStudents.push({
+      _id: userId,
+      user_username: student.user_username,
+      user_email: student.user_email,
+      user_profile_path: student.user_profile_path,
+      user_img: student.user_img,
+      user_lastname: student.user_lastname,
+      user_firstname: student.user_firstname,
+      user_middlename: student.user_middlename,
+      user_gender: student.user_gender,
+      class_code: student.class_code,
+      approvalStatus: "approved",
+    });
+  });
   await roomExist.save();
   res
     .status(200)
