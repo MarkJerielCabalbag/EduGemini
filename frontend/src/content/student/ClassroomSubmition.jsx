@@ -211,8 +211,35 @@ function ClassroomSubmition() {
                                   : info.classwork_description}
                               </p>
 
+                              <div className="flex items-center justify-between p-5 rounded-md bg-slate-400 text-slate-50">
+                                <Link
+                                  target="_blank"
+                                  to={`/class/classwork/outputs/${roomId}/${userId}/${workId}`}
+                                  onClick={() => {
+                                    localStorage.setItem(
+                                      "uri",
+                                      `http://localhost:3000/${info.classwork_folder_path}/answers${file.path}/${file.filename}`
+                                    );
+                                    localStorage.setItem(
+                                      "fileType",
+                                      file.filename.split(".").pop()
+                                    );
+                                  }}
+                                >
+                                  <p>
+                                    {info.classwork_attach_file.originalname}
+                                  </p>
+                                  <p>
+                                    {fileSizeLabel(
+                                      info.classwork_attach_file.size
+                                    )}
+                                  </p>
+                                </Link>
+                              </div>
+
                               <div className="bg-slate-400 shadow-sm shadow-white rounded my-2 p-5">
                                 <h1>Your Work</h1>
+
                                 <div className="h-full overflow-x-auto">
                                   {attachments?.length === 0 ? (
                                     <>

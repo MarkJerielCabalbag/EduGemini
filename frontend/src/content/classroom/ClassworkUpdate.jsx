@@ -133,27 +133,6 @@ function ClassworkUpdate({ setOpenSettingModal }) {
         perspiciatis.
       </p>
       <>
-        <div className="">
-          <Label className="font-bold italic flex items-center gap-2 mb-2">
-            Attach new the Instruction/Criteria
-          </Label>
-          <ToolTipComponent
-            content={<p>Attach a new file</p>}
-            trigger={
-              <>
-                <label htmlFor="file-upload" className="custom-file-upload">
-                  <Paperclip />
-                </label>
-                <input
-                  id="file-upload"
-                  type="file"
-                  onChange={(e) => setClassworkAttachFile(e.target.files[0])}
-                />
-              </>
-            }
-          />
-        </div>
-
         <div className="my-3">
           <Label className="font-bold italic flex items-center gap-2 mb-2">
             New Title
@@ -173,26 +152,12 @@ function ClassworkUpdate({ setOpenSettingModal }) {
           classworkDetails={classworkDetails}
         />
 
-        <div className="my-3">
-          <Label className="font-bold italic flex items-center gap-2 mb-2">
-            New Instruction (Optional)
-          </Label>
-          <Textarea
-            type="text"
-            name="classworkDescription"
-            value={classworkDescription}
-            onChange={handleChange}
-            placeholder="What's the description of this classwork?"
-          />
-          <p></p>
-        </div>
-
         <div className="flex justify-between gap-2">
           <div className="my-3">
             <Label className="font-bold italic flex items-center gap-2 mb-2">
               New Due date
             </Label>
-            {/* <DatePickerDemo date={date} setDate={setDate} /> */}
+
             <Input
               type="date"
               value={date}
@@ -204,9 +169,9 @@ function ClassworkUpdate({ setOpenSettingModal }) {
 
           <div className="my-3 w-full">
             <Label className="font-bold italic flex items-center gap-2 mb-2">
-              New Due date
+              Set Time
             </Label>
-            <input
+            <Input
               type="time"
               className="flex flex-row-reverse justify-between"
               value={classworkDueTime}
@@ -232,6 +197,46 @@ function ClassworkUpdate({ setOpenSettingModal }) {
             />
             <p></p>
           </div>
+        </div>
+
+        <div className="my-3">
+          <Label className="font-bold italic flex items-center gap-2 mb-2">
+            New Instruction (Optional)
+          </Label>
+          <Textarea
+            type="text"
+            name="classworkDescription"
+            value={classworkDescription}
+            onChange={handleChange}
+            placeholder="What's the description of this classwork?"
+          />
+          <p></p>
+        </div>
+
+        <div className="">
+          <Label className="font-bold italic flex items-center gap-2 mb-2">
+            Attach new the Instruction/Criteria
+          </Label>
+          <ToolTipComponent
+            content={<p>Attach a new file</p>}
+            trigger={
+              <>
+                <label
+                  htmlFor="file-upload"
+                  className="custom-file-upload bg-slate-900 px-5 py-3 text-white rounded-md"
+                >
+                  <div className="flex gap-2 items-center ">
+                    <Paperclip /> Select File
+                  </div>
+                </label>
+                <input
+                  id="file-upload"
+                  type="file"
+                  onChange={(e) => setClassworkAttachFile(e.target.files[0])}
+                />
+              </>
+            }
+          />
         </div>
         <Button
           className="w-full my-3"

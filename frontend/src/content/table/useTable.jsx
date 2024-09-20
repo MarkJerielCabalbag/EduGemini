@@ -1,5 +1,6 @@
 import { getAllActivities, useGetAllActivities } from "@/api/useApi";
 import { baseUrl } from "@/baseUrl";
+import { Avatar, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { createColumnHelper } from "@tanstack/react-table";
 import axios from "axios";
@@ -7,12 +8,10 @@ import { ChevronDown, ChevronRight, Divide, Minus, Plus } from "lucide-react";
 import { useMemo } from "react";
 
 const columnHelper = createColumnHelper();
-const roomId = localStorage.getItem("roomId");
 
 export const setStudentListCol = [
   columnHelper.display({
     id: "plus",
-
     header: () => <Plus />,
     cell: ({ row }) =>
       row.getCanExpand() ? (
@@ -23,10 +22,17 @@ export const setStudentListCol = [
         )
       ) : null,
   }),
-  columnHelper.display({
+  columnHelper.accessor("user_img", {
     id: "avatar",
     header: "Avatar",
-    cell: (row) => <img src={`${baseUrl}/${row.user_img}`} />,
+    cell: (info) => (
+      <>
+        <Avatar>
+          <AvatarImage src={`${baseUrl}/${info.getValue()}`} />
+        </Avatar>
+      </>
+    ),
+    enableSorting: false,
   }),
   columnHelper.accessor("studentName", {
     id: "name",
@@ -52,6 +58,7 @@ export const setStudentListCol = [
     ),
     header: () => "Status",
     enableColumnFilter: true,
+    enableSorting: false,
     filterFn: (row, columnId, filterStatuses) => {
       if (filterStatuses.length === 0) return true;
       const status = row.getValue(columnId);
@@ -62,6 +69,12 @@ export const setStudentListCol = [
     id: "chances",
     header: "Resubmition Left",
     cell: (row) => <p className="font-bold">{row.getValue()}</p>,
+    enableSorting: false,
+  }),
+  columnHelper.accessor("score", {
+    id: "score",
+    header: "Score",
+    cell: (row) => <p>{row.getValue()}</p>,
   }),
   columnHelper.accessor((row) => `${row.files.map((file) => file?.filename)}`, {
     id: "files",

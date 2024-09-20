@@ -95,7 +95,7 @@ function UpdateUser() {
 
   const { mutateAsync, isError, isPending, isLoading, isSuccess, error } =
     useUpdateUser({
-      mutationFn: handleUpload,
+      mutationFn: () => handleUpload(),
       onSuccess,
       onError,
     });
@@ -114,9 +114,7 @@ function UpdateUser() {
         <div>
           <Avatar className="h-20 w-20 object-contain border-2 border-slate-900 relative">
             <AvatarImage src={handleImgSrc()} />
-            <AvatarFallback>
-              <Loader2Icon className="animate-spin" />
-            </AvatarFallback>
+            <AvatarFallback></AvatarFallback>
             <label
               htmlFor="file-upload"
               className="custom-file-upload absolute bottom-1 right-1 z-50"

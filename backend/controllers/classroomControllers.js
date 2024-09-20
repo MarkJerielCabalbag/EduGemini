@@ -300,8 +300,8 @@ const joinStudent = asyncHandler(async (req, res, next) => {
 
   if (!classroomExist) {
     return res
-      .status(200)
-      .json({ message: `class code ${class_code} doesnt exits` });
+      .status(400)
+      .json({ message: `class code: ${class_code} doesnt exist` });
   }
 
   const studentDuplication = classroomExist.students.find(
@@ -388,6 +388,7 @@ const acceptJoinStudent = asyncHandler(async (req, res, next) => {
       approvalStatus: "approved",
     });
   });
+  console.log(roomExist.acceptedStudents);
   await roomExist.save();
   res
     .status(200)

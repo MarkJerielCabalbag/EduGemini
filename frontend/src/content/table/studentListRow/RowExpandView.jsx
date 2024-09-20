@@ -1,10 +1,15 @@
 import { baseUrl } from "@/baseUrl";
+import AddChances from "@/components/modals/AddChances";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import { Clock, File, Loader, Star } from "lucide-react";
-import React from "react";
+import React, { useState } from "react";
+import { useParams } from "react-router-dom";
 
 const RowExpandView = ({ user }) => {
+  const [openAddChanceModal, setAddChanceModal] = useState(false);
+  const { workId } = useParams();
   const workStatus = (user) => {
     if (user.workStatus === "Turned in") {
       return "bg-green-500";
@@ -29,6 +34,16 @@ const RowExpandView = ({ user }) => {
   };
   return (
     <div className="p-5 w-full">
+      {openAddChanceModal && (
+        <AddChances
+          open={openAddChanceModal}
+          onOpenChange={setAddChanceModal}
+          studentName={user.studentName}
+          userId={user._id}
+          roomId={user.roomId}
+          workId={workId}
+        />
+      )}
       <div>
         <div className="flex gap-3 items-center">
           <Avatar>
@@ -61,7 +76,27 @@ const RowExpandView = ({ user }) => {
               <Star size={15} />
               Score:
               <span className="font-bold text-md text-slate-900">
-                No socre available
+                {user.score}
+              </span>
+            </p>
+
+            <p className="italic text-slate-400">
+              {user.chancesResubmition === 0
+                ? "No resubmitions left: "
+                : "Resubmitions left: "}
+              <span>
+                {user.chancesResubmition === 0 ? (
+                  <Button
+                    onClick={() => setAddChanceModal(true)}
+                    variant="ghost"
+                  >
+                    Give a chance?
+                  </Button>
+                ) : (
+                  <span className="font-bold text-md text-slate-900">
+                    {user.chancesResubmition}
+                  </span>
+                )}
               </span>
             </p>
           </div>

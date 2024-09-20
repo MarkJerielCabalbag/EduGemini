@@ -591,6 +591,25 @@ export async function getAllActivities(roomId) {
   });
 }
 
+export async function addChance(roomId, userId, workId, chances) {
+  return await fetch(
+    `${baseUrl}/api/eduGemini/classwork/addchance/${workId}/${roomId}/${userId}`,
+    {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ chances }),
+    }
+  ).then(async (res) => {
+    const response = await res.json();
+
+    if (!res.ok) {
+      throw new Error(response.message || "An Error Occured");
+    }
+
+    return response;
+  });
+}
+
 export const useGetClass = ({ queryFn, onSuccess, onError }) => {
   return useQuery({
     queryKey: ["room"],
@@ -878,6 +897,14 @@ export const useGetAllActivities = ({ queryFn, onSuccess, onError }) => {
   return useQuery({
     queryKey: ["allActivities"],
     queryFn,
+    onError,
+    onSuccess,
+  });
+};
+
+export const useAddChance = ({ mutationFn, onSuccess, onError }) => {
+  return useMutation({
+    mutationFn,
     onError,
     onSuccess,
   });

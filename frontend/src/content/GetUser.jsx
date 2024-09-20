@@ -1,4 +1,5 @@
 import { useGetUser } from "@/api/useApi";
+import { baseUrl } from "@/baseUrl";
 
 function GetUser() {
   const onSuccess = () => console.log("success");
@@ -13,7 +14,7 @@ function GetUser() {
             {user.profile_path && (
               <img
                 className="h-20 w-20 rounded-full border-2 border-slate-900"
-                src={`${user.profile.downloadUrl}`}
+                src={`${baseUrl}/${user.user_email}/${user.profile.filename}`}
               />
             )}
             Account Information

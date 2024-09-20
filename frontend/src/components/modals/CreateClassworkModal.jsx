@@ -19,14 +19,7 @@ import { Label } from "@radix-ui/react-label";
 import { Plus, Paperclip, Loader2, Info } from "lucide-react";
 import { useState, useEffect } from "react";
 import ClassworkTypeField from "@/content/classroom/ClassworkTypeField";
-function CreateClassworkModal({
-  open,
-  onOpenChange,
-  alertDialogTitle,
-  alertDialogDescription,
-  alertDialogFooter,
-  alertDialogTrigger,
-}) {
+function CreateClassworkModal({ open, onOpenChange }) {
   const queryClient = useQueryClient();
 
   const [classworkDetails, setClassworkDetails] = useState({
@@ -134,39 +127,11 @@ function CreateClassworkModal({
         alertDialogDescription={
           <div className="h-[300px] overflow-y-scroll">
             <div className="border-l-4 border-slate-500  p-5 shadow-md rounded mt-5">
-              <p className="pb-3">
+              <p className="">
                 Lorem ipsum dolor sit amet consectetur adipisicing elit. Quia
                 placeat soluta debitis aut totam tenetur assumenda optio est.
                 Odio, tempora?
               </p>
-
-              <div className="">
-                <Label className="font-bold italic flex items-center gap-2 mb-2">
-                  Attach the Instruction/Criteria
-                </Label>
-                <TooltipProvider>
-                  <Tooltip>
-                    <TooltipTrigger>
-                      <label
-                        htmlFor="file-upload"
-                        className="custom-file-upload"
-                      >
-                        <Paperclip />
-                      </label>
-                      <input
-                        id="file-upload"
-                        type="file"
-                        onChange={(e) =>
-                          setClassworkAttachFile(e.target.files[0])
-                        }
-                      />
-                    </TooltipTrigger>
-                    <TooltipContent>
-                      <p>Attach files</p>
-                    </TooltipContent>
-                  </Tooltip>
-                </TooltipProvider>
-              </div>
 
               <div className="my-3">
                 <Label className="font-bold italic flex items-center gap-2 mb-2">
@@ -200,35 +165,8 @@ function CreateClassworkModal({
                 classworkDetails={classworkDetails}
               />
 
-              <div className="my-3">
-                <Label className="font-bold italic flex items-center gap-2 mb-2">
-                  Instruction (Optional)
-                </Label>
-                <Textarea
-                  type="text"
-                  name="classworkDescription"
-                  value={classworkDescription}
-                  onChange={handleChange}
-                  placeholder="What's the description of this classwork?"
-                />
-                <p
-                  className={`${
-                    isError ? "show" : " "
-                  }hidden text-red-500 text-xs italic mt-2`}
-                >
-                  {isError ? (
-                    <div className="flex items-center gap-1">
-                      <Info size={13} />
-                      Fill out all fields
-                    </div>
-                  ) : (
-                    ""
-                  )}
-                </p>
-              </div>
-
-              <div className="flex justify-between gap-2">
-                <div className="my-3">
+              <div className="flex items-center gap-2">
+                <div className="my-3 w-1/2">
                   <Label className="font-bold italic flex items-center gap-2 mb-2">
                     Due date
                   </Label>
@@ -241,11 +179,11 @@ function CreateClassworkModal({
                   <p></p>
                 </div>
 
-                <div className="my-3 w-full">
+                <div className="my-3 w-1/2">
                   <Label className="font-bold italic flex items-center gap-2 mb-2">
-                    Due date
+                    Set Time
                   </Label>
-                  <input
+                  <Input
                     type="time"
                     className="flex flex-row-reverse justify-between"
                     min=""
@@ -288,6 +226,63 @@ function CreateClassworkModal({
                     )}
                   </p>
                 </div>
+              </div>
+
+              <div className="my-3">
+                <Label className="font-bold italic flex items-center gap-2 mb-2">
+                  Instruction (Optional)
+                </Label>
+                <Textarea
+                  type="text"
+                  name="classworkDescription"
+                  value={classworkDescription}
+                  onChange={handleChange}
+                  placeholder="What's the description of this classwork?"
+                />
+                <p
+                  className={`${
+                    isError ? "show" : " "
+                  }hidden text-red-500 text-xs italic mt-2`}
+                >
+                  {isError ? (
+                    <div className="flex items-center gap-1">
+                      <Info size={13} />
+                      Fill out all fields
+                    </div>
+                  ) : (
+                    ""
+                  )}
+                </p>
+              </div>
+
+              <div className="">
+                <Label className="font-bold italic flex items-center gap-2 mb-2">
+                  Attach the Instruction/Criteria
+                </Label>
+                <TooltipProvider>
+                  <Tooltip>
+                    <TooltipTrigger>
+                      <label
+                        htmlFor="file-upload"
+                        className="custom-file-upload bg-slate-900 px-5 py-3 rounded-sm text-white"
+                      >
+                        <div className="flex gap-2 items-center">
+                          <Paperclip size={18} /> Select Files
+                        </div>
+                      </label>
+                      <input
+                        id="file-upload"
+                        type="file"
+                        onChange={(e) =>
+                          setClassworkAttachFile(e.target.files[0])
+                        }
+                      />
+                    </TooltipTrigger>
+                    <TooltipContent>
+                      <p>Attach files</p>
+                    </TooltipContent>
+                  </Tooltip>
+                </TooltipProvider>
               </div>
             </div>
           </div>

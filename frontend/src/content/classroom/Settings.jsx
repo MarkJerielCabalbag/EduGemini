@@ -6,10 +6,10 @@ import {
 } from "@/api/useApi";
 import DataTable from "../table/DataTable";
 import { useParams } from "react-router-dom";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { createColumnHelper } from "@tanstack/react-table";
 import { studentGender } from "../table/studentListRow/sudentListStatus";
-
+import { DownloadTableExcel } from "react-export-table-to-excel";
 function Settings() {
   const { roomId } = useParams();
   const [openStudentDeclineModal, setOpenStudentDeclineModal] = useState(false);
@@ -51,10 +51,11 @@ function Settings() {
       enableColumnFilter: true,
       filterFn: "includesString",
     }),
-    columnHelper.accessor((row) => row.gender.name, {
+    columnHelper.accessor((row) => row.gender, {
       id: "status",
+      enableSorting: false,
       header: () => "Gender",
-      cell: (info) => <p>{info.getValue()}</p>,
+      cell: (info) => <p>{info.getValue().name}</p>,
       enableColumnFilter: true,
       filterFn: (row, columnId, filterStatuses) => {
         if (filterStatuses.length === 0) return true;

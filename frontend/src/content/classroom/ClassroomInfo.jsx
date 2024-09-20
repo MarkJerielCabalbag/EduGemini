@@ -57,7 +57,7 @@ function ClassroomInfo({ design, hide }) {
               <Avatar className="h-16 w-16">
                 <AvatarImage
                   className="border-2 border-slate-200 rounded-full"
-                  src={`${baseUrl}/${roomDetails?.profile_path}/${roomDetails?.user_img}`}
+                  src={`${baseUrl}/${roomDetails?.owner_email}/${roomDetails?.user_img}`}
                 />
               </Avatar>
               <div>

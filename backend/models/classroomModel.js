@@ -22,7 +22,6 @@ const classroomSchema = new Schema(
     },
     acceptedStudents: {
       type: Array,
-      required: false,
     },
     classname: {
       type: String,

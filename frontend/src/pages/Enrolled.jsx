@@ -23,6 +23,7 @@ import { AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import noData from "../assets/noData.png";
 import { useQueryClient } from "@tanstack/react-query";
+import { baseUrl } from "@/baseUrl";
 function Enrolled() {
   const queryClient = useQueryClient();
   const { userId } = useParams();
@@ -98,7 +99,7 @@ function Enrolled() {
                                   <CardHeader className="relative">
                                     <Avatar className="h-20 w-20 rounded-full border-2 border-slate-900">
                                       <AvatarImage
-                                        src={`http://localhost:3000/${classroom.profile_path}/${classroom.user_img}`}
+                                        src={`${baseUrl}/${classroom.owner_email}/${classroom.user_img}`}
                                       ></AvatarImage>
                                     </Avatar>
                                     <CardTitle>
@@ -139,7 +140,7 @@ function Enrolled() {
                                   <CardHeader className="relative">
                                     <Avatar className="h-20 w-20 rounded-full border-2 border-slate-900">
                                       <AvatarImage
-                                        src={`http://localhost:3000/${classroom.profile_path}/${classroom.user_img}`}
+                                        src={`${baseUrl}/${classroom.owner_email}/${classroom.user_img}`}
                                       ></AvatarImage>
                                     </Avatar>
                                     <CardTitle>

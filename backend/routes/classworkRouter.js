@@ -436,4 +436,11 @@ classworkRouter.get(
   "/allactivities/:roomId",
   classworkController.getAllActivities
 );
+
+//add chance
+classworkRouter.post(
+  "/addchance/:workId/:roomId/:userId",
+  classworkController.addChance
+);
+
 export default classworkRouter;

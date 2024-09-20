@@ -21,7 +21,9 @@ import RowExpandView from "./studentListRow/RowExpandView";
 import TableDataHeader from "./TableDataHeader";
 import Pagination from "./Pagination";
 import Filters from "./Filters";
-
+import { useRef } from "react";
+import { DownloadTableExcel } from "react-export-table-to-excel";
+import { Button } from "@/components/ui/button";
 const DataTable = ({ dataTable, columns, statuses }) => {
   const [columnVisibility, setColumnVisibility] = useState({
     files: false,
@@ -49,6 +51,7 @@ const DataTable = ({ dataTable, columns, statuses }) => {
     getPaginationRowModel: getPaginationRowModel(),
     getFilteredRowModel: getFilteredRowModel(),
   });
+  const tableRef = useRef(null);
 
   return (
     <div className="w-full h-full">
@@ -58,7 +61,15 @@ const DataTable = ({ dataTable, columns, statuses }) => {
         columnFilters={columnFilters}
         statuses={statuses}
       />
-      <Table>
+      <DownloadTableExcel
+        filename="table_data"
+        sheet="sheet1"
+        currentTableRef={tableRef.current}
+      >
+        <Button className="bg-green-600 my-5">Export to Excel</Button>
+      </DownloadTableExcel>
+
+      <Table ref={tableRef}>
         <TableHeader>
           {table.getHeaderGroups().map((headerGroup) => (
             <TableRow key={headerGroup.id} className="w-auto">

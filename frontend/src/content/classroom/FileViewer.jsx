@@ -61,7 +61,7 @@ function FileViewer({ userStatus }) {
                     <div>
                       <img
                         className="h-20 w-20 rounded-full border-2 border-slate-100"
-                        src={`${baseUrl}/${item.profile_path}/${item.user_img}`}
+                        src={`${baseUrl}/${item.email}/${item.user_img}`}
                       />
                     </div>
                     <div>
@@ -100,10 +100,9 @@ function FileViewer({ userStatus }) {
                       <TableCell className="font-medium flex gap-3 items-center">
                         <File />
                         <Link
-                          to={`${file.downloadUrl}`}
+                          to={`/class/classroom/getCreatedClass/viewAnnouncement/${roomId}/${announceId}`}
                           className=""
                           target="_blank"
-                          rel="noopener noreferrer"
                         >
                           {file.filename}
                         </Link>

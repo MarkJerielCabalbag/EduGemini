@@ -69,18 +69,6 @@ authRouter.post(
       await user.save();
       if (req.file) {
         if (user.profile_path && user.profile.filename) {
-          const storage = getStorage();
-          const profileFolder = ref(storage, `profile/${user.user_email}/`);
-          const deleteRef = ref(profileFolder, `${user.profile.filename}`);
-
-          deleteObject(deleteRef)
-            .then(() => {
-              console.log("file successfully deleted");
-            })
-            .catch((error) => {
-              console.log("Uh-oh, an error occurred!", error);
-            });
-
           fs.rm(
             `${user.profile_path}/${user.profile.filename}`,
             function (err) {
@@ -91,29 +79,6 @@ authRouter.post(
         }
 
         user.profile = req.file;
-
-        // Upload new file
-        const uploadPath = `profile/${user.user_email}/${req.file.originalname}`;
-        await bucket.upload(req.file.path, {
-          destination: uploadPath,
-          metadata: {
-            contentType: req.file.mimetype,
-          },
-        });
-
-        // Generate the download URL
-        const storage = getStorage();
-        const profileFolder = ref(storage, `profile/${user.user_email}/`);
-        const fileRef = ref(profileFolder, `${user.profile.filename}`);
-
-        // Use async/await for getDownloadURL
-        try {
-          const url = await getDownloadURL(fileRef);
-          user.profile.downloadUrl = url;
-          console.log("File available at: ", url);
-        } catch (error) {
-          console.log("Error generating download URL:", error);
-        }
 
         await user.save();
       }

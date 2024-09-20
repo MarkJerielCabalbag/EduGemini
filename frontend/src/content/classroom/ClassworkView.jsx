@@ -75,8 +75,7 @@ function ClassworkView({ userStatus }) {
     onError,
     onSuccess,
   });
-  console.log(dataTable.data);
-
+  console.log(room);
   if (isFetching || isLoading || isPending) {
     return (
       <LoadingState className={"h-screen w-full flex flex-col items-center"} />
@@ -110,7 +109,7 @@ function ClassworkView({ userStatus }) {
                     <div className="flex gap-2 items-center">
                       <img
                         className="h-10 w-10 rounded-full border-2 border-slate-100"
-                        src={`http://localhost:3000/${roomInfo.profile_path}/${roomInfo.user_img}`}
+                        src={`${baseUrl}/${roomInfo.owner_email}/${roomInfo.user_img}`}
                       />
 
                       <div>

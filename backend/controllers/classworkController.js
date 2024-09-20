@@ -376,6 +376,8 @@ const studentList = asyncHandler(async (req, res, next) => {
     (targetId) => targetId._id === workId
   );
 
+  console.log(targetClasswork._id);
+
   const classworkOutputs = targetClasswork.classwork_outputs;
   const dueTime = targetClasswork.classwork_due_time;
   const dueDate = targetClasswork.classwork_due_date;
@@ -391,7 +393,7 @@ const studentList = asyncHandler(async (req, res, next) => {
     const studentActivity = classworkOutputs.find(
       (output) => output._id.toString() === student._id.toString()
     );
-
+    console.log(studentActivity?.score);
     let workStatus;
 
     if (
@@ -429,15 +431,15 @@ const studentList = asyncHandler(async (req, res, next) => {
       feedback: !studentActivity?.feedback
         ? "No feedback available"
         : studentActivity?.feedback,
-      user_img: `${student.user_profile_path}/${student.user_img}`,
+      user_img: `${student.user_email}/${student.user_img}`,
       chancesResubmition:
         studentActivity?.chancesResubmition === undefined
           ? "No Action Yet"
           : studentActivity?.chancesResubmition,
+      score: studentActivity?.score ? studentActivity?.score : 0,
+      roomId: roomId,
     };
   });
-
-  console.log(listedStudent);
 
   res.status(200).send(listedStudent);
 });
@@ -479,7 +481,41 @@ export const getAllActivities = asyncHandler(async (req, res, next) => {
             },
     };
   });
-  res.send(allactivities);
+
+  return res.status(200).send(allactivities);
+});
+
+//@desc     add a chance
+//@route    POST /api/eduGemini/classwork/addchance/:workId/:roomId/:userId
+//@access   private
+const addChance = asyncHandler(async (req, res, next) => {
+  const { workId, roomId, userId } = req.params;
+  const { chances } = req.body;
+
+  const roomExist = await Classroom.findById(roomId);
+
+  const findClasswork = roomExist.classwork.findIndex(
+    (classwork) => classwork._id.toString() === workId
+  );
+
+  if (findClasswork === -1) {
+    return res.status(400).json({ message: `Classwork ${workId} not found` });
+  }
+
+  const workIndex = roomExist.classwork[findClasswork];
+
+  let studentExist = workIndex.classwork_outputs.find(
+    (output) => output._id.toString() === userId
+  );
+
+  studentExist.chancesResubmition = chances;
+
+  roomExist.classwork[findClasswork] = workIndex;
+
+  await roomExist.save();
+  return res
+    .status(200)
+    .json({ message: `You suucessfully added ${chances} chances` });
 });
 export default {
   getClasswork,
@@ -492,4 +528,5 @@ export default {
   cancelSubmition,
   studentList,
   getAllActivities,
+  addChance,
 };

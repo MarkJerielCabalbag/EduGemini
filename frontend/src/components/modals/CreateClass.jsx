@@ -26,6 +26,7 @@ function CreateClass({ open, onOpenChange }) {
   const onSuccess = (data) => {
     toast.success(data.message);
     console.log(data.mesage);
+    onOpenChange(false);
     queryClient.invalidateQueries({ queryKey: ["classroom"] });
   };
   const onError = (error) => {
@@ -167,7 +168,7 @@ function CreateClass({ open, onOpenChange }) {
                   subject,
                   room,
                 };
-                onOpenChange(false);
+
                 await mutateAsync(formData);
               } catch (err) {
                 console.log("Error", err);
