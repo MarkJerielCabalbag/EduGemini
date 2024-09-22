@@ -14,7 +14,7 @@ function GetUser() {
             {user.profile_path && (
               <img
                 className="h-20 w-20 rounded-full border-2 border-slate-900"
-                src={`${baseUrl}/${user.user_email}/${user.profile.filename}`}
+                src={`${baseUrl}/${user.profile_path}/${user.profile.filename}`}
               />
             )}
             Account Information

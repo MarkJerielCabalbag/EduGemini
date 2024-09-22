@@ -13,6 +13,7 @@ export const studentListStatus = [
     name: "Cancelled",
   },
   { id: 5, name: "No Action Yet" },
+  { id: 6, name: "Late" },
 ];
 
 export const studentGender = [

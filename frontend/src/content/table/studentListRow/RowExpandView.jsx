@@ -1,14 +1,17 @@
 import { baseUrl } from "@/baseUrl";
+import AcceptLateOutput from "@/components/modals/AcceptLateOutput";
 import AddChances from "@/components/modals/AddChances";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Clock, File, Loader, Star } from "lucide-react";
+import moment from "moment";
 import React, { useState } from "react";
 import { useParams } from "react-router-dom";
 
 const RowExpandView = ({ user }) => {
   const [openAddChanceModal, setAddChanceModal] = useState(false);
+  const [openAcceptLateOutputModal, setAcceptLateoutputModal] = useState(false);
   const { workId } = useParams();
   const workStatus = (user) => {
     if (user.workStatus === "Turned in") {
@@ -32,12 +35,27 @@ const RowExpandView = ({ user }) => {
       return size + " bytes";
     }
   };
+
+  const now = moment();
+  const isOverdue = now.isAfter(
+    moment(`${user.isOverdue}`, "MMM Do YYYY h:mm A")
+  );
   return (
     <div className="p-5 w-full">
       {openAddChanceModal && (
         <AddChances
           open={openAddChanceModal}
           onOpenChange={setAddChanceModal}
+          studentName={user.studentName}
+          userId={user._id}
+          roomId={user.roomId}
+          workId={workId}
+        />
+      )}
+      {openAcceptLateOutputModal && (
+        <AcceptLateOutput
+          open={openAcceptLateOutputModal}
+          onOpenChange={setAcceptLateoutputModal}
           studentName={user.studentName}
           userId={user._id}
           roomId={user.roomId}
@@ -110,10 +128,26 @@ const RowExpandView = ({ user }) => {
 
           <div className="my-5">
             <h1 className="text-slate-900 text-lg italic font-bold">Files</h1>
-            <p className="italic text-slate-500 mb-3">
+            <p className="italic text-slate-500">
               Lorem ipsum dolor sit, amet consectetur adipisicing elit. Officia,
               ipsum!
             </p>
+
+            {(isOverdue &&
+              user.files.length !== 0 &&
+              user.workStatus.name !== "Late" &&
+              user.workStatus.name === "Cancelled") ||
+            user.workStatus.name === "Shelved" ? (
+              <Button
+                variant="ghost"
+                className="bg-yellow-500 my-5"
+                onClick={() => setAcceptLateoutputModal(true)}
+              >
+                Accept late ouput?
+              </Button>
+            ) : (
+              ""
+            )}
             <div className="grid grid-cols-3 gap-3 sm:grid-flow-cols-1 md:grid-cols-2 lg:grid-cols-3">
               {user.files?.map((file) => (
                 <div className="bg-slate-900 text-slate-100 flex items-center gap-2 rounded-md p-3">

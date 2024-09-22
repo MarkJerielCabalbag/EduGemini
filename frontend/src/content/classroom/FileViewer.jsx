@@ -1,4 +1,9 @@
-import { getAnnouncement, useGetannouncement } from "@/api/useApi";
+import {
+  fetchClassData,
+  getAnnouncement,
+  useGetannouncement,
+  useGetClass,
+} from "@/api/useApi";
 import { useQueryClient } from "@tanstack/react-query";
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
@@ -15,6 +20,8 @@ import {
 import { ArrowLeft, Bell, DownloadCloudIcon, File, Files } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { baseUrl } from "@/baseUrl";
+import { Skeleton } from "@/components/ui/skeleton";
+import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 
 function FileViewer({ userStatus }) {
   const { roomId, announceId } = useParams();
@@ -30,8 +37,14 @@ function FileViewer({ userStatus }) {
     toast.error(error.message);
   };
 
-  const { data, isFetching } = useGetannouncement({
+  const { data, isFetching, isLoading, isPending } = useGetannouncement({
     queryFn: () => getAnnouncement(roomId),
+    onError,
+    onSuccess,
+  });
+
+  const { data: room } = useGetClass({
+    queryFn: () => fetchClassData(roomId),
     onError,
     onSuccess,
   });
@@ -55,21 +68,46 @@ function FileViewer({ userStatus }) {
                 <div className="bg-slate-900 p-5 rounded-md mt-5 relative">
                   <Badge className="bg-slate-400 flex gap-2 items-center w-max py-2 px-5">
                     <Bell className=" text-white font-extrabold" />
-                    Announcement: {item.title}
+                    Announcement:{" "}
+                    {isLoading || isPending || isFetching ? (
+                      <Skeleton className={"h-[20px] w-[100px] bg-slate-700"} />
+                    ) : (
+                      item.title
+                    )}
                   </Badge>
                   <div className="flex gap-2 items-center mt-5 ">
                     <div>
-                      <img
-                        className="h-20 w-20 rounded-full border-2 border-slate-100"
-                        src={`${baseUrl}/${item.email}/${item.user_img}`}
-                      />
+                      {room?.map((roomInfo) =>
+                        isLoading || isPending || isFetching ? (
+                          <img
+                            key={roomInfo._id}
+                            className="h-20 w-20 rounded-full bg-slate-500 border-2 border-slate-100"
+                          />
+                        ) : (
+                          <img
+                            key={roomInfo._id}
+                            className="h-20 w-20 rounded-full border-2 border-slate-100"
+                            src={`${baseUrl}/${roomInfo.profile_path}/${roomInfo.user_img}`}
+                          />
+                        )
+                      )}
                     </div>
                     <div>
                       <h1 className="text-lg font-extrabold text-slate-200">
-                        {item.username}
+                        {isLoading || isFetching || isPending ? (
+                          <Skeleton
+                            className={"w-[200px] h-[20px] bg-slate-400 "}
+                          />
+                        ) : (
+                          item.username
+                        )}
                       </h1>
                       <p className="italic opacity-80 text-slate-300">
-                        {item.email}
+                        {isLoading || isPending || isFetching ? (
+                          <Skeleton className={"h-[20px] w-[150px] my-2"} />
+                        ) : (
+                          item.email
+                        )}
                       </p>
                     </div>
                   </div>
@@ -97,16 +135,25 @@ function FileViewer({ userStatus }) {
                 <TableBody>
                   {item.files.map((file) => (
                     <TableRow>
-                      <TableCell className="font-medium flex gap-3 items-center">
-                        <File />
-                        <Link
-                          to={`/class/classroom/getCreatedClass/viewAnnouncement/${roomId}/${announceId}`}
-                          className=""
-                          target="_blank"
-                        >
-                          {file.filename}
-                        </Link>
-                      </TableCell>
+                      {isLoading || isPending || isFetching ? (
+                        <TableCell className="font-medium flex gap-3 items-center">
+                          <File />
+                          <Skeleton
+                            className={"h-[20px] w-[400px] bg-slate-700"}
+                          />
+                        </TableCell>
+                      ) : (
+                        <TableCell className="font-medium flex gap-3 items-center">
+                          <File />
+                          <Link
+                            to={`/class/classroom/getCreatedClass/viewAnnouncement/${roomId}/${announceId}`}
+                            className=""
+                            target="_blank"
+                          >
+                            {file.filename}
+                          </Link>
+                        </TableCell>
+                      )}
                     </TableRow>
                   ))}
                 </TableBody>

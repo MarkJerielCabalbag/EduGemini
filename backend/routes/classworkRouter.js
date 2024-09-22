@@ -443,4 +443,10 @@ classworkRouter.post(
   classworkController.addChance
 );
 
+//accecpt late
+classworkRouter.post(
+  "/late/:roomId/:workId/:userId",
+  classworkController.acceptLateClasswork
+);
+
 export default classworkRouter;

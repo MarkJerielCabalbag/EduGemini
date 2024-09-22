@@ -1,6 +1,7 @@
 import { fetchClassData, useGetClass } from "@/api/useApi";
 import { baseUrl } from "@/baseUrl";
 import { Avatar, AvatarImage } from "@/components/ui/avatar";
+import { Skeleton } from "@/components/ui/skeleton";
 import CopyFunctionality from "@/utils/CopyFunctionality";
 import ToolTipComponent from "@/utils/ToolTipComponent";
 import { Book } from "lucide-react";
@@ -27,24 +28,61 @@ function ClassroomInfo({ design, hide }) {
             <div className="gap-2 grid sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-2">
               <div className={design}>
                 <h1 className="text-white font-bold text-lg">
-                  {roomDetails.classname}
+                  {isLoading || isFetching ? (
+                    <Skeleton
+                      className={"h-[20px] w-[250px] bg-slate-500 rounded-sm"}
+                    />
+                  ) : (
+                    roomDetails.classname
+                  )}
                 </h1>
-                <p className="text-white">{roomDetails.subject}</p>
-                <p className="text-white">{roomDetails.section}</p>
+                <p className="text-white">
+                  {isLoading || isFetching ? (
+                    <Skeleton
+                      className={
+                        "h-[20px] w-[210px] my-2 bg-slate-500 rounded-sm"
+                      }
+                    />
+                  ) : (
+                    roomDetails.subject
+                  )}
+                </p>
+                <p className="text-white">
+                  {isLoading || isFetching ? (
+                    <Skeleton
+                      className={"h-[20px] w-[190px] bg-slate-500 rounded-sm"}
+                    />
+                  ) : (
+                    roomDetails.section
+                  )}
+                </p>
                 <div className="flex flex-col p-5 mt-6 rounded bg-slate-500">
                   <h1 className="text-white">Class Code</h1>
                   <p className="text-white font-extrabold flex justify-between items-center">
-                    {roomDetails.class_code}
-                    <ToolTipComponent
-                      trigger={
-                        <CopyFunctionality
-                          text={roomDetails.class_code}
-                          isCopied={isCopied}
-                          setIsCopied={setIsCopied}
-                        />
-                      }
-                      content={<p>Copy to Clipboard</p>}
-                    />
+                    {isLoading || isFetching ? (
+                      <Skeleton
+                        className={"h-[20px] w-[180px] bg-slate-900 rounded-sm"}
+                      />
+                    ) : (
+                      roomDetails.class_code
+                    )}
+
+                    {isLoading || isFetching ? (
+                      <Skeleton
+                        className={"h-[20px] w-[20px] bg-slate-900 rounded-sm"}
+                      />
+                    ) : (
+                      <ToolTipComponent
+                        trigger={
+                          <CopyFunctionality
+                            text={roomDetails.class_code}
+                            isCopied={isCopied}
+                            setIsCopied={setIsCopied}
+                          />
+                        }
+                        content={<p>Copy to Clipboard</p>}
+                      />
+                    )}
                   </p>
                 </div>
                 <Book

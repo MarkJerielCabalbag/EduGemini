@@ -5,6 +5,8 @@ import {
   fetchClassData,
   useGetListedStudent,
   getListedStudents,
+  useGetUser,
+  getUser,
 } from "@/api/useApi";
 import { studentListStatus } from "../table/studentListRow/sudentListStatus";
 import CopyFunctionality from "@/utils/CopyFunctionality";
@@ -71,10 +73,18 @@ function ClassworkView({ userStatus }) {
   });
 
   const dataTable = useGetListedStudent({
+    queryKey: ["listedStudents"],
     queryFn: () => getListedStudents(workId, roomId),
     onError,
     onSuccess,
   });
+
+  const { data: user } = useGetUser({
+    queryFn: () => getUser(userId),
+    onSuccess,
+    onError,
+  });
+
   console.log(room);
   if (isFetching || isLoading || isPending) {
     return (
@@ -107,10 +117,13 @@ function ClassworkView({ userStatus }) {
                 <div className="w-full h-full">
                   <div className="grid grid-cols-4 gap-3 ">
                     <div className="flex gap-2 items-center">
-                      <img
-                        className="h-10 w-10 rounded-full border-2 border-slate-100"
-                        src={`${baseUrl}/${roomInfo.owner_email}/${roomInfo.user_img}`}
-                      />
+                      {user?.map((userInfo) => (
+                        <img
+                          key={userInfo._id}
+                          className="h-10 w-10 rounded-full border-2 border-slate-100"
+                          src={`${baseUrl}/${userInfo.profile_path}/${userInfo.profile.filename}`}
+                        />
+                      ))}
 
                       <div>
                         <p className="font-extrabold text-slate-200">
@@ -205,13 +218,15 @@ function ClassworkView({ userStatus }) {
               </div>
 
               {isLoading || isPending || isFetching ? (
-                <>loading</>
+                <LoadingState />
               ) : (
-                <DataTable
-                  dataTable={dataTable.data}
-                  columns={setStudentListCol}
-                  statuses={studentListStatus}
-                />
+                <>
+                  <DataTable
+                    dataTable={dataTable.data}
+                    columns={setStudentListCol}
+                    statuses={studentListStatus}
+                  />
+                </>
               )}
             </div>
           ))}

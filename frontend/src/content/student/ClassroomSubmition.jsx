@@ -173,22 +173,16 @@ function ClassroomSubmition() {
                                   </span>
                                 </div>
                                 <div className="flex gap-2 items-center">
-                                  <span className="inline-flex items-center rounded-md bg-gray-50 px-2 py-1 text-xs font-medium text-gray-600 ring-1 ring-inset ring-gray-500/10">
-                                    {info.classwork_type}
+                                  <span
+                                    className={`${workBadge} inline-flex items-center rounded-md px-2 py-1 text-xs font-medium text-white ring-1 ring-inset ring-gray-500/10`}
+                                  >
+                                    {attachments?.map(
+                                      (output) => output.workStatus.name
+                                    )}
                                   </span>
 
-                                  <span
-                                    className={`${attachments?.map((output) =>
-                                      output.files.length === 0
-                                        ? "bg-yellow-500"
-                                        : workBadge
-                                    )} inline-flex items-center rounded-md px-2 py-1 text-xs font-medium text-white ring-1 ring-inset ring-gray-500/10`}
-                                  >
-                                    {attachments?.map((output) =>
-                                      output.files.length === 0
-                                        ? "No Attachments"
-                                        : output.workStatus.name
-                                    )}
+                                  <span className="inline-flex items-center rounded-md bg-gray-50 px-2 py-1 text-xs font-medium text-gray-600 ring-1 ring-inset ring-gray-500/10">
+                                    {info.classwork_type}
                                   </span>
                                 </div>
                               </h1>
@@ -247,7 +241,6 @@ function ClassroomSubmition() {
                                         No files uploaded yet.
                                       </div>
                                       <Button
-                                        disabled={isOverdue}
                                         className={`w-full my-2 ${
                                           isOverdue ? "opacity-50" : "show"
                                         }`}
@@ -302,7 +295,7 @@ function ClassroomSubmition() {
                                                 <Loader2Icon className="animate-spin" />
                                               ) : (
                                                 <X
-                                                  size={isOverdue ? 0 : 30}
+                                                  size={30}
                                                   className={`max-h-96 hover:cursor-pointer ${
                                                     outputs.workStatus.name ===
                                                     "Turned in"
@@ -324,19 +317,11 @@ function ClassroomSubmition() {
                                           ))}
                                           <>
                                             <Button
-                                              disabled={
-                                                isOverdue &&
-                                                outputs.chancesResubmition === 0
-                                              }
                                               className={`w-full my-2 ${
                                                 outputs.workStatus.name ===
                                                 "Turned in"
                                                   ? "hidden"
                                                   : ""
-                                              } ${
-                                                isOverdue
-                                                  ? "opacity-50"
-                                                  : "show"
                                               }`}
                                               onClick={() => {
                                                 openFilePicker();

@@ -418,8 +418,9 @@ const studentList = asyncHandler(async (req, res, next) => {
     return {
       _id: student._id,
       studentName: `${student.user_lastname}, ${student.user_firstname} ${
-        student.user_middlename ? student.user_middlename.charAt(0) + "." : ""
+        student.user_middlename.charAt(0) + "."
       }`,
+      // email: student.user_email,
       workStatus,
       files: !studentActivity?.files?.length ? [] : studentActivity?.files,
       timeSubmition: !studentActivity?.timeSubmition
@@ -431,13 +432,14 @@ const studentList = asyncHandler(async (req, res, next) => {
       feedback: !studentActivity?.feedback
         ? "No feedback available"
         : studentActivity?.feedback,
-      user_img: `${student.user_email}/${student.user_img}`,
+      user_img: `${student.user_profile_path}/${student.user_img}`,
       chancesResubmition:
         studentActivity?.chancesResubmition === undefined
           ? "No Action Yet"
           : studentActivity?.chancesResubmition,
       score: studentActivity?.score ? studentActivity?.score : 0,
       roomId: roomId,
+      isOverdue: `${dueDate} ${dueTime}`,
     };
   });
 
@@ -517,6 +519,55 @@ const addChance = asyncHandler(async (req, res, next) => {
     .status(200)
     .json({ message: `You suucessfully added ${chances} chances` });
 });
+
+//@desc     cancel classwork attachment
+//@route    POST /api/eduGemini/classwork/late/:roomId/:workId/:userId
+//@access   private
+const acceptLateClasswork = asyncHandler(async (req, res, next) => {
+  const { roomId, workId, userId } = req.params;
+
+  const roomExist = await Classroom.findById(roomId);
+  if (!roomExist) {
+    return res.status(400).json({ message: `${roomId} id does not exist` });
+  }
+
+  const foundStudent = roomExist.students.find(
+    (student) => student._id.toString() === userId
+  );
+  if (!foundStudent) {
+    return res.status(400).json({ message: `Student ${userId} not found` });
+  }
+
+  const findClasswork = roomExist.classwork.findIndex(
+    (classwork) => classwork._id.toString() === workId
+  );
+
+  if (findClasswork === -1) {
+    return res.status(400).json({ message: `Classwork ${workId} not found` });
+  }
+
+  const workIndex = roomExist.classwork[findClasswork];
+
+  let studentExist = workIndex.classwork_outputs.find(
+    (output) => output._id.toString() === userId
+  );
+
+  studentExist.workStatus = {
+    id: 6,
+    name: "Late",
+  };
+
+  studentExist.feedback = "";
+  studentExist.score = "";
+
+  roomExist.classwork[findClasswork] = workIndex;
+
+  await roomExist.save();
+
+  return res.status(200).json({
+    message: `You successfully accepted the Late output`,
+  });
+});
 export default {
   getClasswork,
   getClassworkInformation,
@@ -529,4 +580,5 @@ export default {
   studentList,
   getAllActivities,
   addChance,
+  acceptLateClasswork,
 };

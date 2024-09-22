@@ -9,6 +9,7 @@ import bcrypt from "bcrypt";
 import path from "path";
 const authRouter = express.Router();
 import asyncHandler from "express-async-handler";
+import Classroom from "../models/classroomModel.js";
 const __dirname = dirname(fileURLToPath(import.meta.url));
 // import admin from "firebase-admin";
 // import { createRequire } from "module";
@@ -30,7 +31,7 @@ const storage = multer.diskStorage({
   destination: async (req, file, callback) => {
     const { userId } = req.params;
     const user = await User.findById(userId);
-    const locationSave = user.profile_path;
+    const locationSave = `profile/${user.profile_path}`;
 
     callback(null, locationSave);
   },
@@ -61,6 +62,11 @@ authRouter.post(
   asyncHandler(async (req, res, next) => {
     const { userId } = req.params;
     const user = await User.findById(userId);
+    const roomExist = await Classroom.findOne({ owner: userId });
+    const userExistStudentAccepted = await Classroom.find({
+      acceptedStudents: { $elemMatch: { _id: userId } },
+    });
+    console.log(userExistStudentAccepted.user_img);
 
     if (user) {
       user.user_username = req.body.user_username || user.user_username;
@@ -68,18 +74,45 @@ authRouter.post(
 
       await user.save();
       if (req.file) {
+        console.log(`${user.profile_path}/${user.profile.filename}`);
         if (user.profile_path && user.profile.filename) {
           fs.rm(
-            `${user.profile_path}/${user.profile.filename}`,
+            `profile/${user.profile_path}/${user.profile.filename}`,
             function (err) {
-              if (err) console.log(err);
+              if (err)
+                console.log(
+                  err,
+                  `${user.profile_path}/${user.profile.filename}`
+                );
               else console.log("File deleted successfully");
             }
           );
         }
 
-        user.profile = req.file;
+        if (roomExist) {
+          roomExist.user_img = req.file.filename;
+          await roomExist.save();
+        }
 
+        if (userExistStudentAccepted && userExistStudentAccepted.length > 0) {
+          for (const classroom of userExistStudentAccepted) {
+            //students Array
+            classroom.students.map((student) => {
+              if (student._id.toString() === userId) {
+                student.user_img = req.file.filename;
+              }
+            });
+            //acceptedStudents Array
+            classroom.acceptedStudents.map((student) => {
+              if (student._id.toString() === userId) {
+                student.user_img = req.file.filename;
+              }
+            });
+            await classroom.save();
+          }
+        }
+
+        user.profile = req.file;
         await user.save();
       }
 
@@ -96,7 +129,7 @@ authRouter.post(
 
     await newUpdatedUser.save();
     //generateToken(res, newUpdatedUser._id, next);
-    console.log(newUpdatedUser);
+    // console.log(newUpdatedUser);
     return res.status(200).json({
       _id: newUpdatedUser._id,
       user_email: newUpdatedUser.user_email,

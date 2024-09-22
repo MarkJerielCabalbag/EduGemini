@@ -43,10 +43,10 @@ const registerUser = asyncHandler(async (req, res, next) => {
     user_email,
     user_username,
     user_password: hashPassword,
-    profile_path: `profile/${user_email}`,
+    profile_path: user_email,
     profile: {
       filename: "R.png",
-      destination: `profile/${user_email}/R.png`,
+      destination: `${user_email}/R.png`,
     },
   });
 

@@ -555,6 +555,24 @@ export async function cancelSubmition(
   });
 }
 
+export async function acceptLate(roomId, workId, userId) {
+  return await fetch(
+    `${baseUrl}/api/eduGemini/classwork/late/${roomId}/${workId}/${userId}`,
+    {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+    }
+  ).then(async (res) => {
+    const response = await res.json();
+
+    if (!res.ok) {
+      throw new Error(response.message || "An Error Occured");
+    }
+
+    return response;
+  });
+}
+
 export async function getListedStudents(workId, roomId) {
   return await fetch(
     `${baseUrl}/api/eduGemini/classwork/students/${workId}/${roomId}`,
@@ -903,6 +921,14 @@ export const useGetAllActivities = ({ queryFn, onSuccess, onError }) => {
 };
 
 export const useAddChance = ({ mutationFn, onSuccess, onError }) => {
+  return useMutation({
+    mutationFn,
+    onError,
+    onSuccess,
+  });
+};
+
+export const useAcceptLate = ({ mutationFn, onSuccess, onError }) => {
   return useMutation({
     mutationFn,
     onError,

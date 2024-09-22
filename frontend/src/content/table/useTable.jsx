@@ -28,7 +28,10 @@ export const setStudentListCol = [
     cell: (info) => (
       <>
         <Avatar>
-          <AvatarImage src={`${baseUrl}/${info.getValue()}`} />
+          <AvatarImage
+            className={"border border-slate-900"}
+            src={`${baseUrl}/${info.getValue()}`}
+          />
         </Avatar>
       </>
     ),
@@ -51,7 +54,9 @@ export const setStudentListCol = [
           info.getValue().name === "Missing" ? "bg-red-500" : ""
         }  ${info.getValue().name === "Shelved" ? "bg-sky-500" : ""} ${
           info.getValue().name === "Cancelled" ? "bg-red-900" : ""
-        } ${info.getValue().name === "Turned in" ? "bg-green-500" : ""}`}
+        } ${info.getValue().name === "Turned in" ? "bg-green-500" : ""} ${
+          info.getValue().name === "Late" ? "bg-yellow-500" : ""
+        }`}
       >
         {info.getValue().name}
       </Badge>
