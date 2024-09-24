@@ -7,6 +7,7 @@ import {
   useReactTable,
 } from "@tanstack/react-table";
 import React, { useMemo, useState } from "react";
+import excel from "../../assets/office365.png";
 import {
   Table,
   TableBody,
@@ -16,7 +17,6 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { fuzzyFilter, statusFilter } from "./useFilter";
 import RowExpandView from "./studentListRow/RowExpandView";
 import TableDataHeader from "./TableDataHeader";
 import Pagination from "./Pagination";
@@ -24,7 +24,7 @@ import Filters from "./Filters";
 import { useRef } from "react";
 import { DownloadTableExcel } from "react-export-table-to-excel";
 import { Button } from "@/components/ui/button";
-const DataTable = ({ dataTable, columns, statuses }) => {
+const DataTable = ({ dataTable, columns, statuses, paginationVisibility }) => {
   const [columnVisibility, setColumnVisibility] = useState({
     files: false,
     path: false,
@@ -34,8 +34,13 @@ const DataTable = ({ dataTable, columns, statuses }) => {
   const [columnFilters, setColumnFilters] = useState([]);
   const memoizedColumns = useMemo(() => columns || [], [columns]);
   const memorizedData = useMemo(() => dataTable || [], [dataTable]);
-  const [data, setData] = useState(dataTable);
-  console.log(columnFilters);
+  const [pagination, setPagination] = useState({
+    pageIndex: 0,
+    pageSize: 10,
+  });
+
+  const [rowCount, setRowCount] = useState(memorizedData?.length);
+
   const table = useReactTable({
     data: memorizedData,
     columns: memoizedColumns,
@@ -43,32 +48,39 @@ const DataTable = ({ dataTable, columns, statuses }) => {
     state: {
       columnVisibility,
       columnFilters,
+      pagination,
     },
     onColumnFiltersChange: setColumnFilters,
     onColumnVisibilityChange: setColumnVisibility,
+    onPaginationChange: setPagination,
     getRowCanExpand: () => true,
     getSortedRowModel: getSortedRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
     getFilteredRowModel: getFilteredRowModel(),
+    rowCount: memorizedData?.length,
   });
   const tableRef = useRef(null);
 
   return (
     <div className="w-full h-full">
-      <Filters
-        table={table}
-        setColumnFilters={setColumnFilters}
-        columnFilters={columnFilters}
-        statuses={statuses}
-      />
-      <DownloadTableExcel
-        filename="table_data"
-        sheet="sheet1"
-        currentTableRef={tableRef.current}
-      >
-        <Button className="bg-green-600 my-5">Export to Excel</Button>
-      </DownloadTableExcel>
-
+      <div className="flex justify-between items-center">
+        <Filters
+          table={table}
+          setColumnFilters={setColumnFilters}
+          columnFilters={columnFilters}
+          statuses={statuses}
+        />
+        <DownloadTableExcel
+          filename="table_data"
+          sheet="sheet1"
+          currentTableRef={tableRef.current}
+        >
+          <Button className="bg-green-800 my-5 flex gap-3 items-center">
+            <img className="h-5 w-5" src={excel} />
+            Export to Excel
+          </Button>
+        </DownloadTableExcel>
+      </div>
       <Table ref={tableRef}>
         <TableHeader>
           {table.getHeaderGroups().map((headerGroup) => (
@@ -96,8 +108,12 @@ const DataTable = ({ dataTable, columns, statuses }) => {
           ))}
         </TableBody>
       </Table>
-      <div>
-        <Pagination table={table} />
+      <div className={`${paginationVisibility}`}>
+        <Pagination
+          table={table}
+          setPagination={setPagination}
+          rowCount={rowCount}
+        />
       </div>
     </div>
   );

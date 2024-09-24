@@ -6,7 +6,12 @@ import { Trash2 } from "lucide-react";
 import { Button } from "../ui/button";
 import DeleteClassworkModal from "./DeleteClassworkModal";
 
-function OpenClassworkSettings({ open, onOpenChange, classwork_title }) {
+function OpenClassworkSettings({
+  open,
+  onOpenChange,
+  classwork_title,
+  isPending,
+}) {
   const [openDeleteClassworkModal, setOpenDeleteClassworkModal] =
     useState(false);
 

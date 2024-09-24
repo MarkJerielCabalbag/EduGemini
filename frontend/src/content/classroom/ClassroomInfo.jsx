@@ -23,7 +23,7 @@ function ClassroomInfo({ design, hide }) {
   return (
     <>
       {data?.map((roomDetails) => (
-        <>
+        <React.Fragment key={roomDetails._id}>
           <div key={roomDetails._id}>
             <div className="gap-2 grid sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-2">
               <div className={design}>
@@ -104,7 +104,7 @@ function ClassroomInfo({ design, hide }) {
               </div>
             </div>
           </div>
-        </>
+        </React.Fragment>
       ))}
     </>
   );

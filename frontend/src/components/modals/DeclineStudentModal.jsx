@@ -57,10 +57,14 @@ function DeclineStudentModal({ open, onOpenChange, studentID }) {
                   }
                   alertDialogFooter={
                     <>
-                      <Button onClick={() => onOpenChange(false)}>
+                      <Button
+                        disabled={isPending}
+                        onClick={() => onOpenChange(false)}
+                      >
                         Cancel
                       </Button>
                       <Button
+                        disabled={isPending}
                         onClick={async () =>
                           await mutateAsync({
                             userId: student._id,

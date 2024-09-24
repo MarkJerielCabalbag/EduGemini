@@ -41,8 +41,11 @@ function CancelSubmitionModal({ open, onOpenChange }) {
       }
       alertDialogFooter={
         <>
-          <Button onClick={() => onOpenChange(false)}>Cancel</Button>
+          <Button disabled={isPending} onClick={() => onOpenChange(false)}>
+            Cancel
+          </Button>
           <Button
+            disabled={isPending}
             onClick={async () => {
               try {
                 await mutateAsync({ date, timeAction });

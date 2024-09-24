@@ -6,14 +6,20 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import { Button } from "@/components/ui/button";
-
 import { Filter } from "lucide-react";
 
 const SetStatus = ({ status, setColumnFilters, isActive }) => {
   return (
     <div className="flex flex-col items-start my-2">
       <Button
-        className={`text-white ${isActive ? "bg-slate-900" : "bg-slate-400"}`}
+        className={`${status.name === "Missing" ? "bg-red-500" : ""}  ${
+          status.name === "Shelved" ? "bg-sky-500" : ""
+        } ${status.name === "Cancelled" ? "bg-red-900" : ""} ${
+          status.name === "Turned in" ? "bg-green-500" : ""
+        } ${status.name === "Late" ? "bg-yellow-500" : ""} ${
+          isActive ? "bg-slate-400" : ""
+        }`}
+        // className={`text-white ${isActive ? "bg-slate-900" : "bg-slate-400"} : 'bg' }`}
         onClick={() =>
           setColumnFilters((prev) => {
             const statuses = prev.find(
@@ -60,8 +66,7 @@ const Filters = ({ setColumnFilters, columnFilters, statuses }) => {
       <Input
         // value={studentFilter}
         onChange={(e) => onFilterChange("name", e.target.value)}
-        className="w-1/6"
-        placeholder="Enter Student Name to Search"
+        placeholder="Search Student"
       />
       <Popover>
         <PopoverTrigger className="bg-slate-900 text-white px-5 py-2 rounded-md flex items-center gap-2">

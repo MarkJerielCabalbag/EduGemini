@@ -34,8 +34,11 @@ function DeleteClassworkModal({ open, onOpenChange }) {
         alertDialogTitle={"Delete this classwork?"}
         alertDialogFooter={
           <>
-            <Button onClick={() => onOpenChange(false)}>Cancel</Button>
+            <Button disabled={isPending} onClick={() => onOpenChange(false)}>
+              Cancel
+            </Button>
             <Button
+              disabled={isPending}
               onClick={async () => {
                 await mutateAsync();
               }}

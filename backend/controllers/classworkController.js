@@ -265,28 +265,40 @@ const submitAttachment = asyncHandler(async (req, res, next) => {
 
       const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
 
-      async function run() {
-        const prompt = `comapre this ${instructionFile} and ${studentFiles} and give constructive feedback and try to score the answers`;
-        const result = await model.generateContent(prompt);
-        const response = await result.response;
-        const text = response.text();
-        console.log(text);
-        console.log(
-          "######################################################################################################################################################"
+      async function runGemini() {
+        const studentFeedbackPrompt = `hi`;
+        const generateStudentFeedback = await model.generateContent(
+          studentFeedbackPrompt
         );
-        const scorePrompt = `So, what is the total score of the output ${studentFiles} from the ${instructionFile}, return the accumulated points of the students from that activity as a number `;
-        const resultScore = await model.generateContent(scorePrompt);
-        const scoreResponse = await resultScore.response;
-        const scoretext = scoreResponse.text();
-        console.log(scoretext);
-        studentExist.feedback = text;
-        studentExist.score = scoretext;
+        const geminiResponseStudentFeedback =
+          await generateStudentFeedback.response;
+        const studentFeedbackResult = geminiResponseStudentFeedback.text();
+        console.log(studentFeedbackResult);
+
+        const scorePrompt = `hi `;
+        const generateStudentScore = await model.generateContent(scorePrompt);
+        const gemniniStudentScoreResponse = await generateStudentScore.response;
+        const studentScoreResult = gemniniStudentScoreResponse.text();
+        console.log(studentScoreResult);
+
+        const teacherFeedbackPrompt = `hi`;
+        const generateTeacherFeedback = await model.generateContent(
+          teacherFeedbackPrompt
+        );
+        const geminiTeacherFeedbackResponse =
+          await generateTeacherFeedback.response;
+        const teacherFeedbackResult = geminiTeacherFeedbackResponse.text();
+        console.log(teacherFeedbackResult);
+
+        studentExist.studentFeedback = studentFeedbackResult;
+        studentExist.score = studentScoreResult;
+        studentExist.teacherFeedback = teacherFeedbackResult;
         roomExist.classwork[findClasswork] = workIndex;
 
         await roomExist.save();
       }
 
-      run();
+      runGemini();
     } catch (error) {
       console.log(error);
     }
@@ -348,8 +360,9 @@ const cancelSubmition = asyncHandler(async (req, res, next) => {
 
   let chances = studentExist.chancesResubmition - 1;
 
-  studentExist.feedback = "";
+  studentExist.studentFeedback = "";
   studentExist.score = "";
+  studentExist.teacherFeedback = "";
 
   studentExist.chancesResubmition = chances < 0 ? 0 : chances;
 
@@ -429,9 +442,12 @@ const studentList = asyncHandler(async (req, res, next) => {
       path: !studentActivity?.path
         ? "No path available"
         : studentActivity?.path,
-      feedback: !studentActivity?.feedback
-        ? "No feedback available"
-        : studentActivity?.feedback,
+      studentFeedback: !studentActivity?.studentFeedback
+        ? "No feedback for student available"
+        : studentActivity?.studentFeedback,
+      teacherFeedback: studentActivity?.teacherFeedback
+        ? studentActivity?.teacherFeedback
+        : "No feedback for teacher available",
       user_img: `${student.user_profile_path}/${student.user_img}`,
       chancesResubmition:
         studentActivity?.chancesResubmition === undefined

@@ -1,46 +1,112 @@
+import { Table, TableCell, TableHeader, TableRow } from "@/components/ui/table";
+import React from "react";
+import {
+  Bookmark,
+  BookmarkMinus,
+  BookmarkPlus,
+  BookmarkX,
+  CheckCircle2Icon,
+  MinusCircleIcon,
+  XCircleIcon,
+} from "lucide-react";
+import { Separator } from "@/components/ui/separator";
+import StudentsApprovalStatus from "../table/StudentsApprovalStatus";
 import { fetchClassData, useGetClass } from "@/api/useApi";
-import ApproveStudentModal from "@/components/modals/ApproveStudentModal";
-import DeclineStudentModal from "@/components/modals/DeclineStudentModal";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
-import {
-  Select,
-  SelectContent,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import {
-  Table,
-  TableBody,
-  TableCaption,
-  TableCell,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
-import { Avatar, AvatarImage } from "@/components/ui/avatar";
-import React, { useState } from "react";
 import { useParams } from "react-router-dom";
-import { baseUrl } from "@/baseUrl";
-import LoadingState from "@/utils/LoadingState";
-import { useMutationState, useQueryClient } from "@tanstack/react-query";
 function People() {
-  const { roomId } = useParams();
-  const [openStudentApproveModal, setOpenStudentApproveModal] = useState(false);
-  const [openStudentDeclineModal, setOpenStudentDeclineModal] = useState(false);
-  const queryClient = useQueryClient();
   const onError = () => console.log("error");
-  const onSuccess = () => {
-    queryClient.invalidateQueries({ queryKey: ["room"] });
-  };
-  const { data, isLoading, isPending, isFetching } = useGetClass({
+  const onSuccess = () => console.log("success");
+  const { roomId } = useParams();
+  const { data } = useGetClass({
     queryFn: () => fetchClassData(roomId),
     onError,
     onSuccess,
   });
+
+  const students = data?.map((roomDetails) => roomDetails.students).flat();
+
+  const totalStudentApproved = students?.filter(
+    (student) => student.approvalStatus === "approved"
+  ).length;
+
+  const totalStudentPending = students?.filter(
+    (student) => student.approvalStatus === "pending"
+  ).length;
+
+  const totalStudentDeclined = students?.filter(
+    (student) => student.approvalStatus === "declined"
+  ).length;
+
   return (
-    <div className="h-full w-full">
+    <div className="h-screen w-full">
+      <h1 className="text-slate-900 font-bold text-3xl flex gap-2 items-center">
+        <Bookmark size={30} />
+        Student Approval
+      </h1>
+      <p className="opacity-75 italic my-2 text-pretty">
+        Lorem ipsum dolor sit, amet consectetur adipisicing elit. Impedit
+        eveniet doloremque, placeat, eum ad quisquam soluta rerum iure quaerat
+        sequi aliquid possimus corporis odio voluptatum consectetur! Officia,
+        placeat nobis! Ipsam.
+      </p>
+
+      <Separator className="my-10" />
+
+      <h1 className="text-slate-600 font-bold text-2xl italic flex gap-2 items-center">
+        Overview
+      </h1>
+      <p className="opacity-75 italic my-2 text-balance">
+        Lorem ipsum dolor sit, amet consectetur adipisicing elit. Impedit
+        eveniet doloremque, placeat, eum ad quisquam soluta rerum iure quaerat
+        sequi aliquid possimus corporis odio voluptatum consectetur! Officia,
+        placeat nobis! Ipsam.
+      </p>
+
+      <div className="grid grid-cols-3 ">
+        <div className=" text-slate-900 p-5 rounded-sm flex items-center gap-3">
+          <div className="p-2 bg-green-500 rounded-sm w-10 h-10"></div>
+          <div className="flex flex-col">
+            <h1 className="text-5xl font-extrabold">{totalStudentApproved}</h1>
+            <p className="italic opacity-70 flex items-center gap-2">
+              <CheckCircle2Icon className="opacity-70" size={20} /> Approved
+            </p>
+          </div>
+        </div>
+
+        <div className=" text-slate-900 p-5 rounded-sm flex items-center gap-3">
+          <div className="p-2 bg-yellow-500 rounded-sm w-10 h-10"></div>
+          <div className="flex flex-col">
+            <h1 className="text-5xl font-extrabold">{totalStudentPending}</h1>
+            <p className="italic opacity-70 flex items-center gap-2">
+              <MinusCircleIcon className="opacity-70" size={20} />
+              Pending
+            </p>
+          </div>
+        </div>
+
+        <div className=" text-slate-900 p-5 rounded-sm flex items-center gap-3">
+          <div className="p-2 bg-red-500 rounded-sm w-10 h-10"></div>
+          <div className="flex flex-col">
+            <h1 className="text-5xl font-extrabold">{totalStudentDeclined}</h1>
+            <p className="italic opacity-70 flex items-center gap-2">
+              <XCircleIcon className="opacity-70" size={20} /> Declined
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <Separator className="my-10" />
+
+      <h1 className="text-slate-600 font-bold text-2xl italic flex gap-2 items-center">
+        <BookmarkMinus /> Students Pending Approval
+      </h1>
+      <p className="opacity-75 italic my-2 text-balance">
+        Lorem ipsum dolor sit, amet consectetur adipisicing elit. Impedit
+        eveniet doloremque, placeat, eum ad quisquam soluta rerum iure quaerat
+        sequi aliquid possimus corporis odio voluptatum consectetur! Officia,
+        placeat nobis! Ipsam.
+      </p>
       <Table>
-        <TableCaption>A list of student approval</TableCaption>
         <TableHeader>
           <TableRow>
             <TableCell>Student</TableCell>
@@ -53,141 +119,69 @@ function People() {
             <TableCell>Action</TableCell>
           </TableRow>
         </TableHeader>
-        {data?.map((roomDetails) => (
-          <>
-            {roomDetails.students.map((student) => (
-              <>
-                {student.approvalStatus === "pending" ? (
-                  <TableBody>
-                    <TableRow>
-                      <TableCell className="flex gap-2 items-center">
-                        <Avatar>
-                          {student.user_profile_path && (
-                            <AvatarImage
-                              className="h-10 w-10 rounded-full border-2 border-slate-900"
-                              src={`${baseUrl}/${student.user_profile_path}/${student.user_img}`}
-                            />
-                          )}
-                        </Avatar>
-
-                        <div>
-                          {student.user_lastname}, {student.user_firstname}
-                          {student.user_middlename.charAt(0)}.
-                        </div>
-                      </TableCell>
-                      <TableCell>{student.user_email}</TableCell>
-                      <TableCell>
-                        {student.approvalStatus === "pending" ? (
-                          <>
-                            <Badge className={" bg-yellow-500"}>
-                              {student.approvalStatus}
-                            </Badge>
-                          </>
-                        ) : (
-                          <>
-                            {student.approvalStatus === "approved" ||
-                            student.approvalStatus === "declined" ? (
-                              <Badge
-                                className={`${
-                                  student.approvalStatus === "approved"
-                                    ? "bg-green-500"
-                                    : "bg-red-500"
-                                } `}
-                              >
-                                {student.approvalStatus}
-                              </Badge>
-                            ) : null}
-                          </>
-                        )}
-                      </TableCell>
-                      <TableCell>{student.user_lastname}</TableCell>
-                      <TableCell>{student.user_firstname}</TableCell>
-                      <TableCell>{student.user_middlename}</TableCell>
-                      <TableCell>{student.user_gender}</TableCell>
-                      <TableCell>
-                        {student.approvalStatus === "pending" ? (
-                          <Select>
-                            <SelectTrigger>
-                              <SelectValue placeholder="Select Action" />
-                            </SelectTrigger>
-                            <SelectContent>
-                              <Button
-                                value="decline"
-                                className={`${
-                                  student.approvalStatus === "pending"
-                                    ? "hide"
-                                    : "show "
-                                } w-full bg-red-600 hover:bg-red-300 text-slate-900 `}
-                                onClick={() => setOpenStudentDeclineModal(true)}
-                              >
-                                Decline
-                              </Button>
-                              <Button
-                                value="approve"
-                                className={`${
-                                  student.approvalStatus === "pending"
-                                    ? "hide"
-                                    : " show"
-                                } w-full bg-green-600 hover:bg-green-300 text-slate-900 `}
-                                onClick={() => setOpenStudentApproveModal(true)}
-                              >
-                                Approve
-                              </Button>
-                            </SelectContent>
-                          </Select>
-                        ) : (
-                          <>
-                            {student.approvalStatus === "approved" ? (
-                              <Button
-                                value="decline"
-                                className={`${
-                                  student.approvalStatus === "pending"
-                                    ? "hide"
-                                    : "show "
-                                } w-full bg-red-600 hover:bg-red-300 text-slate-900 `}
-                                onClick={() => setOpenStudentDeclineModal(true)}
-                              >
-                                Decline
-                              </Button>
-                            ) : (
-                              <Button
-                                value="approve"
-                                className={`${
-                                  student.approvalStatus === "pending"
-                                    ? "hide"
-                                    : " show"
-                                } w-full bg-green-600 hover:bg-green-300 text-slate-900 `}
-                                onClick={() => setOpenStudentApproveModal(true)}
-                              >
-                                Approve
-                              </Button>
-                            )}
-                          </>
-                        )}
-
-                        {openStudentApproveModal && (
-                          <ApproveStudentModal
-                            open={openStudentApproveModal}
-                            onOpenChange={setOpenStudentApproveModal}
-                            studentID={student._id}
-                          />
-                        )}
-
-                        {openStudentDeclineModal && (
-                          <DeclineStudentModal
-                            open={openStudentDeclineModal}
-                            onOpenChange={setOpenStudentDeclineModal}
-                            studentID={student._id}
-                          />
-                        )}
-                      </TableCell>
-                    </TableRow>
-                  </TableBody>
-                ) : null}
-              </>
-            ))}
-          </>
-        ))}
+        <StudentsApprovalStatus
+          pending={"pending"}
+          approved={"approved"}
+          declined={"declined"}
+        />
+      </Table>
+      <Separator className="my-10" />
+      <h1 className="text-slate-600 font-bold text-2xl italic flex gap-2 items-center">
+        <BookmarkPlus /> Students Approved
+      </h1>
+      <p className="opacity-75 italic my-2 text-balance">
+        Lorem ipsum dolor sit, amet consectetur adipisicing elit. Impedit
+        eveniet doloremque, placeat, eum ad quisquam soluta rerum iure quaerat
+        sequi aliquid possimus corporis odio voluptatum consectetur! Officia,
+        placeat nobis! Ipsam.
+      </p>
+      <Table>
+        <TableHeader>
+          <TableRow>
+            <TableCell>Student</TableCell>
+            <TableCell>Email</TableCell>
+            <TableCell>Status</TableCell>
+            <TableCell>Lastname</TableCell>
+            <TableCell>Firstname</TableCell>
+            <TableCell>Middlename</TableCell>
+            <TableCell>Gender</TableCell>
+            <TableCell>Action</TableCell>
+          </TableRow>
+        </TableHeader>
+        <StudentsApprovalStatus
+          pending={"approved"}
+          approved={"declined"}
+          declined={"pending"}
+        />
+      </Table>
+      <Separator className="my-10" />
+      <h1 className="text-slate-600 font-bold text-2xl italic flex gap-2 items-center">
+        <BookmarkX /> Students Declines
+      </h1>
+      <p className="opacity-75 italic my-2 text-balance">
+        Lorem ipsum dolor sit, amet consectetur adipisicing elit. Impedit
+        eveniet doloremque, placeat, eum ad quisquam soluta rerum iure quaerat
+        sequi aliquid possimus corporis odio voluptatum consectetur! Officia,
+        placeat nobis! Ipsam.
+      </p>
+      <Table>
+        <TableHeader>
+          <TableRow>
+            <TableCell>Student</TableCell>
+            <TableCell>Email</TableCell>
+            <TableCell>Status</TableCell>
+            <TableCell>Lastname</TableCell>
+            <TableCell>Firstname</TableCell>
+            <TableCell>Middlename</TableCell>
+            <TableCell>Gender</TableCell>
+            <TableCell>Action</TableCell>
+          </TableRow>
+        </TableHeader>
+        <StudentsApprovalStatus
+          pending={"declined"}
+          approved={"pending"}
+          declined={"approved"}
+        />
       </Table>
     </div>
   );

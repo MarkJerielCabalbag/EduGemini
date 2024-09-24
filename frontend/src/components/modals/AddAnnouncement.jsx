@@ -160,6 +160,7 @@ function AddAnnouncement({ open, onOpenChange }) {
         alertDialogFooter={
           <>
             <Button
+              disabled={isPending}
               onClick={() => {
                 onOpenChange(false);
                 setFiles([]);
@@ -168,6 +169,7 @@ function AddAnnouncement({ open, onOpenChange }) {
               Close
             </Button>
             <Button
+              disabled={isPending}
               onClick={async () => {
                 try {
                   await mutateAsync({ userId, title, description, files });

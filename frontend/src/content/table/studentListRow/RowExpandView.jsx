@@ -121,9 +121,16 @@ const RowExpandView = ({ user }) => {
 
           <div>
             <h1 className="text-slate-900 text-lg italic font-bold">
-              Feedback
+              Student Feedback
             </h1>
-            <p className="italic text-slate-500">{user.feedback}</p>
+            <p className="italic text-slate-500">{user.studentFeedback}</p>
+          </div>
+
+          <div>
+            <h1 className="text-slate-900 text-lg italic font-bold">
+              Teacher Feedback
+            </h1>
+            <p className="italic text-slate-500">{user.teacherFeedback}</p>
           </div>
 
           <div className="my-5">

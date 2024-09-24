@@ -85,6 +85,7 @@ function Settings() {
         dataTable={dataTable}
         columns={setGetAllActivities}
         statuses={studentGender}
+        paginationVisibility={"show"}
       />
     </div>
   );

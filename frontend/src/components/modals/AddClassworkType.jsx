@@ -83,8 +83,11 @@ function AddClassworkType({ open, onOpenChange }) {
         alertDialogTitle={"Add new classwork type"}
         alertDialogFooter={
           <>
-            <Button onClick={() => onOpenChange(false)}>Close</Button>
+            <Button disabled={isPending} onClick={() => onOpenChange(false)}>
+              Close
+            </Button>
             <Button
+              disabled={isPending}
               onClick={async () => {
                 try {
                   const formData = { classwork, roomId };

@@ -97,3 +97,11 @@ export const setStudentListCol = [
     header: "Feedback",
   }),
 ];
+
+export const studentPendingRequest = [
+  columnHelper.accessor("user_firstname", {
+    id: "firstname",
+    header: () => "Firstname",
+    cell: (info) => <p>{info.getValue()}</p>,
+  }),
+];

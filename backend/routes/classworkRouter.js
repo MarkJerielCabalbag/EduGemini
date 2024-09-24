@@ -381,7 +381,8 @@ classworkRouter.post(
           },
           path: `/answers/${foundStudent.user_lastname}, ${foundStudent.user_firstname} ${foundStudent.user_middlename}`,
           timeSubmition: `${date}, ${timeAction}`,
-          feedback: null,
+          studentFeedback: null,
+          teacherFeedback: null,
           score: null,
           chancesResubmition: 3,
         });

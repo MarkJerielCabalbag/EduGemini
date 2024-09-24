@@ -35,7 +35,7 @@ const Feedback = () => {
             distinctio reprehenderit id corrupti, vel velit quae libero eligendi
             obcaecati pariatur?
           </p>
-          {!feedbacks.feedback ? (
+          {!feedbacks.studentFeedback ? (
             <>
               <div className="flex flex-col gap-5">
                 <img src={ai} className="w-1/2 h-1/2" />
@@ -57,7 +57,7 @@ const Feedback = () => {
           ) : (
             <>
               <p className="text-pretty text-justify opacity-80 leading-9">
-                {feedbacks.feedback}
+                {feedbacks.studentFeedback}
               </p>
             </>
           )}

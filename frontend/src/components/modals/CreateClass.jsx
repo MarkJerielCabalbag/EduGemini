@@ -157,8 +157,11 @@ function CreateClass({ open, onOpenChange }) {
       }
       alertDialogFooter={
         <>
-          <Button onClick={() => onOpenChange(false)}>Cancel</Button>
+          <Button disabled={isPending} onClick={() => onOpenChange(false)}>
+            Cancel
+          </Button>
           <Button
+            disabled={isPending}
             onClick={async () => {
               try {
                 const formData = {

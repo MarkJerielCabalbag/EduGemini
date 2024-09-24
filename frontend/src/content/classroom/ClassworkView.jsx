@@ -166,7 +166,7 @@ function ClassworkView({ userStatus }) {
                 key={classroomInfo._id}
               >
                 <div className="bg-slate-700 rounded-sm p-4 text-slate-50 flex gap-2 items-center sm: md: lg:col-span-4">
-                  <File size={50} />{" "}
+                  <File size={50} />
                   <p>{classroomInfo.classwork_attach_file.filename}</p>
                 </div>
 
@@ -225,6 +225,7 @@ function ClassworkView({ userStatus }) {
                     dataTable={dataTable.data}
                     columns={setStudentListCol}
                     statuses={studentListStatus}
+                    paginationVisibility={"show"}
                   />
                 </>
               )}

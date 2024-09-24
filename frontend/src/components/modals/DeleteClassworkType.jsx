@@ -37,8 +37,11 @@ function DeleteClassworkType({ open, onOpenChange, classworkId }) {
         }
         alertDialogFooter={
           <>
-            <Button onClick={() => onOpenChange(false)}>Close</Button>
+            <Button disabled={isPending} onClick={() => onOpenChange(false)}>
+              Close
+            </Button>
             <Button
+              disabled={isPending}
               onClick={async () => {
                 const formData = { roomId, classworkId };
                 await deleteClassworkType(formData);

@@ -289,8 +289,11 @@ function CreateClassworkModal({ open, onOpenChange }) {
         }
         alertDialogFooter={
           <>
-            <Button onClick={() => onOpenChange(false)}>Close</Button>
+            <Button disabled={isPending} onClick={() => onOpenChange(false)}>
+              Close
+            </Button>
             <Button
+              disabled={isPending}
               onClick={async () => {
                 try {
                   setClassworkDetails({
