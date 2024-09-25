@@ -114,12 +114,44 @@ const getCreatedClassroom = asyncHandler(async (req, res, next) => {
 //@route    GET /api/eduGemini/classroom/getCreatedClassroom/getAnnouncements/:roomId
 //@access   private
 const getAnnouncements = asyncHandler(async (req, res, next) => {
-  const classroomId = req.params.roomId;
+  const { roomId } = req.params;
 
-  const classroomExist = await Classroom.findById(req.params.roomId);
+  const classroomExist = await Classroom.findById(roomId);
 
   const announcements = classroomExist.announcement;
   res.status(200).send(announcements);
+});
+
+//@desc     create public comment
+//@route    GET /api/eduGemini/classroom/comment/:roomId
+//@access   private
+const createPublicComment = asyncHandler(async (req, res, next) => {
+  const { roomId, announceId } = req.params;
+  const { comment, userId } = req.body;
+
+  if (!comment) {
+    return res.status(400).json({ message: "Please fill out the field" });
+  }
+  const roomExist = await Classroom.findById(roomId);
+
+  const findAnnouncement = roomExist.announcement.findIndex(
+    (announce) => announce._id.toString() === announceId
+  );
+
+  const anounceIndex = roomExist.announcement[findAnnouncement];
+
+  anounceIndex.publicComment.push({
+    _id: nanoid(),
+    user: userId,
+    comment: comment,
+  });
+
+  roomExist.announcement[findAnnouncement] = anounceIndex;
+
+  await roomExist.save();
+
+  console.log(anounceIndex);
+  return res.status(200).json({ message: "you commented" });
 });
 
 //@desc     DELETE announcement
@@ -434,4 +466,5 @@ export default {
   acceptJoinStudent,
   rejectJoinStudent,
   adminAllClass,
+  createPublicComment,
 };

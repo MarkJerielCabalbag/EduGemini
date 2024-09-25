@@ -15,7 +15,7 @@ import Enrolled from "./pages/Enrolled.jsx";
 import Auth from "./pages/Auth.jsx";
 import PrivateRoute from "./utils/PrivateRoute.jsx";
 import Profile from "./pages/Profile.jsx";
-import FileViewer from "./content/classroom/FileViewer.jsx";
+import Announcement from "./content/classroom/Announcement.jsx";
 import Settings from "./pages/Settings.jsx";
 import ClassroomDetails from "./content/classroom/ClassroomDetails.jsx";
 import Stream from "./content/classroom/Stream.jsx";
@@ -93,12 +93,12 @@ const router = createBrowserRouter(
 
         <Route
           path="/class/classroom/getCreatedClass/viewAnnouncement/:roomId/:announceId"
-          element={<FileViewer userStatus={"instructor"} />}
+          element={<Announcement userStatus={"instructor"} />}
         />
 
         <Route
           path="/class/classroom/getCreatedClass/student/:roomId/:announceId"
-          element={<FileViewer userStatus={"student"} />}
+          element={<Announcement userStatus={"student"} />}
         />
 
         <Route

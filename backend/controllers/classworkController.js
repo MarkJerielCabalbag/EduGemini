@@ -266,7 +266,7 @@ const submitAttachment = asyncHandler(async (req, res, next) => {
       const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
 
       async function runGemini() {
-        const studentFeedbackPrompt = `hi`;
+        const studentFeedbackPrompt = `Please evaluate the ${studentFiles} by using the instruction in ${instructionFile}, give score up to 50 points`;
         const generateStudentFeedback = await model.generateContent(
           studentFeedbackPrompt
         );

@@ -170,6 +170,30 @@ export async function fetchClassData(roomId) {
   });
 }
 
+export async function createPublicAnnouncement(
+  roomId,
+  announceId,
+  userId,
+  comment
+) {
+  return await fetch(
+    `${baseUrl}/api/eduGemini/classroom/comment/${roomId}/${announceId}`,
+    {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ comment, userId }),
+    }
+  ).then(async (res) => {
+    const response = await res.json();
+
+    if (!res.ok) {
+      throw new Error(response.message || "An Error Occured");
+    }
+
+    return response;
+  });
+}
+
 export async function getAnnouncement(roomId) {
   return await fetch(
     `${baseUrl}/api/eduGemini/classroom/getAnnouncement/${roomId}`,
@@ -929,6 +953,18 @@ export const useAddChance = ({ mutationFn, onSuccess, onError }) => {
 };
 
 export const useAcceptLate = ({ mutationFn, onSuccess, onError }) => {
+  return useMutation({
+    mutationFn,
+    onError,
+    onSuccess,
+  });
+};
+
+export const useCreatePublicAnnouncement = ({
+  mutationFn,
+  onError,
+  onSuccess,
+}) => {
   return useMutation({
     mutationFn,
     onError,

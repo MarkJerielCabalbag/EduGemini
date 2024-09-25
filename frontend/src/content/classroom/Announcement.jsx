@@ -1,8 +1,11 @@
 import {
+  createPublicAnnouncement,
   fetchClassData,
   getAnnouncement,
+  useCreatePublicAnnouncement,
   useGetannouncement,
   useGetClass,
+  useGetUser,
 } from "@/api/useApi";
 import { useQueryClient } from "@tanstack/react-query";
 import React, { useState } from "react";
@@ -17,13 +20,25 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { ArrowLeft, Bell, DownloadCloudIcon, File, Files } from "lucide-react";
+import {
+  ArrowLeft,
+  Bell,
+  File,
+  Files,
+  Info,
+  Loader2Icon,
+  SendIcon,
+} from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { baseUrl } from "@/baseUrl";
 import { Skeleton } from "@/components/ui/skeleton";
-import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
+import { Separator } from "@/components/ui/separator";
 
-function FileViewer({ userStatus }) {
+function Announcements({ userStatus }) {
+  const [comment, setComment] = useState("");
   const { roomId, announceId } = useParams();
   const userId = localStorage.getItem("userId");
   const queryClient = useQueryClient();
@@ -37,7 +52,7 @@ function FileViewer({ userStatus }) {
     toast.error(error.message);
   };
 
-  const { data, isFetching, isLoading, isPending } = useGetannouncement({
+  const { data, isFetching, isLoading } = useGetannouncement({
     queryFn: () => getAnnouncement(roomId),
     onError,
     onSuccess,
@@ -45,6 +60,13 @@ function FileViewer({ userStatus }) {
 
   const { data: room } = useGetClass({
     queryFn: () => fetchClassData(roomId),
+    onError,
+    onSuccess,
+  });
+
+  const { mutateAsync, isPending, isError } = useCreatePublicAnnouncement({
+    mutationFn: () =>
+      createPublicAnnouncement(roomId, announceId, userId, comment),
     onError,
     onSuccess,
   });
@@ -124,7 +146,6 @@ function FileViewer({ userStatus }) {
                 </div>
               </div>
               <Table>
-                <TableCaption>A list of files announcemnets</TableCaption>
                 <TableHeader>
                   <TableRow>
                     <TableHead className="w-[100px] bg-slate-900 text-white">
@@ -158,6 +179,110 @@ function FileViewer({ userStatus }) {
                   ))}
                 </TableBody>
               </Table>
+
+              <Separator className="my-5" />
+              <h1 className="text-2xl text-slate-900 font-bold">
+                Public Comments
+              </h1>
+
+              <p className="italic opacity-75 text-balance">
+                Lorem ipsum dolor sit amet consectetur adipisicing elit. A ab
+                qui repudiandae quas incidunt facere atque! Perspiciatis vero
+                minima ipsam.
+              </p>
+
+              <div>
+                {item.publicComment.length === 0 ? (
+                  <div className="my-5">No Comments Available</div>
+                ) : (
+                  <div>
+                    {item.publicComment.map((comment) => {
+                      const classroom = room?.map(
+                        (roomInfo) => roomInfo.acceptedStudents
+                      );
+
+                      const student = room?.map((roomInfo) =>
+                        roomInfo.acceptedStudents.filter(
+                          (stud) => stud._id === comment.user
+                        )
+                      );
+
+                      console.info(student);
+
+                      return (
+                        <>
+                          {student._id === comment.user ? (
+                            <div
+                              key={comment._id}
+                              className="my-5 flex gap-3 items-start"
+                            >
+                              <Avatar>
+                                <AvatarImage
+                                  src={`${baseUrl}/${student.user_profile_path}/${student.user_img}`}
+                                  alt={`${student.user_username}'s avatar`}
+                                />
+                                <AvatarFallback>
+                                  {student.user_username.charAt(0)}
+                                </AvatarFallback>
+                              </Avatar>
+                              <div>
+                                <h1 className="text-lg font-bold text-slate-700">
+                                  {student.user_username}
+                                </h1>
+                                <p className="italic text-slate-500">
+                                  {comment.comment}
+                                </p>
+                              </div>
+                            </div>
+                          ) : null}
+                        </>
+                      );
+                    })}
+                  </div>
+                )}
+
+                <div className="flex gap-3 items-center mt-5">
+                  <div>
+                    <Input
+                      placeHolder="Send a comment"
+                      name="comment"
+                      value={comment}
+                      onChange={(e) => setComment(e.target.value)}
+                      className={`${isError ? "border-red-500" : ""} w-full`}
+                    />
+                    <p
+                      className={`${
+                        isError ? "show" : " "
+                      }hidden text-red-500 text-xs italic mt-2`}
+                    >
+                      {isError ? (
+                        <div className="flex items-center gap-1">
+                          <Info size={13} />
+                          Fill out all fields
+                        </div>
+                      ) : (
+                        ""
+                      )}
+                    </p>
+                  </div>
+                  <Button
+                    disabled={isPending}
+                    onClick={async () => {
+                      try {
+                        await mutateAsync({ comment, userId });
+                      } catch (error) {
+                        console.log(error);
+                      }
+                    }}
+                  >
+                    {isPending ? (
+                      <Loader2Icon className="animate-spin" />
+                    ) : (
+                      <SendIcon />
+                    )}
+                  </Button>
+                </div>
+              </div>
             </>
           ) : null}
         </>
@@ -166,4 +291,4 @@ function FileViewer({ userStatus }) {
   );
 }
 
-export default FileViewer;
+export default Announcements;

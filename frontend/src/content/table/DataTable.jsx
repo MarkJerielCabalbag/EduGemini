@@ -39,7 +39,7 @@ const DataTable = ({ dataTable, columns, statuses, paginationVisibility }) => {
     pageSize: 10,
   });
 
-  const [rowCount, setRowCount] = useState(memorizedData?.length);
+  const [rowCount, setRowCount] = useState(memorizedData.length);
 
   const table = useReactTable({
     data: memorizedData,
@@ -57,7 +57,7 @@ const DataTable = ({ dataTable, columns, statuses, paginationVisibility }) => {
     getSortedRowModel: getSortedRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
     getFilteredRowModel: getFilteredRowModel(),
-    rowCount: memorizedData?.length,
+    rowCount: memorizedData.length,
   });
   const tableRef = useRef(null);
 
@@ -75,7 +75,7 @@ const DataTable = ({ dataTable, columns, statuses, paginationVisibility }) => {
           sheet="sheet1"
           currentTableRef={tableRef.current}
         >
-          <Button className="bg-green-800 my-5 flex gap-3 items-center">
+          <Button className="bg-green-800 my-5 flex gap-3 items-center shadow-lg">
             <img className="h-5 w-5" src={excel} />
             Export to Excel
           </Button>

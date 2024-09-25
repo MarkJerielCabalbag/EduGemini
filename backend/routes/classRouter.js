@@ -197,6 +197,7 @@ classRouter.post(
       user_img: user.profile.filename,
       files: announcementFiles,
       path: `classworks/${user.user_username}/${classroomExist.class_code}/announcements/${title}`,
+      publicComment: [],
     });
 
     // Save the updated classroom document
@@ -213,6 +214,11 @@ classRouter.post(
 classRouter.get(
   "/getAnnouncement/:roomId",
   classroomControllers.getAnnouncements
+);
+
+classRouter.post(
+  "/comment/:roomId/:announceId",
+  classroomControllers.createPublicComment
 );
 
 classRouter.delete(
