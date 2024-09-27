@@ -174,14 +174,44 @@ export async function createPublicAnnouncement(
   roomId,
   announceId,
   userId,
-  comment
+  comment,
+  date,
+  timeAction
 ) {
   return await fetch(
     `${baseUrl}/api/eduGemini/classroom/comment/${roomId}/${announceId}`,
     {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ comment, userId }),
+      body: JSON.stringify({ comment, userId, date, timeAction }),
+    }
+  ).then(async (res) => {
+    const response = await res.json();
+
+    if (!res.ok) {
+      throw new Error(response.message || "An Error Occured");
+    }
+
+    return response;
+  });
+}
+
+export async function createPrivateComment(
+  roomId,
+  workId,
+  userId,
+  comment,
+  date,
+  timeAction,
+  teacherId,
+  studentId
+) {
+  return await fetch(
+    `${baseUrl}/api/eduGemini/classwork/comment/${roomId}/${workId}/${userId}`,
+    {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ comment, date, timeAction, teacherId, studentId }),
     }
   ).then(async (res) => {
     const response = await res.json();
@@ -965,6 +995,14 @@ export const useCreatePublicAnnouncement = ({
   onError,
   onSuccess,
 }) => {
+  return useMutation({
+    mutationFn,
+    onError,
+    onSuccess,
+  });
+};
+
+export const useCreatePrivateComment = ({ mutationFn, onError, onSuccess }) => {
   return useMutation({
     mutationFn,
     onError,

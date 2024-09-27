@@ -29,6 +29,7 @@ import { baseUrl } from "@/baseUrl";
 import CancelSubmitionModal from "@/components/modals/CancelSubmitionModal";
 import moment from "moment";
 import Feedback from "./Feedback";
+import PrivateComment from "./PrivateComment";
 function ClassroomSubmition() {
   const [files, setFiles] = useState([]);
   const [showTurnInBtn, setShowTurnInBtn] = useState(false);
@@ -409,10 +410,7 @@ function ClassroomSubmition() {
                                 </div>
                               </div>
 
-                              <div className="bg-slate-400 shadow-sm shadow-white rounded my-2 p-5">
-                                <h1>Private Comment</h1>
-                                <input></input>
-                              </div>
+                              <PrivateComment teacherId={classworkInfo.owner} />
                             </div>
                           ) : null}
                         </>

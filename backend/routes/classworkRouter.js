@@ -385,6 +385,7 @@ classworkRouter.post(
           teacherFeedback: null,
           score: null,
           chancesResubmition: 3,
+          privateComment: [],
         });
       }
 
@@ -448,6 +449,12 @@ classworkRouter.post(
 classworkRouter.post(
   "/late/:roomId/:workId/:userId",
   classworkController.acceptLateClasswork
+);
+
+//private comment
+classworkRouter.post(
+  "/comment/:roomId/:workId/:userId",
+  classworkController.createPrivateComment
 );
 
 export default classworkRouter;

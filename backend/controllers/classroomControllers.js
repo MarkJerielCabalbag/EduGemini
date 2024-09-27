@@ -123,35 +123,61 @@ const getAnnouncements = asyncHandler(async (req, res, next) => {
 });
 
 //@desc     create public comment
-//@route    GET /api/eduGemini/classroom/comment/:roomId
+//@route    post /api/eduGemini/classroom/comment/:roomId/:announceId
 //@access   private
 const createPublicComment = asyncHandler(async (req, res, next) => {
   const { roomId, announceId } = req.params;
-  const { comment, userId } = req.body;
+  const { comment, userId, date, timeAction } = req.body;
 
   if (!comment) {
     return res.status(400).json({ message: "Please fill out the field" });
   }
+
   const roomExist = await Classroom.findById(roomId);
 
   const findAnnouncement = roomExist.announcement.findIndex(
     (announce) => announce._id.toString() === announceId
   );
+  const anounceIndex = roomExist.announcement[findAnnouncement]; //announcement Index
 
-  const anounceIndex = roomExist.announcement[findAnnouncement];
+  const findStudent = roomExist.acceptedStudents.find(
+    (student) => student._id === userId
+  );
 
-  anounceIndex.publicComment.push({
-    _id: nanoid(),
-    user: userId,
-    comment: comment,
-  });
+  if (findStudent) {
+    // console.log(findStudent);
+
+    const username = `${findStudent.user_lastname}, ${
+      findStudent.user_firstname
+    } ${findStudent.user_middlename.charAt(0)}.`;
+
+    const profile = `${findStudent.user_profile_path}/${findStudent.user_img}`;
+
+    anounceIndex.publicComment.push({
+      _id: nanoid(),
+      user: userId,
+      comment: comment,
+      username: username,
+      date: date,
+      time: timeAction,
+      profile: profile,
+    });
+  } else {
+    anounceIndex.publicComment.push({
+      _id: nanoid(),
+      user: roomExist.owner,
+      comment: comment,
+      username: roomExist.owner_name,
+      date: date,
+      time: timeAction,
+      profile: `${roomExist.profile_path}/${roomExist.user_img}`,
+    });
+  }
 
   roomExist.announcement[findAnnouncement] = anounceIndex;
-
   await roomExist.save();
 
-  console.log(anounceIndex);
-  return res.status(200).json({ message: "you commented" });
+  return res.status(200).json({ message: "hi" });
 });
 
 //@desc     DELETE announcement

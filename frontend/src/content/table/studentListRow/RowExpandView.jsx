@@ -1,6 +1,7 @@
 import { baseUrl } from "@/baseUrl";
 import AcceptLateOutput from "@/components/modals/AcceptLateOutput";
 import AddChances from "@/components/modals/AddChances";
+import PrivateCommentModal from "@/components/modals/PrivateCommentModal";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -12,6 +13,8 @@ import { useParams } from "react-router-dom";
 const RowExpandView = ({ user }) => {
   const [openAddChanceModal, setAddChanceModal] = useState(false);
   const [openAcceptLateOutputModal, setAcceptLateoutputModal] = useState(false);
+  const [openPrivateCommentModal, setOpenPrivateModal] = useState(false);
+
   const { workId } = useParams();
   const workStatus = (user) => {
     if (user.workStatus === "Turned in") {
@@ -60,6 +63,18 @@ const RowExpandView = ({ user }) => {
           userId={user._id}
           roomId={user.roomId}
           workId={workId}
+        />
+      )}
+
+      {openPrivateCommentModal && (
+        <PrivateCommentModal
+          open={openPrivateCommentModal}
+          onOpenChange={setOpenPrivateModal}
+          roomId={user.roomId}
+          workId={workId}
+          userId={user.teacherId}
+          teacherId={user.teacherId}
+          studentId={user._id}
         />
       )}
       <div>
@@ -117,6 +132,18 @@ const RowExpandView = ({ user }) => {
                 )}
               </span>
             </p>
+          </div>
+
+          <div>
+            {user.files.length === 0 ? (
+              ""
+            ) : (
+              <>
+                <Button onClick={() => setOpenPrivateModal(true)}>
+                  See All Comments
+                </Button>
+              </>
+            )}
           </div>
 
           <div>

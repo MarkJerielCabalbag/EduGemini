@@ -6,6 +6,7 @@ import { fileURLToPath } from "url";
 import moment from "moment";
 import { GoogleGenerativeAI } from "@google/generative-ai";
 import officeParser from "officeparser";
+import { nanoid } from "nanoid";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 //@desc     get classwork
@@ -87,6 +88,82 @@ const deleteClasswork = asyncHandler(async (req, res, next) => {
   res.status(200).json({
     message: `${classworkToDelete.classwork_title} is successfully deleted`,
   });
+});
+
+//@desc     create private comment
+//@route    POST /api/eduGemini/classwork/comment/:roomId/:workId/:userId
+//@access   private
+const createPrivateComment = asyncHandler(async (req, res, next) => {
+  const { roomId, workId, userId } = req.params;
+  const { comment, date, timeAction, teacherId, studentId } = req.body;
+
+  const roomExist = await Classroom.findById(roomId);
+
+  if (!roomExist) {
+    return res.status(400).json({ message: `${roomId} id does not exist` });
+  }
+
+  const foundStudent = roomExist.students.find(
+    (student) => student._id.toString() === studentId
+  );
+
+  if (!foundStudent) {
+    return res.status(400).json({ message: `Student ${studentId} not found` });
+  }
+
+  const findClasswork = roomExist.classwork.findIndex(
+    (classwork) => classwork._id.toString() === workId
+  );
+
+  if (findClasswork === -1) {
+    return res.status(400).json({ message: `Classwork ${workId} not found` });
+  }
+
+  if (!comment) {
+    return res.status(400).json({ message: "Please fill out the field" });
+  }
+
+  const workIndex = roomExist.classwork[findClasswork];
+
+  let studentExist = workIndex.classwork_outputs.find(
+    (output) => output._id.toString() === studentId
+  );
+
+  if (studentId === userId) {
+    const username = `${foundStudent.user_lastname}, ${
+      foundStudent.user_firstname
+    } ${foundStudent.user_middlename.charAt(0)}.`;
+
+    const profile = `${foundStudent.user_profile_path}/${foundStudent.user_img}`;
+
+    studentExist.privateComment.push({
+      _id: nanoid(),
+      user: userId,
+      comment: comment,
+      username: username,
+      date: date,
+      time: timeAction,
+      profile: profile,
+    });
+  }
+
+  if (teacherId === userId) {
+    studentExist.privateComment.push({
+      _id: nanoid(),
+      user: teacherId,
+      comment: comment,
+      username: roomExist.owner_name,
+      date: date,
+      time: timeAction,
+      profile: `${roomExist.profile_path}/${roomExist.user_img}`,
+    });
+  }
+
+  roomExist.classwork[findClasswork] = workIndex;
+
+  await roomExist.save();
+
+  return res.status(200).json({ message: "good" });
 });
 
 //@desc     get classwork attachments
@@ -456,6 +533,7 @@ const studentList = asyncHandler(async (req, res, next) => {
       score: studentActivity?.score ? studentActivity?.score : 0,
       roomId: roomId,
       isOverdue: `${dueDate} ${dueTime}`,
+      teacherId: roomExist.owner,
     };
   });
 
@@ -597,4 +675,5 @@ export default {
   getAllActivities,
   addChance,
   acceptLateClasswork,
+  createPrivateComment,
 };
