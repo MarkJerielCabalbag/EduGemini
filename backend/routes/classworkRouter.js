@@ -457,4 +457,16 @@ classworkRouter.post(
   classworkController.createPrivateComment
 );
 
+//export excel
+classworkRouter.get(
+  "/exportData/:roomId",
+  classworkController.getExportActivities
+);
+
+//export specific activity
+classworkRouter.get(
+  "/exportActivity/:workId/:roomId",
+  classworkController.exportSpecificActivity
+);
+
 export default classworkRouter;

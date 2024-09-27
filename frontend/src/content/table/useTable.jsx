@@ -22,21 +22,7 @@ export const setStudentListCol = [
         )
       ) : null,
   }),
-  columnHelper.accessor("user_img", {
-    id: "avatar",
-    header: "Avatar",
-    cell: (info) => (
-      <>
-        <Avatar>
-          <AvatarImage
-            className={"border border-slate-900"}
-            src={`${baseUrl}/${info.getValue()}`}
-          />
-        </Avatar>
-      </>
-    ),
-    enableSorting: false,
-  }),
+
   columnHelper.accessor("studentName", {
     id: "name",
     header: "Name",
@@ -70,6 +56,12 @@ export const setStudentListCol = [
       return filterStatuses.includes(status?.id);
     },
   }),
+
+  // columnHelper.accessor("gender", {
+  //   id: "gender",
+  //   header: "Gender",
+  //   cell: (row) => <p>{row.getValue().name}</p>,
+  // }),
   columnHelper.accessor("chancesResubmition", {
     id: "chances",
     header: "Resubmition Left",

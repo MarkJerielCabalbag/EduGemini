@@ -22,9 +22,16 @@ import TableDataHeader from "./TableDataHeader";
 import Pagination from "./Pagination";
 import Filters from "./Filters";
 import { useRef } from "react";
-import { DownloadTableExcel } from "react-export-table-to-excel";
+import * as XLSX from "xlsx";
 import { Button } from "@/components/ui/button";
-const DataTable = ({ dataTable, columns, statuses, paginationVisibility }) => {
+const DataTable = ({
+  dataTable,
+  columns,
+  statuses,
+  paginationVisibility,
+  dataSheet,
+  excelFilename,
+}) => {
   const [columnVisibility, setColumnVisibility] = useState({
     files: false,
     path: false,
@@ -59,7 +66,15 @@ const DataTable = ({ dataTable, columns, statuses, paginationVisibility }) => {
     getFilteredRowModel: getFilteredRowModel(),
     rowCount: memorizedData.length,
   });
-  const tableRef = useRef(null);
+
+  const handleOnExport = () => {
+    const workBook = XLSX.utils.book_new(),
+      ws = XLSX.utils.json_to_sheet(dataSheet);
+
+    XLSX.utils.book_append_sheet(workBook, ws, "Sheet1");
+
+    XLSX.writeFile(workBook, excelFilename);
+  };
 
   return (
     <div className="w-full h-full">
@@ -70,18 +85,16 @@ const DataTable = ({ dataTable, columns, statuses, paginationVisibility }) => {
           columnFilters={columnFilters}
           statuses={statuses}
         />
-        <DownloadTableExcel
-          filename="table_data"
-          sheet="sheet1"
-          currentTableRef={tableRef.current}
+
+        <Button
+          className="bg-green-800 my-5 flex gap-3 items-center shadow-lg"
+          onClick={handleOnExport}
         >
-          <Button className="bg-green-800 my-5 flex gap-3 items-center shadow-lg">
-            <img className="h-5 w-5" src={excel} />
-            Export to Excel
-          </Button>
-        </DownloadTableExcel>
+          <img className="h-5 w-5" src={excel} />
+          Export Excel
+        </Button>
       </div>
-      <Table ref={tableRef}>
+      <Table>
         <TableHeader>
           {table.getHeaderGroups().map((headerGroup) => (
             <TableRow key={headerGroup.id} className="w-auto">

@@ -1,8 +1,10 @@
 import {
+  exportReport,
   fetchClassData,
   getAllActivities,
   useGetAllActivities,
   useGetClass,
+  useGetExportOverallReport,
 } from "@/api/useApi";
 import DataTable from "../table/DataTable";
 import { useParams } from "react-router-dom";
@@ -10,6 +12,7 @@ import { useRef, useState } from "react";
 import { createColumnHelper } from "@tanstack/react-table";
 import { studentGender } from "../table/studentListRow/sudentListStatus";
 import { DownloadTableExcel } from "react-export-table-to-excel";
+import { Button } from "@/components/ui/button";
 function Settings() {
   const { roomId } = useParams();
   const [openStudentDeclineModal, setOpenStudentDeclineModal] = useState(false);
@@ -38,6 +41,12 @@ function Settings() {
     }
     return Array.from(titles);
   };
+
+  const { data: excel } = useGetExportOverallReport({
+    queryFn: () => exportReport(roomId),
+    onError,
+    onSuccess,
+  });
 
   const classworkTitles = dataTable ? getClassworkTitles(dataTable) : [];
 
@@ -79,6 +88,10 @@ function Settings() {
     ),
   ];
 
+  const filename = data
+    ?.map((classInfo) => `${classInfo.classname} Overall Report.xlsx`)
+    .toString();
+
   return (
     <div className="h-full w-full">
       <DataTable
@@ -86,6 +99,8 @@ function Settings() {
         columns={setGetAllActivities}
         statuses={studentGender}
         paginationVisibility={"show"}
+        excelFilename={filename}
+        dataSheet={excel}
       />
     </div>
   );

@@ -662,6 +662,144 @@ const acceptLateClasswork = asyncHandler(async (req, res, next) => {
     message: `You successfully accepted the Late output`,
   });
 });
+
+//@desc     get classwork attachment
+//@route    GET /api/eduGemini/classwork/exportData/:roomId
+//@access   private
+export const getExportActivities = asyncHandler(async (req, res, next) => {
+  const { roomId } = req.params;
+
+  const roomExist = await Classroom.findById(roomId);
+
+  if (!roomExist) {
+    return res.status(404).send({ message: "Room not found" });
+  }
+
+  let allActivities = roomExist.acceptedStudents.map((student) => {
+    let eachClassworkTitle = () =>
+      roomExist.classwork.map((classwork) => {
+        const title = classwork.classwork_title;
+        const score = classwork.classwork_outputs.find(
+          (s) => s._id.toString() === student._id.toString()
+        );
+
+        let targetClassworkTitle = { title: classwork.classwork_title };
+        let scores = score?.score ? { score: score?.score } : { score: 0 };
+
+        const mergedTitleScore = Object.assign(targetClassworkTitle, scores);
+        return { ...mergedTitleScore };
+      });
+
+    return {
+      studentNames: `${student.user_lastname}, ${
+        student.user_firstname
+      } ${student.user_middlename.charAt(0)}`,
+      classwork: eachClassworkTitle(),
+      gender:
+        student.user_gender === "male"
+          ? { id: 1, name: "Male" }
+          : { id: 2, name: "Female" },
+    };
+  });
+
+  allActivities.sort((a, b) => {
+    if (a.gender.id !== b.gender.id) {
+      return a.gender.id - b.gender.id; // Sort by gender first
+    }
+    return a.studentNames.localeCompare(b.studentNames);
+  });
+
+  let excelExportData = allActivities.map((activity) => {
+    const dynamicClasswork = activity.classwork.reduce((acc, curr) => {
+      acc[curr.title] = curr.score;
+      return acc;
+    }, {});
+
+    return Object.assign(
+      {
+        Name: activity.studentNames,
+        Gender: activity.gender.name,
+      },
+      dynamicClasswork
+    );
+  });
+
+  return res.status(200).send(excelExportData);
+});
+
+//@desc     get details to export the activity
+//@route    POST /api/eduGemini/classwork/exportActivity/:workId/:roomId
+//@access   private
+const exportSpecificActivity = asyncHandler(async (req, res, next) => {
+  const { workId, roomId } = req.params;
+
+  const roomExist = await Classroom.findById(roomId);
+
+  const listOfClasswork = roomExist.classwork.map((work) => work);
+
+  const targetClasswork = listOfClasswork.find(
+    (targetId) => targetId._id === workId
+  );
+
+  console.log(targetClasswork._id);
+
+  const classworkOutputs = targetClasswork.classwork_outputs;
+  const dueTime = targetClasswork.classwork_due_time;
+  const dueDate = targetClasswork.classwork_due_date;
+  const now = moment();
+  const formattedTime = now.format("h:mm A");
+  const formattedDate = now.format("MMM Do YYYY");
+
+  const isOverdue = now.isAfter(
+    moment(`${dueDate} ${dueTime}`, "MMM Do YYYY h:mm A")
+  );
+
+  const listedStudent = roomExist.acceptedStudents.map((student) => {
+    const studentActivity = classworkOutputs.find(
+      (output) => output._id.toString() === student._id.toString()
+    );
+    console.log(studentActivity?.score);
+    let workStatus;
+
+    if (
+      isOverdue &&
+      !studentActivity?.files &&
+      isOverdue &&
+      studentActivity?.files?.length !== 0
+    ) {
+      workStatus = {
+        id: 2,
+        name: "Missing",
+      };
+    } else if (!studentActivity) {
+      workStatus = {
+        id: 5,
+        name: "No Action Yet",
+      };
+    } else if (studentActivity) {
+      workStatus = studentActivity?.workStatus;
+    }
+
+    return {
+      studentName: `${student.user_lastname}, ${student.user_firstname} ${
+        student.user_middlename.charAt(0) + "."
+      }`,
+      timeSubmition: !studentActivity?.timeSubmition
+        ? "No time save"
+        : studentActivity?.timeSubmition,
+      studentFeedback: !studentActivity?.studentFeedback
+        ? "No feedback for student available"
+        : studentActivity?.studentFeedback,
+      teacherFeedback: studentActivity?.teacherFeedback
+        ? studentActivity?.teacherFeedback
+        : "No feedback for teacher available",
+      score: studentActivity?.score ? studentActivity?.score : 0,
+    };
+  });
+
+  res.status(200).send(listedStudent);
+});
+
 export default {
   getClasswork,
   getClassworkInformation,
@@ -676,4 +814,6 @@ export default {
   addChance,
   acceptLateClasswork,
   createPrivateComment,
+  getExportActivities,
+  exportSpecificActivity,
 };

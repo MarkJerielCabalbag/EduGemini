@@ -682,6 +682,42 @@ export async function addChance(roomId, userId, workId, chances) {
   });
 }
 
+export async function exportReport(roomId) {
+  return await fetch(
+    `${baseUrl}/api/eduGemini/classwork/exportData/${roomId}`,
+    {
+      method: "GET",
+      headers: { "Content-Type": "application/json" },
+    }
+  ).then(async (res) => {
+    const response = await res.json();
+
+    if (!res.ok) {
+      throw new Error(response.message || "An Error Occured");
+    }
+
+    return response;
+  });
+}
+
+export async function getExportActivity(workId, roomId) {
+  return await fetch(
+    `${baseUrl}/api/eduGemini/classwork/exportActivity/${workId}/${roomId}`,
+    {
+      method: "GET",
+      headers: { "Content-Type": "application/json" },
+    }
+  ).then(async (res) => {
+    const response = await res.json();
+
+    if (!res.ok) {
+      throw new Error(response.message || "An Error Occured");
+    }
+
+    return response;
+  });
+}
+
 export const useGetClass = ({ queryFn, onSuccess, onError }) => {
   return useQuery({
     queryKey: ["room"],
@@ -1005,6 +1041,22 @@ export const useCreatePublicAnnouncement = ({
 export const useCreatePrivateComment = ({ mutationFn, onError, onSuccess }) => {
   return useMutation({
     mutationFn,
+    onError,
+    onSuccess,
+  });
+};
+
+export const useGetExportOverallReport = ({ queryFn, onError, onSuccess }) => {
+  return useQuery({
+    queryFn,
+    onError,
+    onSuccess,
+  });
+};
+
+export const useGetExportActivity = ({ queryFn, onError, onSuccess }) => {
+  return useQuery({
+    queryFn,
     onError,
     onSuccess,
   });

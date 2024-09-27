@@ -7,6 +7,8 @@ import {
   getListedStudents,
   useGetUser,
   getUser,
+  useGetExportActivity,
+  getExportActivity,
 } from "@/api/useApi";
 import { studentListStatus } from "../table/studentListRow/sudentListStatus";
 import CopyFunctionality from "@/utils/CopyFunctionality";
@@ -83,6 +85,12 @@ function ClassworkView({ userStatus }) {
     queryFn: () => getUser(userId),
     onSuccess,
     onError,
+  });
+
+  const { data: excel } = useGetExportActivity({
+    queryFn: () => getExportActivity(workId, roomId),
+    onError,
+    onSuccess,
   });
 
   console.log(room);
@@ -226,6 +234,8 @@ function ClassworkView({ userStatus }) {
                     columns={setStudentListCol}
                     statuses={studentListStatus}
                     paginationVisibility={"show"}
+                    dataSheet={excel}
+                    excelFilename={`${classroomInfo.classwork_title}.xlsx`}
                   />
                 </>
               )}
