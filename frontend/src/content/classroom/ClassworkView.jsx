@@ -123,7 +123,7 @@ function ClassworkView({ userStatus }) {
                 </Badge>
 
                 <div className="w-full h-full">
-                  <div className="grid grid-cols-4 gap-3 ">
+                  <div className="grid grid-cols-1 gap-3 lg:grid-cols-4">
                     <div className="flex gap-2 items-center">
                       {user?.map((userInfo) => (
                         <img
@@ -134,24 +134,24 @@ function ClassworkView({ userStatus }) {
                       ))}
 
                       <div>
-                        <p className="font-extrabold text-slate-200">
+                        <p className="font-extrabold text-slate-200 text-sm md:text-md">
                           {roomInfo.owner_name}
                         </p>
-                        <p className="italic text-slate-100 opacity-80">
+                        <p className="italic text-slate-100 opacity-80 text-xs md:text-md">
                           {roomInfo.owner_email}
                         </p>
                       </div>
                     </div>
                     <div>
                       <p className="font-bold text-slate-200">Subject</p>
-                      <p className="italic text-slate-100 opacity-80 flex items-center gap-2">
+                      <p className="italic text-slate-100 opacity-80 flex items-center gap-2 text-sm md:text-md">
                         <School2Icon size={18} />
                         {roomInfo.subject}
                       </p>
                     </div>
                     <div>
                       <p className="font-bold text-slate-200">Due date</p>
-                      <p className="italic text-slate-100 opacity-80 flex items-center gap-2">
+                      <p className="italic text-slate-100 opacity-80 flex items-center gap-2 text-sm md:text-md">
                         <Clock size={18} />
                         {classroomInfo.classwork_due_date}
                         {", "}
@@ -161,7 +161,7 @@ function ClassworkView({ userStatus }) {
 
                     <div>
                       <p className="font-bold text-slate-200">Classname</p>
-                      <p className="italic text-slate-100 opacity-80 flex items-center gap-2">
+                      <p className="italic text-slate-100 opacity-80 flex items-center gap-2 text-sm md:text-md">
                         <SchoolIcon size={18} /> {roomInfo.classname}
                       </p>
                     </div>
@@ -170,28 +170,28 @@ function ClassworkView({ userStatus }) {
               </div>
 
               <div
-                className="mt-4 grid grid-cols-7 gap-2 "
+                className="mt-4 grid grid-cols-1 gap-2 md:grid-cols-2 lg:grid-cols-7"
                 key={classroomInfo._id}
               >
-                <div className="bg-slate-700 rounded-sm p-4 text-slate-50 flex gap-2 items-center sm: md: lg:col-span-4">
+                <div className="bg-slate-700 rounded-sm p-4 text-slate-50 flex gap-2 items-center lg:col-span-4">
                   <File size={50} />
                   <p>{classroomInfo.classwork_attach_file.filename}</p>
                 </div>
 
                 <>
-                  <div className="bg-slate-700 rounded-sm p-4 text-slate-50 flex flex-col justify-center items-end">
+                  <div className="bg-slate-700 rounded-sm p-4 text-slate-50 flex flex-col justify-center items-start">
                     <p className="text-6xl font-extrabold text-slate-50">
                       {roomInfo.acceptedStudents.length}
                     </p>
                     <p className="italic opacity-80">Students</p>
                   </div>
-                  <div className="bg-slate-700 rounded-sm p-4 text-slate-50 flex flex-col justify-center items-end">
+                  <div className="bg-slate-700 rounded-sm p-4 text-slate-50 flex flex-col justify-center items-start">
                     <p className="text-6xl font-extrabold text-slate-50">
                       {roomInfo.announcement.length}
                     </p>
                     <p className="italic opacity-80">Announcement</p>
                   </div>
-                  <div className="bg-slate-700 rounded-sm p-4 text-slate-50 flex flex-col justify-center items-end">
+                  <div className="bg-slate-700 rounded-sm p-4 text-slate-50 flex flex-col justify-center items-start">
                     <CopyFunctionality
                       text={roomInfo.class_code}
                       setIsCopied={setIsCopied}

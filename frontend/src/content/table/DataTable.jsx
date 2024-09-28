@@ -78,7 +78,7 @@ const DataTable = ({
 
   return (
     <div className="w-full h-full">
-      <div className="flex justify-between items-center">
+      <div className="flex flex-col">
         <Filters
           table={table}
           setColumnFilters={setColumnFilters}
@@ -87,7 +87,7 @@ const DataTable = ({
         />
 
         <Button
-          className="bg-green-800 my-5 flex gap-3 items-center shadow-lg"
+          className="bg-green-800 flex gap-3 items-center shadow-lg"
           onClick={handleOnExport}
         >
           <img className="h-5 w-5" src={excel} />

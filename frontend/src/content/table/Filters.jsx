@@ -62,7 +62,7 @@ const Filters = ({ setColumnFilters, columnFilters, statuses }) => {
     columnFilters.find((f) => f.id === "status")?.value || [];
 
   return (
-    <div className="flex items-center gap-3">
+    <div className="flex items-center gap-3 my-5">
       <Input
         // value={studentFilter}
         onChange={(e) => onFilterChange("name", e.target.value)}

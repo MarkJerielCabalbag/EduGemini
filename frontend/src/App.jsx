@@ -8,7 +8,7 @@ const App = () => {
   return (
     <>
       <Outlet />
-      {<Toaster />}
+      {<Toaster position="bottom-center" />}
     </>
   );
 };

@@ -10,18 +10,8 @@ function ClassroomDetails() {
   return (
     <>
       <div className="container sm:container md:container lg:container">
-        <div className="my-5">
-          <ArrowLeft
-            onClick={() => {
-              navigate(`/class/${userId}`);
-              console.log("clicked na uo");
-            }}
-          />
-        </div>
         <ClassroomInfo
-          design={
-            "bg-slate-900 rounded relative z-50 p-9 sm:col-span-2 md:h-full lg:h-full"
-          }
+          design={"bg-slate-900 rounded-sm col-span-2 -z-50 p-5 md:p-5"}
           hide={"hidden"}
         />
         <ClassroomNavigation />

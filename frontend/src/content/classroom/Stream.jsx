@@ -9,6 +9,7 @@ function Stream({ statusBtn, userStatus }) {
   return (
     <div>
       <Button
+        variant={"secondary"}
         className={statusBtn}
         onClick={() => setAddModalAnnouncement(true)}
       >

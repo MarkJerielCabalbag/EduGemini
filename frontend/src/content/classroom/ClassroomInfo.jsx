@@ -1,10 +1,11 @@
 import { fetchClassData, useGetClass } from "@/api/useApi";
 import { baseUrl } from "@/baseUrl";
 import { Avatar, AvatarImage } from "@/components/ui/avatar";
+import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import CopyFunctionality from "@/utils/CopyFunctionality";
 import ToolTipComponent from "@/utils/ToolTipComponent";
-import { Book } from "lucide-react";
+import { ArrowLeft, Book } from "lucide-react";
 import React, { useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 
@@ -24,8 +25,16 @@ function ClassroomInfo({ design, hide }) {
     <>
       {data?.map((roomDetails) => (
         <React.Fragment key={roomDetails._id}>
-          <div key={roomDetails._id}>
-            <div className="gap-2 grid sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-2">
+          <div key={roomDetails._id} className="sticky top-0 bg-white z-50">
+            <div className="my-5">
+              <ArrowLeft
+                onClick={() => {
+                  navigate(`/class/${userId}`);
+                  console.log("hi");
+                }}
+              />
+            </div>
+            <div className="grid sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-2">
               <div className={design}>
                 <h1 className="text-white font-bold text-lg">
                   {isLoading || isFetching ? (

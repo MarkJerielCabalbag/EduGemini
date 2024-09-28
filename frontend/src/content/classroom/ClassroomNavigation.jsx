@@ -16,10 +16,10 @@ function ClassroomNavigation() {
   });
 
   return (
-    <div className="my-5 flex gap-3 z-50">
+    <div className="my-5 flex flex-col items-start gap-3 md:flex-row">
       <Button
+        variant={"link"}
         disabled={isLoading || isFetching | isPending}
-        className="bg-slate-500"
         onClick={() =>
           navigate(
             `/class/classroom/getCreatedClass/${classworks?.map(
@@ -32,7 +32,7 @@ function ClassroomNavigation() {
       </Button>
       <Button
         disabled={isLoading || isFetching | isPending}
-        className="bg-slate-500"
+        variant={"link"}
         onClick={() =>
           navigate(
             `/class/classroom/getCreatedClass/${classworks?.map(
@@ -45,7 +45,7 @@ function ClassroomNavigation() {
       </Button>
       <Button
         disabled={isLoading || isFetching | isPending}
-        className="bg-slate-500"
+        variant={"link"}
         onClick={() =>
           navigate(
             `/class/classroom/getCreatedClass/${classworks?.map(
@@ -58,7 +58,7 @@ function ClassroomNavigation() {
       </Button>
       <Button
         disabled={isLoading || isFetching | isPending}
-        className="bg-slate-500"
+        variant={"link"}
         onClick={() =>
           navigate(
             `/class/classroom/getCreatedClass/${classworks?.map(

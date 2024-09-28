@@ -1,5 +1,5 @@
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { BrainCircuit, Lock, Mail, User } from "lucide-react";
+import { BrainCircuit } from "lucide-react";
 import mainBg from "../assets/main-bg.mp4";
 import SignIn from "../content/SignIn";
 import SignUp from "../content/SignUp";
@@ -7,24 +7,24 @@ import Video from "../content/Video";
 
 function Auth() {
   return (
-    <div className="h-screen w-screen flex flex-col items-center justify-center gap-10 relative z-50 ">
-      <Video src={mainBg} className="absolute z-0 w-screen h-full" />
-      <div className=" text-center z-50">
-        <h1 className="text-2xl flex gap-2 items-center justify-center italic font-bold">
+    <div className="h-screen w-screen flex flex-col justify-center items-center my-28 p-5 md:my-0">
+      <div className="text-center">
+        <h1 className="flex gap-2 items-center justify-center italic font-bold sm:text-md md:text-2xl lg:text-2xl">
           <BrainCircuit />
           eduGemini
         </h1>
-        <p className="text-2xl font-bold my-3">
-          “Empowering Educators: Unleashing Student Potential with eduGemini!”
+        <p className="font-bold my-3 sm:text-md md:text-2xl lg:text-2xl">
+          Empowering Educators: Unleashing Student Potential with eduGemini!
         </p>
-        <p className="opacity-75 ">
+        <p className="opacity-75 mb-3 sm:text-xs md:text-sm lg:text-md">
           Discover how eduGemini’s AI-driven insights revolutionize student work
           analysis, personalized feedback, and time-saving efficiency.
         </p>
       </div>
+
       <Tabs
         defaultValue="signin"
-        className="z-50 bg-white w-4/12 shadow-2xl p-5 rounded "
+        className="bg-white shadow-2xl p-5 rounded-sm sm:w-full md:w-1/2 lg:w-4/12"
       >
         <TabsList className="w-full">
           <TabsTrigger value="signin" className="w-2/4">

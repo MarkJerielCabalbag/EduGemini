@@ -88,14 +88,14 @@ function Announcements({ userStatus }) {
   });
 
   return (
-    <div className="sm:container md:container lg:container">
+    <div className="mx-5">
       {data?.map((item) => (
         <>
           {item._id === announceId ? (
             <>
               {room?.map((roomInfo) => (
                 <>
-                  <div className="my-5">
+                  <div className="my-5 sticky top-0 z-50 bg-white">
                     <ArrowLeft
                       onClick={() =>
                         userStatus === "instructor"
@@ -160,7 +160,7 @@ function Announcements({ userStatus }) {
                       </div>
 
                       <Files
-                        className="absolute top-2 right-5 text-white opacity-70 rotate-12"
+                        className="absolute top-2 right-5 text-white opacity-30 rotate-12"
                         size={170}
                       />
                     </div>
@@ -202,11 +202,11 @@ function Announcements({ userStatus }) {
 
                   <Separator className="my-5" />
 
-                  <h1 className="text-2xl text-slate-900 font-bold">
+                  <h1 className="text-lg text-slate-900 font-bold md:text-2xl">
                     Public Comments
                   </h1>
 
-                  <p className="italic opacity-75 text-balance">
+                  <p className="italic opacity-75 text-balance text-sm md:text-md">
                     Lorem ipsum dolor sit amet consectetur adipisicing elit. A
                     ab qui repudiandae quas incidunt facere atque! Perspiciatis
                     vero minima ipsam.
@@ -217,7 +217,7 @@ function Announcements({ userStatus }) {
                       <div className="my-5">No Comments Available</div>
                     ) : (
                       <>
-                        <div>
+                        <div className="h-3/4">
                           {item.publicComment.map((comment) => (
                             <div
                               className={`my-5 ${
@@ -227,7 +227,7 @@ function Announcements({ userStatus }) {
                               }`}
                             >
                               <div
-                                className={`w-2/4 ${
+                                className={`w-full text-wrap md:w-1/2 ${
                                   userId === comment.user
                                     ? "bg-slate-900 p-5 rounded-md text-white"
                                     : "bg-slate-300 p-5 rounded-md text-slate-900"
@@ -239,24 +239,25 @@ function Announcements({ userStatus }) {
                                     src={`${baseUrl}/${comment.profile}`}
                                   />
                                   <div>
-                                    <h1 className="font-bold">
+                                    <h1 className="font-bold text-xs md:text-md">
                                       {comment.username}
                                     </h1>
-                                    <p className="italic opacity-75 text-sm">
+                                    <p className="italic opacity-75 text-xs md:text-md">
                                       {comment.date}, {comment.time}
                                     </p>
                                   </div>
                                 </div>
 
-                                <p className="w-full">{comment.comment}</p>
+                                <p className="w-full text-xs italic md:text-sm">
+                                  {comment.comment}
+                                </p>
                               </div>
                             </div>
                           ))}
                         </div>
                       </>
                     )}
-
-                    <div className="flex gap-3 items-center my-5">
+                    <div className="flex gap-3 items-center my-5 sticky z-50">
                       <Input
                         placeHolder="Send a comment"
                         name="comment"

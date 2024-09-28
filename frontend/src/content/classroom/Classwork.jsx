@@ -11,6 +11,7 @@ function Classwork({ statusBtn }) {
   return (
     <div>
       <Button
+        variant={"secondary"}
         className={statusBtn}
         onClick={() => {
           setOpenCreateClassworkModal(true);

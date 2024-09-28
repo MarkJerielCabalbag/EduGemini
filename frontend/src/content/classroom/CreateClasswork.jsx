@@ -45,7 +45,7 @@ function CreateClasswork({ statusBtn, cardStatus }) {
                 <>
                   <Link
                     key={classwork._id}
-                    className="bg-slate-900 text-white p-5 rounded text-right relative hover:bg-slate-500 shadow-lg text-primary"
+                    className="bg-slate-900 text-white p-5 rounded text-right relative hover:bg-slate-800 shadow-lg text-primary"
                     to={`${
                       statusBtn === "hidden"
                         ? `/class/classroom/getCreatedClass/viewClasswork/classwork/${classwork._id}/${roomId}/${userId}`
