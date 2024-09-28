@@ -101,6 +101,10 @@ classworkRouter.post(
       return res.status(400).json({ message: "Please fill all fields" });
     }
 
+    if (!classworkAttachFile) {
+      return res.status(400).json({ message: "Please attach a file" });
+    }
+
     if (!roomExist) {
       return res.status(404).json({ message: `${roomId} ID does not exist` });
     }
@@ -158,8 +162,7 @@ const storageUpdatedClassworkInstruction = multer.diskStorage({
         return callback(new Error("Classwork not found"), false);
       }
 
-      const classworkFolderFile =
-        classworkToUpdate.classwork_attach_file.destination;
+      const classworkFolderFile = `./${classworkToUpdate.classwork_attach_file.destination}/`;
 
       console.log(classworkFolderFile);
       callback(null, classworkFolderFile);
@@ -202,14 +205,15 @@ classworkRouter.post(
       // Delete the old file
       console.log(classworkToUpdate.classwork_attach_file.destination);
       console.log(classworkToUpdate.classwork_attach_file.filename);
+      const filePath = `${classworkToUpdate.classwork_folder_path}/instruction/${classworkToUpdate.classwork_attach_file.filename}`;
+      try {
+        fs.unlinkSync(filePath);
+        console.log("File deleted successfully:", filePath);
+      } catch (err) {
+        console.error("Error deleting the file:", err);
+        return res.status(500).json({ message: "Error deleting the file" });
+      }
 
-      fs.rm(
-        `${classworkToUpdate.classwork_folder_path}/instruction/${classworkToUpdate.classwork_attach_file.filename}`,
-        function (err) {
-          if (err) return console.log(err);
-          console.log("file deleted successfully");
-        }
-      );
       classworkToUpdate.classwork_attach_file = classworkAttachFile;
     }
     classworkToUpdate.classwork_title =

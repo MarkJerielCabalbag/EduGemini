@@ -319,8 +319,17 @@ const submitAttachment = asyncHandler(async (req, res, next) => {
         answerformat === "pdf"
       ) {
         studentFiles = await officeParser.parseOfficeAsync(answerPath);
+      } else if (answerformat === "png" || answerformat === "jpg") {
+        const image = {
+          inlineData: {
+            data: Buffer.from(answerPath).toString("base64"),
+            mimeType: answerformat === "png" ? "image/png" : "image/jpeg",
+          },
+        };
+        studentFiles = image;
       }
 
+      console.log(studentFiles);
       let instructionFile;
       let instructionPath = fs.readFileSync(
         `./${classworkPath}/instruction/${classworkAttachFile}`
@@ -334,6 +343,14 @@ const submitAttachment = asyncHandler(async (req, res, next) => {
         instructionFormat === "txt"
       ) {
         instructionFile = await officeParser.parseOfficeAsync(instructionPath);
+      } else if (instructionFormat === "png" || instructionFormat === "jpg") {
+        const image = {
+          inlineData: {
+            data: Buffer.from(answerPath).toString("base64"),
+            mimeType: instructionFormat === "png" ? "image/png" : "image/jpeg",
+          },
+        };
+        instructionFile = image;
       }
 
       console.log("INSTRUCTION FILE", instructionFile);
@@ -343,22 +360,28 @@ const submitAttachment = asyncHandler(async (req, res, next) => {
       const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
 
       async function runGemini() {
-        const studentFeedbackPrompt = `Please evaluate the ${studentFiles} by using the instruction in ${instructionFile}, give score up to 50 points`;
-        const generateStudentFeedback = await model.generateContent(
-          studentFeedbackPrompt
-        );
+        const studentFeedbackPrompt = `Evaluate this submission [${studentFiles}] based on the provided instructions [${instructionFile}]. Highlight areas of clarity, structure, and content understanding, and suggest improvements, it should be concise and easy to understand`;
+        const generateStudentFeedback = await model.generateContent([
+          studentFeedbackPrompt,
+          studentFiles,
+        ]);
         const geminiResponseStudentFeedback =
           await generateStudentFeedback.response;
         const studentFeedbackResult = geminiResponseStudentFeedback.text();
         console.log(studentFeedbackResult);
 
-        const scorePrompt = `hi `;
+        // Request a numerical score
+        const scorePrompt = `Based on the feedback provided [${studentFeedbackResult}], assign a total score provided in the [${instructionFile}] for the student's submission. Return only a number, dont include any explanations, i just want the exact number or total score `;
         const generateStudentScore = await model.generateContent(scorePrompt);
-        const gemniniStudentScoreResponse = await generateStudentScore.response;
-        const studentScoreResult = gemniniStudentScoreResponse.text();
-        console.log(studentScoreResult);
+        const geminiStudentScoreResponse = await generateStudentScore.response;
 
-        const teacherFeedbackPrompt = `hi`;
+        // Ensure the score is parsed as a number
+        const studentScoreResult = parseFloat(
+          geminiStudentScoreResponse.text().trim()
+        );
+        console.log("Student Score:", studentScoreResult);
+
+        const teacherFeedbackPrompt = `As you generate a feedback for students submission feedback [${studentFeedbackResult}], based on this student feedback, what or how do I improved my teaching to student based on the student submission feedback [${studentFeedbackResult}]. Suggest improvements to further nurture my student`;
         const generateTeacherFeedback = await model.generateContent(
           teacherFeedbackPrompt
         );

@@ -28,7 +28,9 @@ const Feedback = () => {
         <div>
           <div className="flex justify-between items-center">
             <h1 className="font-bold text-lg">EduGemini Feedback</h1>
-            <p>{!feedbacks.score ? "No Score Available" : feedbacks.score}</p>
+            <p className="font-bold text-2xl">
+              Score: {!feedbacks.score ? 0 : feedbacks.score}
+            </p>
           </div>
           <p className="opacity-70 italic mb-3">
             Lorem ipsum dolor sit amet consectetur adipisicing elit. Fuga

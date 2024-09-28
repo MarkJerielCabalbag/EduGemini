@@ -60,6 +60,7 @@ function CreateClassworkModal({ open, onOpenChange }) {
       formData.append("classworkDescription", classworkDescription);
       formData.append("classworkDueDate", classworkDueDate);
       formData.append("classworkDueTime", time);
+
       formData.append("classworkAttachFile", classworkAttachFile);
 
       const response = await fetch(
@@ -78,8 +79,10 @@ function CreateClassworkModal({ open, onOpenChange }) {
       toast.success(data.message);
       localStorage.setItem("workId", data.workId);
       queryClient.invalidateQueries({ queryKey: ["classworkInfo"] });
+      onOpenChange(false);
     } catch (error) {
       toast.error(error.message) || toast.error("Classwork Title Duplicated");
+      onOpenChange(false);
     }
   }
 
@@ -94,7 +97,7 @@ function CreateClassworkModal({ open, onOpenChange }) {
     });
     setClassworkAttachFile([]);
     setDate(null);
-    onOpenChange(false);
+    // onOpenChange(false);
     queryClient.invalidateQueries({ queryKey: ["classworks"] });
     queryClient.invalidateQueries({ queryKey: ["classworkInfo"] });
   };
@@ -109,11 +112,12 @@ function CreateClassworkModal({ open, onOpenChange }) {
     });
     setClassworkAttachFile([]);
     setDate(null);
+    // onOpenChange(true);
   };
 
   const { mutateAsync, isError, isPending, isFetching, isLoading } =
     useMutation({
-      mutationFn: handleUpload,
+      mutationFn: () => handleUpload(),
       onSuccess,
       onError,
     });
@@ -143,6 +147,7 @@ function CreateClassworkModal({ open, onOpenChange }) {
                   value={classworkTitle}
                   onChange={handleChange}
                   placeholder="What's the title of this classwork?"
+                  className={`${isError ? "border-red-500" : ""}`}
                 />
                 <p
                   className={`${
@@ -276,6 +281,7 @@ function CreateClassworkModal({ open, onOpenChange }) {
                         onChange={(e) =>
                           setClassworkAttachFile(e.target.files[0])
                         }
+                        accept="application/vnd.openxmlformats-officedocument.wordprocessingml.document, application/pdf, image/png, application/pdf, image/jpeg"
                       />
                     </TooltipTrigger>
                     <TooltipContent>
@@ -303,6 +309,7 @@ function CreateClassworkModal({ open, onOpenChange }) {
 
                   console.log(classworkDueTime);
                   console.log(time);
+                  // onOpenChange(false);
                   await mutateAsync({
                     userId: userId,
                     classworkTitle,
@@ -314,6 +321,7 @@ function CreateClassworkModal({ open, onOpenChange }) {
                   });
                 } catch (err) {
                   toast.error(err.message);
+                  // onOpenChange(true);
                 }
               }}
             >

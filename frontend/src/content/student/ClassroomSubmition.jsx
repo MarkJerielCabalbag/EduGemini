@@ -93,7 +93,30 @@ function ClassroomSubmition() {
   };
 
   const { openFilePicker, filesContent, loading, plainFiles } = useFilePicker({
-    accept: [".docx", ".pdf", ".xlsx", ".pptx"],
+    accept: [
+      ".docx",
+      ".pdf",
+      ".xlsx",
+      ".pptx",
+      ".html",
+      ".css",
+      ".js",
+      ".php",
+      ".dart",
+      ".py",
+      ".c",
+      ".cpp",
+      ".cs",
+      ".swift",
+      ".rs",
+      ".go",
+      ".ru",
+      ".r",
+      ".sql",
+      ".java",
+      "image/png",
+      "image/jpg",
+    ],
     multiple: true,
     readAs: "BinaryString",
     onFilesSuccessfullySelected: async ({ plainFiles, filesContent }) => {
