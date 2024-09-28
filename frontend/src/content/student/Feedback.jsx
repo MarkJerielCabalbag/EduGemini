@@ -58,7 +58,7 @@ const Feedback = () => {
             </>
           ) : (
             <>
-              <pre className="text-pretty text-justify opacity-80 leading-9">
+              <pre className="w-full text-pretty text-justify opacity-80 leading-9">
                 {feedbacks.studentFeedback}
               </pre>
             </>
