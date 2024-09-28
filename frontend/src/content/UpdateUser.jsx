@@ -20,6 +20,7 @@ import toast from "react-hot-toast";
 import { useGetUser, useUpdateUser } from "@/api/useApi";
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { baseUrl } from "@/baseUrl";
 function UpdateUser() {
   const queryClient = useQueryClient();
   const [updateInfo, setUpdateInfo] = useState({
@@ -44,7 +45,7 @@ function UpdateUser() {
       formData.append("user_profile", user_profile);
 
       const response = await fetch(
-        `http://localhost:3000/api/eduGemini/profile/${userId}`,
+        `${baseUrl}/api/eduGemini/profile/${userId}`,
         {
           method: "POST",
           body: formData,
@@ -101,7 +102,7 @@ function UpdateUser() {
     });
   return (
     <div className="border-l-4 border-slate-500  p-5 shadow-md rounded mt-5">
-      <h1 className="text-lg font-bold italic flex items-center gap-2 mb-5">
+      <h1 className="text-lg font-bold italic flex flex-col gap-2 mb-5 md:flex-row">
         <UserCircle2Icon />
         Update Account Information
       </h1>
@@ -130,8 +131,8 @@ function UpdateUser() {
             </label>
           </Avatar>
         </div>
-        <div className="flex gap-2 my-3">
-          <div className="w-2/4">
+        <div className="flex flex-col gap-2 my-3 md:flex-row">
+          <div className="w-full md:w-2/4">
             <Label className="font-bold italic flex items-center gap-2 mb-2">
               <MailCheck />
               New Email
@@ -159,7 +160,7 @@ function UpdateUser() {
               )}
             </p>
           </div>
-          <div className="w-2/4">
+          <div className="w-full md:w-2/4">
             <Label className="font-bold italic flex items-center gap-2 mb-2">
               <UserCheck />
               New Username
@@ -188,8 +189,8 @@ function UpdateUser() {
             </p>
           </div>
         </div>
-        <div className="flex gap-2 my-3">
-          <div className="w-2/4">
+        <div className="flex gap-2 my-3 flex-col md:flex-row">
+          <div className="w-full md:w-2/4">
             <Label className="font-bold italic flex items-center gap-2 mb-2">
               <LockIcon />
               New Password
@@ -217,7 +218,7 @@ function UpdateUser() {
               )}
             </p>
           </div>
-          <div className="w-2/4">
+          <div className="w-full md:w-2/4">
             <Label className="font-bold italic flex items-center gap-2 mb-2">
               <LockKeyholeOpen />
               Confirm Password

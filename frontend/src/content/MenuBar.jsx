@@ -56,16 +56,16 @@ function MenuBar() {
       {openJoinClassModal && (
         <JoinClass open={openJoinClassModal} onOpenChange={setJoinClassModal} />
       )}
-      <Menubar className="shadow-lg w-2/4 flex justify-center">
+      <Menubar className="shadow-lg flex justify-center">
         <MenubarMenu>
-          <MenubarTrigger>
-            <Link to="/home">Home</Link>
+          <MenubarTrigger onClick={() => navigate("/home")}>
+            Home
           </MenubarTrigger>
-          <MenubarTrigger>
-            <Link to={`/class/${userId}`}>Class</Link>
+          <MenubarTrigger onClick={() => navigate(`/class/${userId}`)}>
+            Class
           </MenubarTrigger>
-          <MenubarTrigger>
-            <Link to={`/enrolled/${userId}`}>Enrolled</Link>
+          <MenubarTrigger onClick={() => navigate(`/enrolled/${userId}`)}>
+            Enrolled
           </MenubarTrigger>
 
           <MenubarTrigger>Profile</MenubarTrigger>

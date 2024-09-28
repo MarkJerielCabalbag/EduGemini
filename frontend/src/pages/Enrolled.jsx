@@ -78,7 +78,7 @@ function Enrolled() {
               <div>
                 <Button
                   onClick={() => setOpenJoinClassModal(true)}
-                  className="flex gap-2 items-center my-6"
+                  className="flex gap-2 items-center my-6 w-full md:w-auto"
                 >
                   <Plus />
                   Join Class

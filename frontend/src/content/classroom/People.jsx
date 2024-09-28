@@ -39,7 +39,7 @@ function People() {
 
   return (
     <div className="h-screen w-full">
-      <h1 className="text-slate-900 font-bold text-3xl flex gap-2 items-center">
+      <h1 className="text-slate-900 font-bold text-md flex gap-2 items-center">
         <Bookmark size={30} />
         Student Approval
       </h1>
@@ -52,7 +52,7 @@ function People() {
 
       <Separator className="my-10" />
 
-      <h1 className="text-slate-600 font-bold text-2xl italic flex gap-2 items-center">
+      <h1 className="text-slate-600 font-bold text-md italic flex gap-2 items-center">
         Overview
       </h1>
       <p className="opacity-75 italic my-2 text-balance">
@@ -62,7 +62,7 @@ function People() {
         placeat nobis! Ipsam.
       </p>
 
-      <div className="grid grid-cols-3 ">
+      <div className="grid grid-cols-1 md:grid-cols-3 ">
         <div className=" text-slate-900 p-5 rounded-sm flex items-center gap-3">
           <div className="p-2 bg-green-500 rounded-sm w-10 h-10"></div>
           <div className="flex flex-col">
@@ -97,7 +97,7 @@ function People() {
 
       <Separator className="my-10" />
 
-      <h1 className="text-slate-600 font-bold text-2xl italic flex gap-2 items-center">
+      <h1 className="text-slate-600 font-bold text-md italic flex gap-2 items-center">
         <BookmarkMinus /> Students Pending Approval
       </h1>
       <p className="opacity-75 italic my-2 text-balance">
@@ -106,7 +106,7 @@ function People() {
         sequi aliquid possimus corporis odio voluptatum consectetur! Officia,
         placeat nobis! Ipsam.
       </p>
-      <Table>
+      <Table className="overflow-auto">
         <TableHeader>
           <TableRow>
             <TableCell>Student</TableCell>
@@ -126,7 +126,7 @@ function People() {
         />
       </Table>
       <Separator className="my-10" />
-      <h1 className="text-slate-600 font-bold text-2xl italic flex gap-2 items-center">
+      <h1 className="text-slate-600 font-bold text-md italic flex gap-2 items-center">
         <BookmarkPlus /> Students Approved
       </h1>
       <p className="opacity-75 italic my-2 text-balance">
@@ -155,7 +155,7 @@ function People() {
         />
       </Table>
       <Separator className="my-10" />
-      <h1 className="text-slate-600 font-bold text-2xl italic flex gap-2 items-center">
+      <h1 className="text-slate-600 font-bold text-md italic flex gap-2 items-center">
         <BookmarkX /> Students Declines
       </h1>
       <p className="opacity-75 italic my-2 text-balance">

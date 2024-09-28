@@ -72,40 +72,46 @@ const PrivateCommentModal = ({
       onOpenChange={onOpenChange}
       alertDialogTitle={"Private Comment"}
       alertDialogDescription={
-        <div className="border-l-4 border-slate-500 p-5 shadow-md rounded mt-5 h-[500px] overflow-y-scroll">
+        <div className="border-l-4 border-slate-500 p-5 h-[200px] overflow-y-scroll shadow-md rounded mt-5">
           {attachments?.map((output) => (
             <div>
               {output.privateComment.map((comment) => (
-                <div
-                  className={`my-5 ${
-                    user === comment.user
-                      ? "flex flex-col items-end"
-                      : "flex flex-col items-start"
-                  }`}
-                >
-                  <div
-                    className={`w-2/4 ${
-                      user === comment.user
-                        ? "bg-slate-900 p-5 rounded-md text-white"
-                        : "bg-slate-300 p-5 rounded-md text-slate-900"
-                    }`}
-                  >
-                    <div className="flex gap-3 items-center">
-                      <img
-                        className="h-10 w-10 rounded-full border border-slate-900"
-                        src={`${baseUrl}/${comment.profile}`}
-                      />
-                      <div>
-                        <h1 className="font-bold">{comment.username}</h1>
-                        <p className="italic opacity-75 text-sm">
-                          {comment.date}, {comment.time}
-                        </p>
+                <>
+                  {!comment.comment ? (
+                    <div className="">No Comment</div>
+                  ) : (
+                    <div
+                      className={`my-5 ${
+                        user === comment.user
+                          ? "flex flex-col items-end"
+                          : "flex flex-col items-start"
+                      }`}
+                    >
+                      <div
+                        className={`w-full md:w-2/4 ${
+                          user === comment.user
+                            ? "bg-slate-900 p-5 rounded-md text-white"
+                            : "bg-slate-300 p-5 rounded-md text-slate-900"
+                        }`}
+                      >
+                        <div className="flex gap-3 items-center">
+                          <img
+                            className="h-10 w-10 rounded-full border border-slate-900"
+                            src={`${baseUrl}/${comment.profile}`}
+                          />
+                          <div>
+                            <h1 className="font-bold">{comment.username}</h1>
+                            <p className="italic opacity-75 text-sm">
+                              {comment.date}, {comment.time}
+                            </p>
+                          </div>
+                        </div>
+
+                        <p className="w-full">{comment.comment}</p>
                       </div>
                     </div>
-
-                    <p className="w-full">{comment.comment}</p>
-                  </div>
-                </div>
+                  )}
+                </>
               ))}
             </div>
           ))}
