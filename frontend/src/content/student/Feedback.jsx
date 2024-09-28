@@ -27,19 +27,19 @@ const Feedback = () => {
       {data?.map((feedbacks) => (
         <div>
           <div className="flex justify-between items-center">
-            <h1 className="font-bold text-lg">EduGemini Feedback</h1>
-            <p className="font-bold text-2xl">
+            <h1 className="font-bold text-sm md:text-md">EduGemini Feedback</h1>
+            <p className="font-bold text-sm md:text-md">
               Score: {!feedbacks.score ? 0 : feedbacks.score}
             </p>
           </div>
-          <p className="opacity-70 italic mb-3">
+          <p className="opacity-70 italic mb-3 text-xs leading-6 md:text-md">
             Lorem ipsum dolor sit amet consectetur adipisicing elit. Fuga
             distinctio reprehenderit id corrupti, vel velit quae libero eligendi
             obcaecati pariatur?
           </p>
           {!feedbacks.studentFeedback ? (
             <>
-              <div className="flex flex-col gap-5">
+              <div className="flex flex-col gap-5 text-xs leading-6 my-5 md:text-md">
                 <img src={ai} className="w-1/2 h-1/2" />
                 <div>
                   <div className="flex items-center gap-2">
@@ -58,9 +58,9 @@ const Feedback = () => {
             </>
           ) : (
             <>
-              <p className="text-pretty text-justify opacity-80 leading-9">
+              <pre className="text-pretty text-justify opacity-80 leading-9">
                 {feedbacks.studentFeedback}
-              </p>
+              </pre>
             </>
           )}
         </div>

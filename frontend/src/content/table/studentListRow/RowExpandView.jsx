@@ -84,36 +84,38 @@ const RowExpandView = ({ user }) => {
             <AvatarFallback src={<Loader />} />
           </Avatar>
           <div>
-            <h1 className="font-bold text-lg italic text-slate-900">
+            <h1 className="font-bold text-xs italic text-slate-900 md:text-md">
               {user.studentName}
             </h1>
-            <p className="italic">Student</p>
+            <p className="italic text-xs">Student</p>
           </div>
         </div>
         <div>
-          <div className="my-5 flex gap-5 items-center">
-            <Badge
-              className={` ${
-                user.workStatus.name === "Missing" ? "bg-red-500" : ""
-              } ${user.workStatus.name === "shelved" ? "bg-sky-500" : ""} ${
-                user.workStatus.name === "cancelled" ? "bg-red-900" : ""
-              } ${user.workStatus.name === "Turned in" ? "bg-green-500" : ""}`}
+          <div className="flex flex-col gap-2 lg:flex-row">
+            <h1
+              className={`bg-transparent font-bold italic ${
+                user.workStatus.name === "Missing" ? "text-red-500" : ""
+              } ${user.workStatus.name === "shelved" ? "text-sky-500" : ""} ${
+                user.workStatus.name === "cancelled" ? "text-red-900" : ""
+              } ${
+                user.workStatus.name === "Turned in" ? "text-green-500" : ""
+              }`}
             >
               {user.workStatus.name}
-            </Badge>
-            <p className="flex gap-1 items-center italic text-slate-400">
+            </h1>
+            <p className="text-xs flex gap-1 items-center italic text-slate-400 md:text-md">
               <Clock size={15} />
               {user.timeSubmition}
             </p>
-            <p className="flex gap-1 items-center italic text-slate-400 ">
+            <p className="text-xs flex gap-1 items-center italic text-slate-400 md:text-md">
               <Star size={15} />
               Score:
-              <span className="font-bold text-md text-slate-900">
+              <span className="text-xs font-bold text-md text-slate-900 md:text-md">
                 {user.score}
               </span>
             </p>
 
-            <p className="italic text-slate-400">
+            <p className="text-xs italic text-slate-400">
               {user.chancesResubmition === 0
                 ? "No resubmitions left: "
                 : "Resubmitions left: "}
@@ -139,7 +141,11 @@ const RowExpandView = ({ user }) => {
               ""
             ) : (
               <>
-                <Button onClick={() => setOpenPrivateModal(true)}>
+                <Button
+                  variant={"secondary"}
+                  className="my-5"
+                  onClick={() => setOpenPrivateModal(true)}
+                >
                   See All Comments
                 </Button>
               </>
@@ -147,22 +153,29 @@ const RowExpandView = ({ user }) => {
           </div>
 
           <div>
-            <h1 className="text-slate-900 text-lg italic font-bold">
+            <h1 className="text-slate-900 text-sm italic font-bold md:text-lg">
               Student Feedback
             </h1>
-            <p className="italic text-slate-500">{user.studentFeedback}</p>
+
+            <pre className="italic my-2 text-slate-500 leading-6 text-xs text-balance md:text-lg">
+              {user.studentFeedback}
+            </pre>
           </div>
 
           <div>
-            <h1 className="text-slate-900 text-lg italic font-bold">
+            <h1 className="text-slate-900 text-sm italic font-bold md:text-lg">
               Teacher Feedback
             </h1>
-            <p className="italic text-slate-500">{user.teacherFeedback}</p>
+            <pre className="italic my-2 text-slate-500 leading-6 text-xs text-balance md:text-lg">
+              {user.teacherFeedback}
+            </pre>
           </div>
 
           <div className="my-5">
-            <h1 className="text-slate-900 text-lg italic font-bold">Files</h1>
-            <p className="italic text-slate-500">
+            <h1 className="text-slate-900 text-sm italic font-bold md:text-lg">
+              Files
+            </h1>
+            <p className="italic text-slate-500 my-2 text-xs md:text-lg">
               Lorem ipsum dolor sit, amet consectetur adipisicing elit. Officia,
               ipsum!
             </p>
@@ -182,7 +195,8 @@ const RowExpandView = ({ user }) => {
             ) : (
               ""
             )}
-            <div className="grid grid-cols-3 gap-3 sm:grid-flow-cols-1 md:grid-cols-2 lg:grid-cols-3">
+
+            <div className="grid grid-cols-1 gap-3 lg:grid-cols-3">
               {user.files?.map((file) => (
                 <div className="bg-slate-900 text-slate-100 flex items-center gap-2 rounded-md p-3">
                   <File />

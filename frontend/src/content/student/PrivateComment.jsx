@@ -22,7 +22,11 @@ const PrivateComment = ({ teacherId }) => {
           studentId={userId}
         />
       )}
-      <Button onClick={() => setOpenPrivateModal(true)}>
+      <Button
+        variant={"secondary"}
+        className="w-full my-5 flex justify-start"
+        onClick={() => setOpenPrivateModal(true)}
+      >
         See All Comments
       </Button>
     </div>

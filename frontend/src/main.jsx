@@ -107,7 +107,7 @@ const router = createBrowserRouter(
         />
 
         <Route path="/enrolled/:userId" element={<Enrolled />} />
-        <Route path="/enrolled/classroom/:wordId" />
+
         <Route path="/profile" element={<Profile />} />
         <Route path="/settings" element={<Settings />} />
 

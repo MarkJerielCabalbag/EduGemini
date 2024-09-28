@@ -669,20 +669,126 @@ const acceptLateClasswork = asyncHandler(async (req, res, next) => {
     (output) => output._id.toString() === userId
   );
 
-  studentExist.workStatus = {
-    id: 6,
-    name: "Late",
-  };
+  //student files
+  const studentFiles = studentExist.files;
+  //student folder path
+  const studentFolderpath = studentExist.files.path;
+  //classwork folder path
+  const classworkPath = workIndex.classwork_folder_path;
+  //classwork attach file
+  const classworkAttachFile = workIndex.classwork_attach_file.originalname;
 
-  studentExist.feedback = "";
-  studentExist.score = "";
+  studentFiles.forEach(async (file) => {
+    let studentFiles;
+    try {
+      studentExist.workStatus = {
+        id: 6,
+        name: "Late",
+      };
 
-  roomExist.classwork[findClasswork] = workIndex;
+      let answerPath = fs.readFileSync(
+        `./${classworkPath}/answers${file.path}/${file.filename}`
+      );
 
-  await roomExist.save();
+      let answerformat = file.filename.split(".").pop();
 
-  return res.status(200).json({
-    message: `You successfully accepted the Late output`,
+      if (
+        answerformat === "docx" ||
+        answerformat === "pptx" ||
+        answerformat === "xlsx" ||
+        answerformat === "pdf"
+      ) {
+        studentFiles = await officeParser.parseOfficeAsync(answerPath);
+      } else if (answerformat === "png" || answerformat === "jpg") {
+        const image = {
+          inlineData: {
+            data: Buffer.from(answerPath).toString("base64"),
+            mimeType: answerformat === "png" ? "image/png" : "image/jpeg",
+          },
+        };
+        studentFiles = image;
+      }
+
+      console.log(studentFiles);
+      let instructionFile;
+      let instructionPath = fs.readFileSync(
+        `./${classworkPath}/instruction/${classworkAttachFile}`
+      );
+
+      let instructionFormat = classworkAttachFile.split(".").pop();
+
+      if (
+        instructionFormat === "docx" ||
+        instructionFormat === "pdf" ||
+        instructionFormat === "txt"
+      ) {
+        instructionFile = await officeParser.parseOfficeAsync(instructionPath);
+      } else if (instructionFormat === "png" || instructionFormat === "jpg") {
+        const image = {
+          inlineData: {
+            data: Buffer.from(answerPath).toString("base64"),
+            mimeType: instructionFormat === "png" ? "image/png" : "image/jpeg",
+          },
+        };
+        instructionFile = image;
+      }
+
+      console.log("INSTRUCTION FILE", instructionFile);
+
+      const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
+
+      const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+
+      async function runGemini() {
+        const studentFeedbackPrompt = `Evaluate this submission [${studentFiles}] based on the provided instructions [${instructionFile}]. Highlight areas of clarity, structure, and content understanding, and suggest improvements, it should be concise and easy to understand`;
+        const generateStudentFeedback = await model.generateContent([
+          studentFeedbackPrompt,
+          studentFiles,
+        ]);
+        const geminiResponseStudentFeedback =
+          await generateStudentFeedback.response;
+        const studentFeedbackResult = geminiResponseStudentFeedback.text();
+        console.log(studentFeedbackResult);
+
+        // Request a numerical score
+        const scorePrompt = `Based on the feedback provided [${studentFeedbackResult}], assign a total score provided in the [${instructionFile}] for the student's submission and deduct 10%. Return only a number, dont include any explanations, i just want the exact number or total score `;
+        const generateStudentScore = await model.generateContent(scorePrompt);
+        const geminiStudentScoreResponse = await generateStudentScore.response;
+
+        // Ensure the score is parsed as a number
+        const studentScoreResult = parseFloat(
+          geminiStudentScoreResponse.text().trim()
+        );
+        console.log("Student Score:", studentScoreResult);
+
+        const teacherFeedbackPrompt = `As you generate a feedback for students submission feedback [${studentFeedbackResult}], based on this student feedback, what or how do I improved my teaching to student based on the student submission feedback [${studentFeedbackResult}]. Suggest improvements to further nurture my student`;
+        const generateTeacherFeedback = await model.generateContent(
+          teacherFeedbackPrompt
+        );
+        const geminiTeacherFeedbackResponse =
+          await generateTeacherFeedback.response;
+        const teacherFeedbackResult = geminiTeacherFeedbackResponse.text();
+        console.log(teacherFeedbackResult);
+
+        studentExist.studentFeedback = studentFeedbackResult;
+        studentExist.score = studentScoreResult;
+        studentExist.teacherFeedback = teacherFeedbackResult;
+        roomExist.classwork[findClasswork] = workIndex;
+
+        await roomExist.save();
+      }
+
+      runGemini();
+    } catch (error) {
+      console.log(error);
+    }
+
+    roomExist.classwork[findClasswork] = workIndex;
+
+    await roomExist.save();
+    return res
+      .status(200)
+      .json({ message: "You successfully accepted the late output" });
   });
 });
 

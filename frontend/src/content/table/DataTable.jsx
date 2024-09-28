@@ -78,7 +78,7 @@ const DataTable = ({
 
   return (
     <div className="w-full h-full">
-      <div className="flex flex-col">
+      <div className="flex flex-col md:flex-row items-center gap-2 ">
         <Filters
           table={table}
           setColumnFilters={setColumnFilters}
@@ -87,7 +87,7 @@ const DataTable = ({
         />
 
         <Button
-          className="bg-green-800 flex gap-3 items-center shadow-lg"
+          className="bg-green-800 flex gap-3 items-center shadow-lg w-full md:w-auto"
           onClick={handleOnExport}
         >
           <img className="h-5 w-5" src={excel} />
@@ -104,12 +104,12 @@ const DataTable = ({
             </TableRow>
           ))}
         </TableHeader>
-        <TableBody className="w-auto">
+        <TableBody>
           {table.getRowModel().rows.map((row) => (
             <React.Fragment key={row.id}>
-              <TableRow className="w-auto">
+              <TableRow>
                 {row.getVisibleCells().map((cell) => (
-                  <TableCell key={cell.id} className="w-auto">
+                  <TableCell key={cell.id}>
                     {flexRender(cell.column.columnDef.cell, cell.getContext())}
                   </TableCell>
                 ))}

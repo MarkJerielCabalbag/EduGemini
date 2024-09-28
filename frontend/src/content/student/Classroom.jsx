@@ -2,43 +2,53 @@ import React from "react";
 import Navbar from "../Navbar";
 import MenuBar from "../MenuBar";
 import ClassroomInfo from "../classroom/ClassroomInfo";
-import { Link, Outlet, useParams } from "react-router-dom";
+import { useNavigate, Outlet, useParams } from "react-router-dom";
+
+import { Button } from "@/components/ui/button";
 
 function Classroom() {
   const { roomId } = useParams();
+  const navigate = useNavigate();
+  const userId = localStorage.getItem("userId");
   return (
     <div className="sm:container md:container lg:container">
       <Navbar />
       <MenuBar />
-      <div className="h-screen w-full mt-5 grid sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-2">
-        <div className="px-4 py-4 bg-primary rounded">
-          <div className="p-5 text-white">
-            <ClassroomInfo
-              design={
-                "bg-slate-900 rounded relative z-50 sm:col-span-2 md:h-full lg:h-full"
-              }
-              hide={"mt-5"}
-            />
-          </div>
+
+      <div className="mt-5">
+        <div className="mx-5">
+          <ClassroomInfo
+            design={"bg-slate-900 rounded-sm col-span-2 p-5 md:p-5"}
+            hide={"mt-5"}
+            link={`/enrolled/${userId}`}
+          />
         </div>
-        <div className="mt-5 md:mt-0 lg:mt-0 px-4 ">
-          <div className="flex gap-2 ">
-            <Link
-              className="w-1/2 bg-slate-400 p-5 rounded text-center font-bold text-white hover:bg-slate-600"
-              to={`/class/classroom/getCreatedClass/${roomId}`}
+
+        <div className="mx-3">
+          <div className="w-full bg-white flex flex-col md:flex-row">
+            <Button
+              variant={"link"}
+              className="w-full flex justify-start md:w-auto"
+              onClick={() =>
+                navigate(`/class/classroom/getCreatedClass/${roomId}`)
+              }
             >
               Announcements
-            </Link>
-            <Link
-              className="w-1/2 bg-slate-400 p-5 rounded text-center font-bold text-white hover:bg-slate-600"
-              to={`/class/classroom/getCreatedClass/${roomId}/classwork`}
+            </Button>
+            <Button
+              variant={"link"}
+              className="w-full flex justify-start md:w-auto"
+              onClick={() =>
+                navigate(`/class/classroom/getCreatedClass/${roomId}/classwork`)
+              }
             >
               Classworks
-            </Link>
+            </Button>
           </div>
-          <div className="px-4">
-            <Outlet />
-          </div>
+        </div>
+
+        <div className="mx-5">
+          <Outlet />
         </div>
       </div>
     </div>

@@ -249,7 +249,7 @@ function Announcements({ userStatus }) {
                                 </div>
 
                                 <p className="w-full text-xs italic md:text-sm">
-                                  {comment.comment}
+                                  <span className="">{comment.comment}</span>
                                 </p>
                               </div>
                             </div>

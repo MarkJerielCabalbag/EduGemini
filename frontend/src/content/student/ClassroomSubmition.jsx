@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
-import { Link, Navigate, useParams } from "react-router-dom";
+import { Link, Navigate, useNavigate, useParams } from "react-router-dom";
 import MenuBar from "../MenuBar";
 import Navbar from "../Navbar";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
@@ -13,6 +13,7 @@ import {
   useSubmitAttachment,
 } from "@/api/useApi";
 import {
+  ArrowLeft,
   Calendar,
   File,
   Info,
@@ -30,6 +31,7 @@ import CancelSubmitionModal from "@/components/modals/CancelSubmitionModal";
 import moment from "moment";
 import Feedback from "./Feedback";
 import PrivateComment from "./PrivateComment";
+import { Separator } from "@/components/ui/separator";
 function ClassroomSubmition() {
   const [files, setFiles] = useState([]);
   const [showTurnInBtn, setShowTurnInBtn] = useState(false);
@@ -43,6 +45,8 @@ function ClassroomSubmition() {
     queryKey: ["classwork"],
     queryFn: () => classwork(workId),
   });
+
+  const navigate = useNavigate();
 
   const queryCleint = useQueryClient();
   const date = moment().format("MMMM Do YYYY");
@@ -158,21 +162,31 @@ function ClassroomSubmition() {
 
   const workBadge = attachments?.map((output) => {
     if (output.workStatus.name === "Turned in") {
-      return "bg-green-500";
+      return "text-green-500";
     } else if (output.workStatus.name === "Shelved") {
-      return "bg-sky-500";
+      return "text-sky-500";
     } else if (output.workStatus.name === "Cancelled") {
-      return "bg-red-500";
+      return "text-red-500";
+    } else if (output.workStatus.name === "Late") {
+      return "text-yellow-500";
     }
   });
 
   return (
-    <div className="sm:container md:container lg:container">
+    <div className="text-slate-900 sm:container md:container lg:container">
       <Navbar />
       <MenuBar />
-      <div className="h-screen w-full mt-5 grid sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-2">
-        <div className="px-4 py-4 bg-primary rounded">
-          <div className="p-5 text-white">
+
+      <div className="mx-5">
+        <ArrowLeft
+          className="my-5"
+          onClick={() => {
+            navigate(`/class/classroom/getCreatedClass/${roomId}/classwork`);
+            console.log("hi");
+          }}
+        />
+        <div className="text-slate-900">
+          <div className="">
             {data?.map((classworkInfo) => {
               return (
                 <>
@@ -189,47 +203,49 @@ function ClassroomSubmition() {
                         <>
                           {info._id === workId ? (
                             <div>
-                              <h1 className="flex gap-2 justify-between items-center">
+                              <h1 className="flex flex-col gap-2 md:flex-row justify-between">
                                 <div className="flex gap-2 items-center">
-                                  <NotebookPen size={30} />
-                                  <span className="font-bold text-lg">
+                                  <NotebookPen size={20} />
+                                  <h1 className="font-bold text-xs md:text-md">
                                     {info.classwork_title}
-                                  </span>
+                                  </h1>
                                 </div>
-                                <div className="flex gap-2 items-center">
-                                  <span
-                                    className={`${workBadge} inline-flex items-center rounded-md px-2 py-1 text-xs font-medium text-white ring-1 ring-inset ring-gray-500/10`}
-                                  >
+                                <div className="flex flex-col-reverse gap-2 md:flex-row">
+                                  <h1 className={`${workBadge} text-xs`}>
                                     {attachments?.map(
                                       (output) => output.workStatus.name
                                     )}
-                                  </span>
+                                  </h1>
 
-                                  <span className="inline-flex items-center rounded-md bg-gray-50 px-2 py-1 text-xs font-medium text-gray-600 ring-1 ring-inset ring-gray-500/10">
+                                  <h1 className="text-xs">
                                     {info.classwork_type}
-                                  </span>
+                                  </h1>
                                 </div>
                               </h1>
 
-                              <div className="flex items-center justify-between my-2">
-                                <p className="flex gap-2 items-center">
+                              <Separator className="my-5" />
+
+                              <div className="flex flex-col gap-2 my-2 md:flex-row justify-between">
+                                <p className="flex gap-2 items-center text-xs md:text-md">
                                   <Calendar />
                                   {info.classwork_due_date}
                                 </p>
-                                <p className="flex gap-2 items-center">
+                                <p className="flex gap-2 items-center text-xs md:text-md">
                                   <Timer />
                                   {info.classwork_due_time}
                                 </p>
                               </div>
 
-                              <p className="font-light italic my-2">
+                              <p className="font-light italic my-2 text-xs md:text-md">
                                 Description:{" "}
-                                {info.classwork_description === null
-                                  ? "No description stated"
-                                  : info.classwork_description}
+                                <span>
+                                  {info.classwork_description === null
+                                    ? "No description stated"
+                                    : info.classwork_description}
+                                </span>
                               </p>
 
-                              <div className="flex items-center justify-between p-5 rounded-md bg-slate-400 text-slate-50">
+                              <div className="flex items-center justify-between p-5 rounded-md bg-slate-400  text-xs md:text-md">
                                 <Link
                                   target="_blank"
                                   to={`/class/classwork/outputs/${roomId}/${userId}/${workId}`}
@@ -255,7 +271,7 @@ function ClassroomSubmition() {
                                 </Link>
                               </div>
 
-                              <div className="bg-slate-400 shadow-sm shadow-white rounded my-2 p-5">
+                              <div className="my-2 text-xs md:text-md">
                                 <h1>Your Work</h1>
 
                                 <div className="h-full overflow-x-auto">
@@ -265,9 +281,7 @@ function ClassroomSubmition() {
                                         No files uploaded yet.
                                       </div>
                                       <Button
-                                        className={`w-full my-2 ${
-                                          isOverdue ? "opacity-50" : "show"
-                                        }`}
+                                        className={`w-full my-2 `}
                                         onClick={() => openFilePicker()}
                                       >
                                         {attachments?.length === 0
@@ -319,7 +333,12 @@ function ClassroomSubmition() {
                                                 <Loader2Icon className="animate-spin" />
                                               ) : (
                                                 <X
-                                                  size={30}
+                                                  size={
+                                                    outputs.workStatus.name ===
+                                                    "Late"
+                                                      ? 0
+                                                      : 30
+                                                  }
                                                   className={`max-h-96 hover:cursor-pointer ${
                                                     outputs.workStatus.name ===
                                                     "Turned in"
@@ -341,12 +360,16 @@ function ClassroomSubmition() {
                                           ))}
                                           <>
                                             <Button
+                                              disabled={
+                                                outputs.workStatus.name ===
+                                                "Late"
+                                              }
                                               className={`w-full my-2 ${
                                                 outputs.workStatus.name ===
                                                 "Turned in"
                                                   ? "hidden"
                                                   : ""
-                                              }`}
+                                              } `}
                                               onClick={() => {
                                                 openFilePicker();
                                               }}
@@ -396,6 +419,10 @@ function ClassroomSubmition() {
                                             ) : (
                                               <>
                                                 <Button
+                                                  disabled={
+                                                    outputs.workStatus.name ===
+                                                    "Late"
+                                                  }
                                                   onClick={() =>
                                                     setCancelModal(true)
                                                   }
@@ -410,8 +437,8 @@ function ClassroomSubmition() {
                                               </>
                                             )}
                                           </>
-                                          <p className="mt-5 italic opacity-80 text-pretty">
-                                            <div className="flex items-center gap-2 font-extrabold">
+                                          <p className="mt-5 italic opacity-80 text-pretty text-xs leading-6">
+                                            <div className="flex items-center gap-2 font-extrabold text-xs">
                                               <Info size={18} /> Note
                                             </div>
                                             Once you submit, you have{" "}
@@ -445,10 +472,8 @@ function ClassroomSubmition() {
             })}
           </div>
         </div>
-        <div className="mt-5 md:mt-0 lg:mt-0 px-4 ">
-          <div className="px-4 h-full">
-            <Feedback />
-          </div>
+        <div className="mt-5">
+          <Feedback />
         </div>
       </div>
     </div>

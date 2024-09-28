@@ -11,8 +11,9 @@ function ClassroomDetails() {
     <>
       <div className="container sm:container md:container lg:container">
         <ClassroomInfo
-          design={"bg-slate-900 rounded-sm col-span-2 -z-50 p-5 md:p-5"}
+          design={"bg-slate-900 rounded-sm col-span-2 z-50 p-5 md:p-5"}
           hide={"hidden"}
+          link={`/class/${userId}`}
         />
         <ClassroomNavigation />
         <Outlet />

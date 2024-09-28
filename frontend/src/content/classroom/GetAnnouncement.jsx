@@ -53,7 +53,7 @@ function GetAnnouncement({ statusBtn, cardStatus, userStatus }) {
                   <>
                     <div
                       key={item._id}
-                      className="h-full w-full relative z-50 bg-slate-900 text-white p-5 rounded-md"
+                      className="h-full w-full relative z-10 bg-slate-900 text-white p-5 rounded-md"
                     >
                       <div className="flex justify-between pb-1 relative">
                         <Bell
@@ -68,7 +68,7 @@ function GetAnnouncement({ statusBtn, cardStatus, userStatus }) {
                             console.log(item.profile_path);
                             console.log(item.user_img);
                           }}
-                          className={`${
+                          className={` ${
                             statusBtn === "hidden" ? "hidden" : ""
                           }`}
                         />

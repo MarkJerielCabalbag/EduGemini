@@ -9,7 +9,7 @@ import { ArrowLeft, Book } from "lucide-react";
 import React, { useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 
-function ClassroomInfo({ design, hide }) {
+function ClassroomInfo({ design, hide, link }) {
   const onSuccess = () => console.log("success");
   const onError = () => console.log("error");
   const navigate = useNavigate();
@@ -28,8 +28,9 @@ function ClassroomInfo({ design, hide }) {
           <div key={roomDetails._id} className="sticky top-0 bg-white z-50">
             <div className="my-5">
               <ArrowLeft
+                className=""
                 onClick={() => {
-                  navigate(`/class/${userId}`);
+                  navigate(`${link}`);
                   console.log("hi");
                 }}
               />
@@ -100,7 +101,7 @@ function ClassroomInfo({ design, hide }) {
                 />
               </div>
             </div>
-            <div className={`${hide} flex gap-2 items-center`}>
+            <div className={`${hide} mx-3 flex gap-2 items-center`}>
               <Avatar className="h-16 w-16">
                 <AvatarImage
                   className="border-2 border-slate-200 rounded-full"
@@ -108,8 +109,12 @@ function ClassroomInfo({ design, hide }) {
                 />
               </Avatar>
               <div>
-                <h1>{roomDetails.owner_name}</h1>
-                <p>{roomDetails.owner_email}</p>
+                <h1 className="font-bold text-sm md:text-lg">
+                  {roomDetails.owner_name}
+                </h1>
+                <p className="italic text-xs md:text-md">
+                  {roomDetails.owner_email}
+                </p>
               </div>
             </div>
           </div>

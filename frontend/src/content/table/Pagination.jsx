@@ -28,27 +28,31 @@ const Pagination = ({ table, setPagination, rowCount }) => {
   };
 
   return (
-    <div className={`flex justify-between items-center`}>
-      <div className="flex gap-2 items-center my-5">
+    <div className={`flex flex-col gap-2 md:flex-row`}>
+      <div className="flex flex-col gap-2 items-center md:flex-row">
         <Button
+          className="w-full md:w-auto"
           onClick={() => table.setPageIndex(0)}
           disabled={!table.getCanPreviousPage()}
         >
           <DoubleArrowLeftIcon size={20} />
         </Button>
         <Button
+          className="w-full md:w-auto"
           onClick={() => table.previousPage()}
           disabled={!table.getCanPreviousPage()}
         >
           <ArrowLeft size={20} />
         </Button>
         <Button
+          className="w-full md:w-auto"
           onClick={() => table.nextPage()}
           disabled={!table.getCanNextPage()}
         >
           <ArrowRight size={20} />
         </Button>
         <Button
+          className="w-full md:w-auto"
           onClick={() => table.setPageIndex(table.getPageCount() - 1)}
           disabled={!table.getCanNextPage()}
         >
