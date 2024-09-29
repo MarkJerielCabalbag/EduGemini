@@ -1,4 +1,4 @@
-export const baseUrl = "https://edu-gemini-es6l.vercel.app/";
+export const baseUrl = "https://edu-gemini-es6l.vercel.app";
 // "https://edugemini.onrender.com";
 
 // "http://localhost:3000";
