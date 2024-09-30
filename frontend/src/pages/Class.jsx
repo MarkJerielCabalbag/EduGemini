@@ -53,7 +53,7 @@ function Class() {
         <>
           {isFetching ? (
             <LoadingState
-              className={"h-screen w-screen flex flex-col items-center"}
+              className={"h-screen flex flex-col items-center justify-center"}
             />
           ) : (
             <div className="container sm:container md:container lg:container">
