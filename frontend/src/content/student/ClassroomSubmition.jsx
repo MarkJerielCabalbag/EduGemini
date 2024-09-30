@@ -172,7 +172,7 @@ function ClassroomSubmition() {
   });
 
   return (
-    <div className="text-slate-900 sm:container md:container lg:container">
+    <div className="h-screen text-slate-900 sm:container md:container lg:container">
       <div className="mx-5">
         <ArrowLeft
           className="my-5"

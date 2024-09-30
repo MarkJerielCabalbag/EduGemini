@@ -44,7 +44,7 @@ function Enrolled() {
   });
 
   return (
-    <>
+    <div className="h-screen">
       {openJoinClassModal && (
         <JoinClass
           open={openJoinClassModal}
@@ -170,7 +170,7 @@ function Enrolled() {
           )}
         </div>
       )}
-    </>
+    </div>
   );
 }
 

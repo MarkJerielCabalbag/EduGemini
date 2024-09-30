@@ -72,7 +72,7 @@ function Class() {
                   </Button>
                 </div>
               ) : (
-                <>
+                <div className="h-screen">
                   <Button
                     onClick={() => setOpenCreateClassModal(true)}
                     className="flex gap-2 items-center my-6 w-full md:w-auto"
@@ -153,7 +153,7 @@ function Class() {
                       </>
                     ))}
                   </div>
-                </>
+                </div>
               )}
             </div>
           )}
