@@ -1,5 +1,5 @@
 import MenuBar from "@/content/MenuBar";
-import Navbar from "../content/Navbar";
+
 import { Button } from "@/components/ui/button";
 import { BookMarked, GraduationCap } from "lucide-react";
 import { useState } from "react";
@@ -101,7 +101,6 @@ function Home() {
           </div>
         </div>
       </div>
-      <Navbar />
     </>
   );
 }

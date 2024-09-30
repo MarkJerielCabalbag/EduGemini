@@ -1,7 +1,6 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useState } from "react";
 import { Link, Navigate, useNavigate, useParams } from "react-router-dom";
-import MenuBar from "../MenuBar";
-import Navbar from "../Navbar";
+
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import {
   classwork,
@@ -174,9 +173,6 @@ function ClassroomSubmition() {
 
   return (
     <div className="text-slate-900 sm:container md:container lg:container">
-      <Navbar />
-      <MenuBar />
-
       <div className="mx-5">
         <ArrowLeft
           className="my-5"

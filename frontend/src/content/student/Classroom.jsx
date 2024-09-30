@@ -1,5 +1,4 @@
 import React from "react";
-import Navbar from "../Navbar";
 import MenuBar from "../MenuBar";
 import ClassroomInfo from "../classroom/ClassroomInfo";
 import { useNavigate, Outlet, useParams } from "react-router-dom";
@@ -12,8 +11,6 @@ function Classroom() {
   const userId = localStorage.getItem("userId");
   return (
     <div className="sm:container md:container lg:container">
-      <Navbar />
-      <MenuBar />
       <div className="h-screen w-full mt-5 grid sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-2">
         <div className="py-4 bg-primary rounded mx-8 md:mx-0">
           <div className="text-white">

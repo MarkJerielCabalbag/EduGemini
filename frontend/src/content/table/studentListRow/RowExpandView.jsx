@@ -136,21 +136,13 @@ const RowExpandView = ({ user }) => {
             </p>
           </div>
 
-          <div>
-            {user.files.length === 0 ? (
-              ""
-            ) : (
-              <>
-                <Button
-                  variant={"secondary"}
-                  className="my-5"
-                  onClick={() => setOpenPrivateModal(true)}
-                >
-                  See All Comments
-                </Button>
-              </>
-            )}
-          </div>
+          <Button
+            variant={"secondary"}
+            className="my-5"
+            onClick={() => setOpenPrivateModal(true)}
+          >
+            See All Comments
+          </Button>
 
           <div>
             <h1 className="text-slate-900 text-sm italic font-bold md:text-lg">

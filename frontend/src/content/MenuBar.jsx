@@ -17,6 +17,7 @@ import { baseUrl } from "@/baseUrl";
 import { useState } from "react";
 import CreateClass from "@/components/modals/CreateClass";
 import JoinClass from "@/components/modals/JoinClass";
+import { Button } from "@/components/ui/button";
 
 function MenuBar() {
   const navigate = useNavigate();
@@ -58,88 +59,99 @@ function MenuBar() {
       )}
       <Menubar className="shadow-lg flex justify-center">
         <MenubarMenu>
-          <MenubarTrigger onClick={() => navigate("/home")}>
+          <Button variant={"ghost"} onClick={() => navigate("/home")}>
             Home
-          </MenubarTrigger>
-          <MenubarTrigger onClick={() => navigate(`/class/${userId}`)}>
+          </Button>
+          <Button
+            variant={"ghost"}
+            onClick={() => navigate(`/class/${userId}`)}
+          >
             Class
-          </MenubarTrigger>
-          <MenubarTrigger onClick={() => navigate(`/enrolled/${userId}`)}>
+          </Button>
+          <Button
+            variant={"ghost"}
+            onClick={() => navigate(`/enrolled/${userId}`)}
+          >
             Enrolled
-          </MenubarTrigger>
+          </Button>
 
-          <MenubarTrigger>Profile</MenubarTrigger>
-          <MenubarContent>
-            <MenubarItem
-              className="flex justify-between items-center"
-              onClick={() => setOpenCreateClassModal(true)}
-            >
-              Create Class
-              <PlusCircle
-                size={25}
-                className="bg-black text-white p-1 rounded"
-              />
-            </MenubarItem>
-            <MenubarItem
-              className="flex justify-between items-center"
-              onClick={() => setJoinClassModal(true)}
-            >
-              Join Class
-              <Share size={25} className="bg-black text-white p-1 rounded" />
-            </MenubarItem>
-            <MenubarSeparator />
-            <MenubarItem
-              className="flex justify-between items-center"
-              onClick={() => navigate("/settings")}
-            >
-              Settings{" "}
-              <Settings size={25} className="bg-black text-white p-1 rounded" />
-            </MenubarItem>
-            <MenubarItem
-              onClick={async () => await mutateAsync()}
-              className="flex justify-between items-center"
-            >
-              Log Out{" "}
-              <LogOut size={25} className="bg-black text-white p-1 rounded" />
-            </MenubarItem>
-            <MenubarSeparator />
-            <MenubarItem
-              className="flex flex-row-reverse gap-4"
-              onClick={() => navigate("/profile")}
-            >
-              {data?.map((user) => (
-                <>
-                  <Avatar>
-                    {isLoading ? (
+          <MenubarTrigger variant={"ghost"}>
+            Profile
+            <MenubarContent>
+              <MenubarItem
+                className="flex justify-between items-center"
+                onClick={() => setOpenCreateClassModal(true)}
+              >
+                Create Class
+                <PlusCircle
+                  size={25}
+                  className="bg-black text-white p-1 rounded"
+                />
+              </MenubarItem>
+              <MenubarItem
+                className="flex justify-between items-center"
+                onClick={() => setJoinClassModal(true)}
+              >
+                Join Class
+                <Share size={25} className="bg-black text-white p-1 rounded" />
+              </MenubarItem>
+              <MenubarSeparator />
+              <MenubarItem
+                className="flex justify-between items-center"
+                onClick={() => navigate("/settings")}
+              >
+                Settings{" "}
+                <Settings
+                  size={25}
+                  className="bg-black text-white p-1 rounded"
+                />
+              </MenubarItem>
+              <MenubarItem
+                onClick={async () => await mutateAsync()}
+                className="flex justify-between items-center"
+              >
+                Log Out{" "}
+                <LogOut size={25} className="bg-black text-white p-1 rounded" />
+              </MenubarItem>
+              <MenubarSeparator />
+              <MenubarItem
+                className="flex flex-row-reverse gap-4"
+                onClick={() => navigate("/profile")}
+              >
+                {data?.map((user) => (
+                  <>
+                    <Avatar>
+                      {isLoading ? (
+                        <AvatarFallback>Profile</AvatarFallback>
+                      ) : (
+                        <>
+                          <AvatarImage
+                            src={`${baseUrl}/${user.user_email}/${user.profile.filename}`}
+                          />
+                        </>
+                      )}
                       <AvatarFallback>Profile</AvatarFallback>
-                    ) : (
-                      <>
-                        <AvatarImage
-                          src={`${baseUrl}/${user.user_email}/${user.profile.filename}`}
-                        />
-                      </>
-                    )}
-                    <AvatarFallback>Profile</AvatarFallback>
-                  </Avatar>
-                  <div className="flex flex-col">
-                    {isLoading ? (
-                      <Skeleton className="w-[100px] h-[20px] rounded bg-slate-500" />
-                    ) : (
-                      <p className="text-sm">{user.user_username}</p>
-                    )}
+                    </Avatar>
+                    <div className="flex flex-col">
+                      {isLoading ? (
+                        <Skeleton className="w-[100px] h-[20px] rounded bg-slate-500" />
+                      ) : (
+                        <p className="text-sm">{user.user_username}</p>
+                      )}
 
-                    {isLoading ? (
-                      <Skeleton className="w-[100px] h-[20px] rounded bg-slate-500" />
-                    ) : (
-                      <p className="text-sm italic opacity-75">
-                        {user.user_email}
-                      </p>
-                    )}
-                  </div>
-                </>
-              ))}
-            </MenubarItem>
-          </MenubarContent>
+                      {isLoading ? (
+                        <Skeleton className="w-[100px] h-[20px] rounded bg-slate-500" />
+                      ) : (
+                        <p className="text-sm italic opacity-75">
+                          {user.user_email}
+                        </p>
+                      )}
+                    </div>
+                  </>
+                ))}
+              </MenubarItem>
+            </MenubarContent>
+          </MenubarTrigger>
         </MenubarMenu>
       </Menubar>
     </div>

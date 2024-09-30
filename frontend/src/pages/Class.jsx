@@ -1,4 +1,3 @@
-import Navbar from "../content/Navbar";
 import MenuBar from "@/content/MenuBar";
 import classImage from "../assets/class.png";
 import { fetchAllClassData, useGetAllClass, useGetUser } from "@/api/useApi";
@@ -156,8 +155,6 @@ function Class() {
                   </div>
                 </>
               )}
-
-              <Navbar />
             </div>
           )}
         </>

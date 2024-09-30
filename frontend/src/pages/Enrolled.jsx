@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import MenuBar from "@/content/MenuBar";
-import Navbar from "@/content/Navbar";
+
 import { Button } from "@/components/ui/button";
 import { Plus } from "lucide-react";
 import JoinClass from "@/components/modals/JoinClass";
@@ -168,7 +168,6 @@ function Enrolled() {
               </div>
             </>
           )}
-          <Navbar />
         </div>
       )}
     </>

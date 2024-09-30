@@ -118,7 +118,7 @@ function SignUp() {
             <Lock /> Password
           </Label>
           <Input
-            type="text"
+            type="password"
             name="user_password"
             value={user_password}
             onChange={handleChange}
