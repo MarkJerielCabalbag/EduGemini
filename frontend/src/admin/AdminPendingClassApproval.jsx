@@ -31,6 +31,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { baseUrl } from "@/baseUrl";
 
 function AdminPendingClassApproval() {
   const queryClient = useQueryClient();
@@ -87,7 +88,7 @@ function AdminPendingClassApproval() {
                         {classes.profile_path && (
                           <AvatarImage
                             className="h-10 w-10 rounded-full border-2 border-slate-900"
-                            src={`http://localhost:3000/${classes.profile_path}/${classes.user_img}`}
+                            src={`${baseUrl}/${classes.profile_path}/${classes.user_img}`}
                           />
                         )}
                       </Avatar>
