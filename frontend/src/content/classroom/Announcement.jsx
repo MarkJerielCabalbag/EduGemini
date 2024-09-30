@@ -88,7 +88,7 @@ function Announcements({ userStatus }) {
   });
 
   return (
-    <div className="mx-5">
+    <div className="container sm:container md:container lg:container">
       {data?.map((item) => (
         <>
           {item._id === announceId ? (

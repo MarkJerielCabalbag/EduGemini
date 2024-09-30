@@ -9,9 +9,9 @@ function ClassroomDetails() {
   const userId = localStorage.getItem("userId");
   return (
     <>
-      <div className="container sm:container md:container lg:container">
+      <div className="">
         <ClassroomInfo
-          design={"bg-slate-900 rounded-sm col-span-2 z-50 p-5 md:p-5"}
+          design={" bg-slate-900 rounded-sm col-span-2 z-50 p-5 md:p-5"}
           hide={"hidden"}
           link={`/class/${userId}`}
         />

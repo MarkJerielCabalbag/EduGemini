@@ -2,7 +2,7 @@ import React from "react";
 import { useGetAllClassAdmin } from "@/api/useApi";
 
 import mainBg from "../assets/main-bg.mp4";
-import Video from "@/utils/Video";
+
 import { Link, Outlet } from "react-router-dom";
 import AdminPendingClassApproval from "./AdminPendingClassApproval";
 function AdminDashboard() {

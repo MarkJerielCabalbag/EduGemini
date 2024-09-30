@@ -7,7 +7,7 @@ import { useState } from "react";
 function Stream({ statusBtn, userStatus }) {
   const [openAddModalAnnouncement, setAddModalAnnouncement] = useState(false);
   return (
-    <div>
+    <div className="container sm:container md:container lg:container">
       <Button
         variant={"secondary"}
         className={statusBtn}

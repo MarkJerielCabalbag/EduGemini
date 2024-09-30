@@ -16,7 +16,7 @@ function ClassroomNavigation() {
   });
 
   return (
-    <div className="my-5 flex flex-col items-start gap-3 md:flex-row">
+    <div className="container sm:container my-5 flex flex-col items-start gap-3 md:flex-row lg:container">
       <Button
         variant={"link"}
         disabled={isLoading || isFetching | isPending}

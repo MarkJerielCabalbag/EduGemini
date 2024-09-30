@@ -9,7 +9,7 @@ function Classwork({ statusBtn }) {
     useState(false);
 
   return (
-    <div>
+    <div className="container sm:container md:container lg:container">
       <Button
         variant={"secondary"}
         className={statusBtn}

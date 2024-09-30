@@ -42,13 +42,13 @@ function GetAnnouncement({ statusBtn, cardStatus, userStatus }) {
       ) : (
         <>
           {data?.length === 0 ? (
-            <div className="flex flex-col items-center h-screen">
+            <div className="container sm:container md:container lg:container flex flex-col items-center h-screen">
               <img src={noData} className="w-1/4" />
               <p>No announcement yet :(</p>
             </div>
           ) : (
             <>
-              <div className={cardStatus}>
+              <div className={`${cardStatus}`}>
                 {data?.map((item) => (
                   <>
                     <div

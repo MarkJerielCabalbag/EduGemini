@@ -8,11 +8,10 @@ import {
 } from "@/api/useApi";
 import DataTable from "../table/DataTable";
 import { useParams } from "react-router-dom";
-import { useRef, useState } from "react";
+import { useState } from "react";
 import { createColumnHelper } from "@tanstack/react-table";
 import { studentGender } from "../table/studentListRow/sudentListStatus";
-import { DownloadTableExcel } from "react-export-table-to-excel";
-import { Button } from "@/components/ui/button";
+
 function Settings() {
   const { roomId } = useParams();
   const [openStudentDeclineModal, setOpenStudentDeclineModal] = useState(false);
@@ -93,7 +92,7 @@ function Settings() {
     .toString();
 
   return (
-    <div className="h-full w-full">
+    <div className="container sm:container md:container lg:container h-full w-full">
       <DataTable
         dataTable={dataTable}
         columns={setGetAllActivities}

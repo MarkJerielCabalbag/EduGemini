@@ -25,7 +25,7 @@ function Home() {
         />
       )}
       <MenuBar />
-      <div className="h-screen w-screen">
+      <div className="container sm:container md:container lg:container h-screen w-screen">
         <div className="h-full w-full flex flex-col items-center">
           <div className="text-center my-20">
             <p>Basta logo dituy</p>

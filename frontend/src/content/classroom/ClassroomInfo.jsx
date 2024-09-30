@@ -24,19 +24,21 @@ function ClassroomInfo({ design, hide, link }) {
   return (
     <>
       {data?.map((roomDetails) => (
-        <React.Fragment key={roomDetails._id}>
-          <div key={roomDetails._id} className="sticky top-0 bg-white z-50">
+        <React.Fragment key={roomDetails._id} className="">
+          <div
+            key={roomDetails._id}
+            className="container sm:container md:container lg:container"
+          >
             <div className="my-5">
               <ArrowLeft
                 className=""
                 onClick={() => {
                   navigate(`${link}`);
-                  console.log("hi");
                 }}
               />
             </div>
             <div className="grid sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-2">
-              <div className={design}>
+              <div className={`${design}`}>
                 <h1 className="text-white font-bold text-lg">
                   {isLoading || isFetching ? (
                     <Skeleton
@@ -95,13 +97,9 @@ function ClassroomInfo({ design, hide, link }) {
                     )}
                   </p>
                 </div>
-                <Book
-                  size={150}
-                  className="text-white absolute z-0 left-0 top-0 rotate-45 opacity-15"
-                />
               </div>
             </div>
-            <div className={`${hide} mx-3 flex gap-2 items-center`}>
+            <div className={`${hide} w-full flex gap-2 items-center`}>
               <Avatar className="h-16 w-16">
                 <AvatarImage
                   className="border-2 border-slate-200 rounded-full"
