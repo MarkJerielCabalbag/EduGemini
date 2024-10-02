@@ -119,6 +119,7 @@ function ClassroomSubmition() {
       ".java",
       "image/png",
       "image/jpg",
+      "image/jpeg",
     ],
     multiple: true,
     readAs: "BinaryString",

@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import mainBg from "../assets/main-bg.mp4";
+
 import { useNavigate } from "react-router-dom";
 import { useLoginAdmin } from "@/api/useApi";
 import toast from "react-hot-toast";
@@ -44,7 +44,6 @@ function AdminAuthenticate() {
 
   return (
     <div className="h-screen w-screen flex flex-col items-center justify-center gap-10 relative z-50 ">
-      <Video src={mainBg} className="absolute z-0 w-screen h-full" />
       <div className=" text-center z-50">
         <h1 className="text-2xl flex gap-2 items-center justify-center italic font-bold">
           eduGemini

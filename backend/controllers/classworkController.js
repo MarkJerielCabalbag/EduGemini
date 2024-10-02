@@ -7,6 +7,7 @@ import moment from "moment";
 import { GoogleGenerativeAI } from "@google/generative-ai";
 import officeParser from "officeparser";
 import { nanoid } from "nanoid";
+import { GoogleAIFileManager } from "@google/generative-ai/server";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 //@desc     get classwork
@@ -303,11 +304,74 @@ const submitAttachment = asyncHandler(async (req, res, next) => {
   //classwork attach file
   const classworkAttachFile = workIndex.classwork_attach_file.originalname;
 
+  let instructionFile;
+  let instructionPath = fs.readFileSync(
+    `./${classworkPath}/instruction/${classworkAttachFile}`
+  );
+
+  let instructionFormat = classworkAttachFile.split(".").pop();
+
+  if (
+    instructionFormat === "docx" ||
+    instructionFormat === "pdf" ||
+    instructionFormat === "txt"
+  ) {
+    instructionFile = await officeParser.parseOfficeAsync(instructionPath);
+  } else if (instructionFormat === "png") {
+    const fileManager = new GoogleAIFileManager(process.env.GEMINI_API_KEY);
+
+    const uploadResult = await fileManager.uploadFile(
+      `${classworkPath}/instruction/${classworkAttachFile}`,
+      {
+        mimeType: "image/png",
+        displayName: `${file.filename}`,
+      }
+    );
+
+    const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
+    const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+    const result = await model.generateContent([
+      "Analyze and describe the image thoroughly. Identify the main elements, whether they are people, objects, nature, architecture, or abstract components. Describe the composition, colors, textures, lighting, and spatial arrangement. Adapt the description to fit the image's context, such as capturing emotions, interactions, or any potential symbolism. Ensure that the description can apply to a wide variety of subjects, from everyday scenes to complex visuals, while maintaining accuracy and relevance.",
+      {
+        fileData: {
+          fileUri: uploadResult.file.uri,
+          mimeType: uploadResult.file.mimeType,
+        },
+      },
+    ]);
+
+    instructionFile = result.response.text();
+  } else if (instructionFormat === "jpg") {
+    const fileManager = new GoogleAIFileManager(process.env.GEMINI_API_KEY);
+
+    const uploadResult = await fileManager.uploadFile(
+      `${classworkPath}/instruction/${classworkAttachFile}`,
+      {
+        mimeType: "image/jpeg",
+        displayName: `${file.filename}`,
+      }
+    );
+
+    const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
+    const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+    const result = await model.generateContent([
+      "Analyze and describe the image thoroughly. Identify the main elements, whether they are people, objects, nature, architecture, or abstract components. Describe the composition, colors, textures, lighting, and spatial arrangement. Adapt the description to fit the image's context, such as capturing emotions, interactions, or any potential symbolism. Ensure that the description can apply to a wide variety of subjects, from everyday scenes to complex visuals, while maintaining accuracy and relevance.",
+      {
+        fileData: {
+          fileUri: uploadResult.file.uri,
+          mimeType: uploadResult.file.mimeType,
+        },
+      },
+    ]);
+
+    instructionFile = result.response.text();
+  }
+
   studentFiles.forEach(async (file) => {
-    let studentFiles;
+    let studentAnswers;
     try {
       let answerPath = fs.readFileSync(
-        `./${classworkPath}/answers${file.path}/${file.filename}`
+        `${classworkPath}/answers${file.path}/${file.filename}`
       );
 
       let answerformat = file.filename.split(".").pop();
@@ -318,41 +382,54 @@ const submitAttachment = asyncHandler(async (req, res, next) => {
         answerformat === "xlsx" ||
         answerformat === "pdf"
       ) {
-        studentFiles = await officeParser.parseOfficeAsync(answerPath);
-      } else if (answerformat === "png" || answerformat === "jpg") {
-        const image = {
-          inlineData: {
-            data: Buffer.from(answerPath).toString("base64"),
-            mimeType: answerformat === "png" ? "image/png" : "image/jpeg",
+        studentAnswers = await officeParser.parseOfficeAsync(answerPath);
+      } else if (answerformat === "png") {
+        const fileManager = new GoogleAIFileManager(process.env.GEMINI_API_KEY);
+
+        const uploadResult = await fileManager.uploadFile(
+          `${classworkPath}/answers${file.path}/${file.filename}`,
+          {
+            mimeType: "image/png",
+            displayName: `${file.filename}`,
+          }
+        );
+
+        const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
+        const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+        const result = await model.generateContent([
+          "Analyze and describe the image provided. Include details about the subjects present, their appearance, actions, and the setting. Discuss any notable elements such as colors, textures, lighting, and composition. If applicable, explain the cultural, historical, or emotional significance of the image and how it relates to broader themes or contexts. Provide a comprehensive overview that captures the essence of the image and conveys its meaning.",
+          {
+            fileData: {
+              fileUri: uploadResult.file.uri,
+              mimeType: uploadResult.file.mimeType,
+            },
           },
-        };
-        studentFiles = image;
-      }
+        ]);
+        studentAnswers = result.response.text();
+      } else if (answerformat === "jpg") {
+        const fileManager = new GoogleAIFileManager(process.env.GEMINI_API_KEY);
 
-      console.log(studentFiles);
-      let instructionFile;
-      let instructionPath = fs.readFileSync(
-        `./${classworkPath}/instruction/${classworkAttachFile}`
-      );
+        const uploadResult = await fileManager.uploadFile(
+          `${classworkPath}/answers${file.path}/${file.filename}`,
+          {
+            mimeType: "image/jpeg",
+            displayName: `${file.filename}`,
+          }
+        );
 
-      let instructionFormat = classworkAttachFile.split(".").pop();
-
-      if (
-        instructionFormat === "docx" ||
-        instructionFormat === "pdf" ||
-        instructionFormat === "txt"
-      ) {
-        instructionFile = await officeParser.parseOfficeAsync(instructionPath);
-      } else if (instructionFormat === "png" || instructionFormat === "jpg") {
-        const image = {
-          inlineData: {
-            data: Buffer.from(answerPath).toString("base64"),
-            mimeType: instructionFormat === "png" ? "image/png" : "image/jpeg",
+        const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
+        const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+        const result = await model.generateContent([
+          "Analyze and describe the image provided. Include details about the subjects present, their appearance, actions, and the setting. Discuss any notable elements such as colors, textures, lighting, and composition. If applicable, explain the cultural, historical, or emotional significance of the image and how it relates to broader themes or contexts. Provide a comprehensive overview that captures the essence of the image and conveys its meaning.",
+          {
+            fileData: {
+              fileUri: uploadResult.file.uri,
+              mimeType: uploadResult.file.mimeType,
+            },
           },
-        };
-        instructionFile = image;
+        ]);
+        studentAnswers = result.response.text();
       }
-
       console.log("INSTRUCTION FILE", instructionFile);
 
       const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
@@ -360,10 +437,10 @@ const submitAttachment = asyncHandler(async (req, res, next) => {
       const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
 
       async function runGemini() {
-        const studentFeedbackPrompt = `Evaluate this submission [${studentFiles}] based on the provided instructions [${instructionFile}]. Highlight areas of clarity, structure, and content understanding, and suggest improvements, it should be concise and easy to understand`;
+        const studentFeedbackPrompt = `Evaluate this submission [${studentAnswers}] based on the provided instructions [${instructionFile}]. Highlight areas of clarity, structure, and content understanding, and suggest improvements, it should be concise and easy to understand`;
         const generateStudentFeedback = await model.generateContent([
           studentFeedbackPrompt,
-          studentFiles,
+          studentAnswers,
         ]);
         const geminiResponseStudentFeedback =
           await generateStudentFeedback.response;
@@ -397,7 +474,6 @@ const submitAttachment = asyncHandler(async (req, res, next) => {
 
         await roomExist.save();
       }
-
       runGemini();
     } catch (error) {
       console.log(error);
@@ -703,7 +779,7 @@ const acceptLateClasswork = asyncHandler(async (req, res, next) => {
         const image = {
           inlineData: {
             data: Buffer.from(answerPath).toString("base64"),
-            mimeType: answerformat === "png" ? "image/png" : "image/jpeg",
+            mimeType: answerformat === "png" ? "image/png" : "image/jpg",
           },
         };
         studentFiles = image;
@@ -723,11 +799,15 @@ const acceptLateClasswork = asyncHandler(async (req, res, next) => {
         instructionFormat === "txt"
       ) {
         instructionFile = await officeParser.parseOfficeAsync(instructionPath);
-      } else if (instructionFormat === "png" || instructionFormat === "jpg") {
+      } else if (
+        instructionFormat === "png" ||
+        instructionFormat === "jpg" ||
+        instructionFormat === "jpeg"
+      ) {
         const image = {
           inlineData: {
             data: Buffer.from(answerPath).toString("base64"),
-            mimeType: instructionFormat === "png" ? "image/png" : "image/jpeg",
+            mimeType: instructionFormat === "png" ? "image/png" : "image/jpg",
           },
         };
         instructionFile = image;
