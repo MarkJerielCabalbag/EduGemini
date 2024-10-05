@@ -38,7 +38,8 @@ function ClassroomSubmition() {
   const [time, setTime] = useState(null);
   const [isDisabled, setDisabled] = useState(false);
   const [disableTurnIn, setDisableTurnIn] = useState(false);
-  const { workId, roomId, userId } = useParams();
+  const userId = localStorage.getItem("userId");
+  const { workId, roomId } = useParams();
   const [filename, setFilename] = useState("");
   const { data } = useQuery({
     queryKey: ["classwork"],

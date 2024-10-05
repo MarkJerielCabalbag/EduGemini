@@ -304,90 +304,37 @@ const submitAttachment = asyncHandler(async (req, res, next) => {
   //classwork attach file
   const classworkAttachFile = workIndex.classwork_attach_file.originalname;
 
-  let instructionFile;
-  let instructionPath = fs.readFileSync(
-    `./${classworkPath}/instruction/${classworkAttachFile}`
-  );
-
-  let instructionFormat = classworkAttachFile.split(".").pop();
-
-  if (
-    instructionFormat === "docx" ||
-    instructionFormat === "pdf" ||
-    instructionFormat === "txt"
-  ) {
-    instructionFile = await officeParser.parseOfficeAsync(instructionPath);
-  } else if (instructionFormat === "png") {
-    const fileManager = new GoogleAIFileManager(process.env.GEMINI_API_KEY);
-
-    const uploadResult = await fileManager.uploadFile(
-      `${classworkPath}/instruction/${classworkAttachFile}`,
-      {
-        mimeType: "image/png",
-        displayName: `${file.filename}`,
-      }
-    );
-
-    const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
-    const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
-    const result = await model.generateContent([
-      "Analyze and describe the image thoroughly. Identify the main elements, whether they are people, objects, nature, architecture, or abstract components. Describe the composition, colors, textures, lighting, and spatial arrangement. Adapt the description to fit the image's context, such as capturing emotions, interactions, or any potential symbolism. Ensure that the description can apply to a wide variety of subjects, from everyday scenes to complex visuals, while maintaining accuracy and relevance.",
-      {
-        fileData: {
-          fileUri: uploadResult.file.uri,
-          mimeType: uploadResult.file.mimeType,
-        },
+  function fileToGenerativePart(path, mimeType) {
+    return {
+      inlineData: {
+        data: Buffer.from(path).toString("base64"),
+        mimeType,
       },
-    ]);
-
-    instructionFile = result.response.text();
-  } else if (instructionFormat === "jpg") {
-    const fileManager = new GoogleAIFileManager(process.env.GEMINI_API_KEY);
-
-    const uploadResult = await fileManager.uploadFile(
-      `${classworkPath}/instruction/${classworkAttachFile}`,
-      {
-        mimeType: "image/jpeg",
-        displayName: `${file.filename}`,
-      }
-    );
-
-    const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
-    const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
-    const result = await model.generateContent([
-      "Analyze and describe the image thoroughly. Identify the main elements, whether they are people, objects, nature, architecture, or abstract components. Describe the composition, colors, textures, lighting, and spatial arrangement. Adapt the description to fit the image's context, such as capturing emotions, interactions, or any potential symbolism. Ensure that the description can apply to a wide variety of subjects, from everyday scenes to complex visuals, while maintaining accuracy and relevance.",
-      {
-        fileData: {
-          fileUri: uploadResult.file.uri,
-          mimeType: uploadResult.file.mimeType,
-        },
-      },
-    ]);
-
-    instructionFile = result.response.text();
+    };
   }
 
-  studentFiles.forEach(async (file) => {
-    let studentAnswers;
-    try {
-      let answerPath = fs.readFileSync(
-        `${classworkPath}/answers${file.path}/${file.filename}`
+  if (studentFiles.length > 1) {
+    let filesToBeprompted = [];
+    const fileManager = new GoogleAIFileManager(process.env.GEMINI_API_KEY);
+    studentFiles.forEach(async (file) => {
+      let instructionFile;
+      let instructionPath = fs.readFileSync(
+        `./${classworkPath}/instruction/${classworkAttachFile}`
       );
 
-      let answerformat = file.filename.split(".").pop();
+      let instructionFormat = classworkAttachFile.split(".").pop();
 
       if (
-        answerformat === "docx" ||
-        answerformat === "pptx" ||
-        answerformat === "xlsx" ||
-        answerformat === "pdf"
+        instructionFormat === "docx" ||
+        instructionFormat === "pdf" ||
+        instructionFormat === "txt"
       ) {
-        studentAnswers = await officeParser.parseOfficeAsync(answerPath);
-      } else if (answerformat === "png") {
+        instructionFile = await officeParser.parseOfficeAsync(instructionPath);
+      } else if (instructionFormat === "png") {
         const fileManager = new GoogleAIFileManager(process.env.GEMINI_API_KEY);
 
         const uploadResult = await fileManager.uploadFile(
-          `${classworkPath}/answers${file.path}/${file.filename}`,
+          `${classworkPath}/instruction/${classworkAttachFile}`,
           {
             mimeType: "image/png",
             displayName: `${file.filename}`,
@@ -397,7 +344,7 @@ const submitAttachment = asyncHandler(async (req, res, next) => {
         const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
         const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
         const result = await model.generateContent([
-          "Analyze and describe the image provided. Include details about the subjects present, their appearance, actions, and the setting. Discuss any notable elements such as colors, textures, lighting, and composition. If applicable, explain the cultural, historical, or emotional significance of the image and how it relates to broader themes or contexts. Provide a comprehensive overview that captures the essence of the image and conveys its meaning.",
+          "I want you to copy the text of this image because this will serve as instruction, if any visual elements are included in this image, i want you to describe it accurately without changing the instructions.",
           {
             fileData: {
               fileUri: uploadResult.file.uri,
@@ -405,12 +352,13 @@ const submitAttachment = asyncHandler(async (req, res, next) => {
             },
           },
         ]);
-        studentAnswers = result.response.text();
-      } else if (answerformat === "jpg") {
+
+        instructionFile = result.response.text();
+      } else if (instructionFormat === "jpg") {
         const fileManager = new GoogleAIFileManager(process.env.GEMINI_API_KEY);
 
         const uploadResult = await fileManager.uploadFile(
-          `${classworkPath}/answers${file.path}/${file.filename}`,
+          `${classworkPath}/instruction/${classworkAttachFile}`,
           {
             mimeType: "image/jpeg",
             displayName: `${file.filename}`,
@@ -420,7 +368,7 @@ const submitAttachment = asyncHandler(async (req, res, next) => {
         const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
         const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
         const result = await model.generateContent([
-          "Analyze and describe the image provided. Include details about the subjects present, their appearance, actions, and the setting. Discuss any notable elements such as colors, textures, lighting, and composition. If applicable, explain the cultural, historical, or emotional significance of the image and how it relates to broader themes or contexts. Provide a comprehensive overview that captures the essence of the image and conveys its meaning.",
+          "I want you to copy the text of this image because this will serve as instruction, if any visual elements are included in this image, i want you to describe it accurately without changing the instructions.",
           {
             fileData: {
               fileUri: uploadResult.file.uri,
@@ -428,57 +376,122 @@ const submitAttachment = asyncHandler(async (req, res, next) => {
             },
           },
         ]);
-        studentAnswers = result.response.text();
+
+        instructionFile = result.response.text();
       }
-      console.log("INSTRUCTION FILE", instructionFile);
-
-      const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
-
-      const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
-
-      async function runGemini() {
-        const studentFeedbackPrompt = `Evaluate this submission [${studentAnswers}] based on the provided instructions [${instructionFile}]. Highlight areas of clarity, structure, and content understanding, and suggest improvements, it should be concise and easy to understand`;
-        const generateStudentFeedback = await model.generateContent([
-          studentFeedbackPrompt,
-          studentAnswers,
-        ]);
-        const geminiResponseStudentFeedback =
-          await generateStudentFeedback.response;
-        const studentFeedbackResult = geminiResponseStudentFeedback.text();
-        console.log(studentFeedbackResult);
-
-        // Request a numerical score
-        const scorePrompt = `Based on the feedback provided [${studentFeedbackResult}], assign a total score provided in the [${instructionFile}] for the student's submission. Return only a number, dont include any explanations, i just want the exact number or total score `;
-        const generateStudentScore = await model.generateContent(scorePrompt);
-        const geminiStudentScoreResponse = await generateStudentScore.response;
-
-        // Ensure the score is parsed as a number
-        const studentScoreResult = parseFloat(
-          geminiStudentScoreResponse.text().trim()
+      try {
+        let fileFormat = file.filename.split(".").pop();
+        let studentFiles;
+        let answerPath = fs.readFileSync(
+          `${classworkPath}/answers${file.path}/${file.filename}`
         );
-        console.log("Student Score:", studentScoreResult);
+        if (
+          fileFormat === "docx" ||
+          fileFormat === "pptx" ||
+          fileFormat === "xlsx" ||
+          fileFormat === "pdf"
+        ) {
+          studentFiles = await officeParser.parseOfficeAsync(answerPath);
+        } else if (fileFormat === "png") {
+          const uploadResult = await fileManager.uploadFile(
+            `${classworkPath}/answers${file.path}/${file.filename}`,
+            {
+              mimeType: "image/png",
+              displayName: `${file.filename}`,
+            }
+          );
+          const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
+          const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+          studentFiles = fileToGenerativePart(answerPath, "image/png");
+          const result = await model.generateContent([
+            "Analyze and describe the image provided as this serves as the answer of the student.",
+            {
+              fileData: {
+                fileUri: uploadResult.file.uri,
+                mimeType: uploadResult.file.mimeType,
+              },
+            },
+          ]);
+          studentFiles = result.response.text();
+        } else if (fileFormat === "jpg") {
+          const uploadResult = await fileManager.uploadFile(
+            `${classworkPath}/answers${file.path}/${file.filename}`,
+            {
+              mimeType: "image/png",
+              displayName: `${file.filename}`,
+            }
+          );
+          const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
+          const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+          studentFiles = fileToGenerativePart(answerPath, "image/jpeg");
+          const result = await model.generateContent([
+            "Analyze and describe the image provided as this serves as the answer of the student.",
+            {
+              fileData: {
+                fileUri: uploadResult.file.uri,
+                mimeType: uploadResult.file.mimeType,
+              },
+            },
+          ]);
+          studentFiles = result.response.text();
+        }
 
-        const teacherFeedbackPrompt = `As you generate a feedback for students submission feedback [${studentFeedbackResult}], based on this student feedback, what or how do I improved my teaching to student based on the student submission feedback [${studentFeedbackResult}]. Suggest improvements to further nurture my student`;
-        const generateTeacherFeedback = await model.generateContent(
-          teacherFeedbackPrompt
-        );
-        const geminiTeacherFeedbackResponse =
-          await generateTeacherFeedback.response;
-        const teacherFeedbackResult = geminiTeacherFeedbackResponse.text();
-        console.log(teacherFeedbackResult);
+        filesToBeprompted.push(studentFiles);
+        console.log("Files to be prompted", filesToBeprompted.toString());
+        console.log("INSTRUCTION FILE", instructionFile);
 
-        studentExist.studentFeedback = studentFeedbackResult;
-        studentExist.score = studentScoreResult;
-        studentExist.teacherFeedback = teacherFeedbackResult;
-        roomExist.classwork[findClasswork] = workIndex;
+        const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
 
-        await roomExist.save();
+        const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+
+        async function runGemini() {
+          const studentFeedbackPrompt = `Evaluate the submissions [${filesToBeprompted.toString()}] against the guidelines set in the instruction file [${instructionFile}]. Highlight effective elements and provide recommendations for improving coherence and argumentation.`;
+          const generateStudentFeedback = await model.generateContent([
+            studentFeedbackPrompt,
+            ...filesToBeprompted.toString(),
+          ]);
+          const geminiResponseStudentFeedback =
+            await generateStudentFeedback.response;
+          const studentFeedbackResult = geminiResponseStudentFeedback.text();
+          console.log(studentFeedbackResult);
+
+          // Request a numerical score
+          const scorePrompt = `Based on the feedback provided [${studentFeedbackResult}], assign a total score provided in the [${instructionFile}] for the student's submission. Return only a number, dont include any explanations, i just want the exact number or total score. Additionally, if the answers of student does not aligned to the instruction provided, the score should automatically zero (0) `;
+          const generateStudentScore = await model.generateContent(scorePrompt);
+          const geminiStudentScoreResponse =
+            await generateStudentScore.response;
+
+          // Ensure the score is parsed as a number
+          const studentScoreResult = parseFloat(
+            geminiStudentScoreResponse.text().trim()
+          );
+          console.log("Student Score:", studentScoreResult);
+
+          const teacherFeedbackPrompt = `As you generate a feedback for students submission feedback [${studentFeedbackResult}], based on this student feedback, what or how do I improved my teaching to student based on the student submission feedback [${studentFeedbackResult}]. Suggest improvements to further nurture my student`;
+          const generateTeacherFeedback = await model.generateContent(
+            teacherFeedbackPrompt
+          );
+          const geminiTeacherFeedbackResponse =
+            await generateTeacherFeedback.response;
+          const teacherFeedbackResult = geminiTeacherFeedbackResponse.text();
+          console.log(teacherFeedbackResult);
+
+          studentExist.studentFeedback = studentFeedbackResult;
+          studentExist.score = studentScoreResult;
+          studentExist.teacherFeedback = teacherFeedbackResult;
+          roomExist.classwork[findClasswork] = workIndex;
+
+          await roomExist.save();
+        }
+        runGemini();
+      } catch (error) {
+        console.log(error);
       }
-      runGemini();
-    } catch (error) {
-      console.log(error);
-    }
-  });
+    });
+
+    console.log(filesToBeprompted);
+  } else {
+  }
 
   studentExist.workStatus = {
     id: 3,

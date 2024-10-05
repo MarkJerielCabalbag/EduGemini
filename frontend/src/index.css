@@ -95,3 +95,9 @@ input::-webkit-inner-spin-button {
 input[type="number"] {
   -moz-appearance: textfield;
 }
+
+pre {
+  white-space: pre-wrap;
+  word-wrap: break-word;
+  text-align: justify;
+}
