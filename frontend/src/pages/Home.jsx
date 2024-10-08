@@ -3,6 +3,7 @@ import MenuBar from "@/content/MenuBar";
 import { Button } from "@/components/ui/button";
 import {
   BookMarked,
+  BrainCircuit,
   GraduationCap,
   KeyRound,
   NotebookPen,
@@ -34,7 +35,11 @@ function Home() {
 
       <div className="flex flex-col">
         <div className="text-center my-20">
-          <p>Basta logo dituy</p>
+          <div className="flex flex-col items-center justify-center font-semibold italic">
+            <BrainCircuit size={100} />
+
+            <h1 className="text-[40px]">EduGemini</h1>
+          </div>
           <h1 className="font-extrabold flex flex-col text-2xl my-3 md:text-4xl">
             EduGemini: AI Assisted Classroom Management
             <p className="italic opacity-70 text-sm md:text-2xl text-center px-5">

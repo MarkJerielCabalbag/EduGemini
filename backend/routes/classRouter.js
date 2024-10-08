@@ -33,7 +33,7 @@ classRouter.get(
 //   classroomControllers.createAnnouncement
 // );
 
-// const __dirname = dirname(fileURLToPath(import.meta.url));
+const __dirname = dirname(fileURLToPath(import.meta.url));
 // const storage = multer.diskStorage({
 //   destination: function (req, file, callback) {
 //     callback(null, __dirname + "/announcements");

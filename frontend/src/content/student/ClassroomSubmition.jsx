@@ -68,14 +68,14 @@ function ClassroomSubmition() {
     onSuccess,
   });
 
-  const { mutateAsync, isLoading, isPending } = useDeleteAttachment({
+  const { mutateAsync, isLoading } = useDeleteAttachment({
     mutationFn: () =>
       deleteAttachment(filename, date, timeAction, roomId, workId, userId),
     onError,
     onSuccess,
   });
 
-  const { mutateAsync: submit } = useSubmitAttachment({
+  const { mutateAsync: submit, isPending } = useSubmitAttachment({
     mutationFn: () =>
       submitAttachment(date, timeAction, roomId, workId, userId),
     onError,
@@ -174,7 +174,7 @@ function ClassroomSubmition() {
   });
 
   return (
-    <div className="h-screen text-slate-900 sm:container md:container lg:container">
+    <div className="h-full text-slate-900 sm:container md:container lg:container">
       <div className="mx-5">
         <ArrowLeft
           className="my-5"
@@ -390,7 +390,8 @@ function ClassroomSubmition() {
                                                 disabled={
                                                   isOverdue ||
                                                   outputs.chancesResubmition ===
-                                                    0
+                                                    0 ||
+                                                  isPending
                                                 }
                                                 className={`w-full ${
                                                   outputs.files.length === 0
@@ -408,7 +409,7 @@ function ClassroomSubmition() {
                                                   })
                                                 }
                                               >
-                                                {isLoading || isPending ? (
+                                                {isPending ? (
                                                   <Loader2Icon className="animate-spin" />
                                                 ) : (
                                                   "Turn in"

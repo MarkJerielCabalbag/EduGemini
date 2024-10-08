@@ -15,6 +15,7 @@ import { useState } from "react";
 import { Info, Loader2Icon } from "lucide-react";
 import toast from "react-hot-toast";
 import { useQueryClient } from "@tanstack/react-query";
+import { baseUrl } from "@/baseUrl";
 
 function JoinClass({ open, onOpenChange }) {
   const queryClient = useQueryClient();
@@ -82,7 +83,7 @@ function JoinClass({ open, onOpenChange }) {
                   {user.profile_path && (
                     <img
                       className="h-14 w-14 rounded-full border-2 border-white"
-                      src={`http://localhost:3000/${user.profile_path}/${user.profile.filename}`}
+                      src={`${baseUrl}/${user.profile_path}/${user.profile.filename}`}
                     />
                   )}
                   <div>

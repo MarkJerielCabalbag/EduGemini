@@ -8,7 +8,7 @@ import { useState } from "react";
 import DeleteAnnouncement from "@/components/modals/DeleteAnnouncement";
 import { Button } from "@/components/ui/button";
 import { useNavigate, useParams } from "react-router-dom";
-import { Skeleton } from "@/components/ui/skeleton";
+
 function GetAnnouncement({ statusBtn, cardStatus, userStatus }) {
   const [openDeleteAnnouncementModal, setOpenDeleteAnnouncementModal] =
     useState(false);

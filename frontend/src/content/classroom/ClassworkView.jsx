@@ -97,7 +97,7 @@ function ClassworkView({ userStatus }) {
   if (isFetching || isLoading || isPending) {
     return (
       <LoadingState
-        className={"h-screen w-full flex flex-col justify-center"}
+        className={"h-screen w-full flex flex-col justify-center items-center"}
       />
     );
   }

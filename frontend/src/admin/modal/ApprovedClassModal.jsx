@@ -27,10 +27,12 @@ function ApprovedClassModal({ open, onOpenChange, classId }) {
       alertDialogDescription={"Are you sure to approve this class?"}
       alertDialogFooter={
         <>
-          <Button onClick={() => onOpenChange(false)}>Cancel</Button>
+          <Button disabled={isPending} onClick={() => onOpenChange(false)}>
+            Cancel
+          </Button>
           <Button
+            disabled={isPending}
             onClick={async () => {
-              onOpenChange(false);
               await mutateAsync({ classId });
             }}
           >

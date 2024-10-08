@@ -92,7 +92,7 @@ function Settings() {
     .toString();
 
   return (
-    <div className="container sm:container md:container lg:container h-full w-full">
+    <div className="container sm:container md:container lg:container h-screen w-full">
       <DataTable
         dataTable={dataTable}
         columns={setGetAllActivities}

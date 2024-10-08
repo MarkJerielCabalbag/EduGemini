@@ -13,7 +13,7 @@ import { useNavigate } from "react-router-dom";
 function Profile() {
   const navigate = useNavigate();
   return (
-    <div className="h-full sm:container md:container lg:container">
+    <div className="h-screen sm:container md:container lg:container">
       <div className="my-5">
         <ArrowLeft onClick={() => navigate("/home")} />
       </div>

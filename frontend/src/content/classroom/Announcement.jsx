@@ -38,9 +38,11 @@ import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import toast from "react-hot-toast";
 import moment from "moment";
+import ViewFile from "@/components/modals/ViewFile";
 function Announcements({ userStatus }) {
   const [comment, setComment] = useState("");
   const { roomId, announceId } = useParams();
+  const [openFile, setOpenFile] = useState(false);
   const userId = localStorage.getItem("userId");
   const queryClient = useQueryClient();
   const navigate = useNavigate();
@@ -67,6 +69,8 @@ function Announcements({ userStatus }) {
     onSuccess,
   });
 
+  console.log(data);
+
   const { data: room } = useGetClass({
     queryFn: () => fetchClassData(roomId),
     onError,
@@ -88,7 +92,7 @@ function Announcements({ userStatus }) {
   });
 
   return (
-    <div className="container sm:container md:container lg:container">
+    <div className="h-full container sm:container md:container lg:container">
       {data?.map((item) => (
         <>
           {item._id === announceId ? (
@@ -186,13 +190,26 @@ function Announcements({ userStatus }) {
                           ) : (
                             <TableCell className="font-medium flex gap-3 items-center">
                               <File />
-                              <Link
-                                to={`/class/classroom/getCreatedClass/viewAnnouncement/${roomId}/${announceId}`}
-                                className=""
-                                target="_blank"
+                              {openFile && (
+                                <ViewFile
+                                  open={openFile}
+                                  onOpenChange={setOpenFile}
+                                  files={item.files}
+                                  path={item.path}
+                                />
+                              )}
+                              <Button
+                                onClick={() => {
+                                  setOpenFile(true);
+                                  console.log(
+                                    `${baseUrl}/${item.path}/${item.files.map(
+                                      (file) => file.filename
+                                    )}`
+                                  );
+                                }}
                               >
                                 {file.filename}
-                              </Link>
+                              </Button>
                             </TableCell>
                           )}
                         </TableRow>

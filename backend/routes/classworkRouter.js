@@ -58,7 +58,7 @@ const storageClasswork = multer.diskStorage({
       fs.mkdirsSync(locationSave);
       callback(null, locationSave);
     } catch (error) {
-      return callback(error, null);
+      callback(error, null);
     }
   },
   filename: (req, file, callback) => {
@@ -128,17 +128,17 @@ classworkRouter.post(
       classwork_due_date: classworkDueDate,
       classwork_due_time: classworkDueTime,
       classwork_attach_file: classworkAttachFile,
-
       classwork_folder_path: `classworks/${user.user_username}/${roomExist.class_code}/${classworkTitle}`,
       classwork_outputs: [],
     });
+    if (classworkCreated) {
+      await roomExist.save();
 
-    await roomExist.save();
-
-    res.status(200).json({
-      message: "New classwork has been added",
-      workId: classworkCreated._id,
-    });
+      return res.status(200).json({
+        message: "New classwork has been added",
+        workId: classworkCreated._id,
+      });
+    }
   })
 );
 

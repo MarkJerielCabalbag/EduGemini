@@ -9,7 +9,7 @@ function ClassroomDetails() {
   const userId = localStorage.getItem("userId");
   return (
     <>
-      <div className="h-screen">
+      <div className="h-full">
         <ClassroomInfo
           design={" bg-slate-900 rounded-sm col-span-2 z-50 p-5 md:p-5"}
           hide={"hidden"}

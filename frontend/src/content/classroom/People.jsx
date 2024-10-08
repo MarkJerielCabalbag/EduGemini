@@ -38,7 +38,7 @@ function People() {
   ).length;
 
   return (
-    <div className="container sm:container md:container lg:container h-screen w-full">
+    <div className="container sm:container md:container lg:container">
       <h1 className="text-slate-900 font-bold text-md flex gap-2 items-center">
         <Bookmark size={30} />
         Student Approval

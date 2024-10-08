@@ -20,15 +20,18 @@ function Classwork({ statusBtn }) {
         <Plus /> Create Classwork
       </Button>
 
-      <CreateClasswork
-        statusBtn={statusBtn}
-        cardStatus={`${
-          statusBtn === "hidden"
-            ? "grid gap-3 mt-6 sm:grid-cols-1 md:grid-cols-1 lg:grid-cols-1 h-3/4"
-            : "grid gap-3 mt-6 sm:grid-cols-1 md:grid-cols-3 lg:grid-cols-5 h-3/4"
-        }`}
-      />
-
+      <div className="h-screen">
+        <div>
+          <CreateClasswork
+            statusBtn={statusBtn}
+            cardStatus={`${
+              statusBtn === "hidden"
+                ? "grid gap-3 mt-6 sm:grid-cols-1 md:grid-cols-1 lg:grid-cols-1 h-3/4"
+                : "grid gap-3 mt-6 sm:grid-cols-1 md:grid-cols-3 lg:grid-cols-5 h-3/4"
+            }`}
+          />
+        </div>
+      </div>
       {openCreateClassworkModal && (
         <CreateClassworkModal
           open={openCreateClassworkModal}

@@ -21,8 +21,7 @@ function CreateClasswork({ statusBtn, cardStatus }) {
     onSuccess,
   });
 
-  const { data: user } = useGetUser({ onError, onSuccess });
-  const userId = user?.map((user) => user._id.toString());
+  const userId = localStorage.getItem("userId");
 
   return (
     <>

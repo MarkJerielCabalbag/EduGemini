@@ -1,19 +1,49 @@
 import officeParser from "officeparser";
 import fs from "fs";
-export async function readFileType(path, format) {
-  let files;
-  try {
-    let finalPath = fs.readFileSync(`./${path}`);
+import { processImageFile } from "./processImageFile.js";
+export async function processStudentFiles(
+  file,
+  classworkPath,
+  model,
+  fileManager
+) {
+  let studentFiles;
+  let fileFormat = file.filename.split(".").pop();
+  let answerPath = fs.readFileSync(
+    `${classworkPath}/answers${file.path}/${file.filename}`
+  );
 
+  try {
     if (
-      format === "docx" ||
-      format === "pptx" ||
-      format === "xlsx" ||
-      format === "pdf"
+      fileFormat === "docx" ||
+      fileFormat === "pptx" ||
+      fileFormat === "xlsx" ||
+      fileFormat === "pdf"
     ) {
-      files = await officeParser.parseOfficeAsync(finalPath);
+      studentFiles = await officeParser.parseOfficeAsync(answerPath);
+    } else if (fileFormat === "jpg") {
+      const uploadResult = await fileManager.uploadFile(
+        `${classworkPath}/answers${file.path}/${file.filename}`,
+        {
+          mimeType: "image/png",
+          displayName: `${file.filename}`,
+        }
+      );
+
+      studentFiles = await processImageFile(uploadResult, model, "image/jpeg");
+    } else if (fileFormat === "png") {
+      const uploadResult = await fileManager.uploadFile(
+        `${classworkPath}/answers${file.path}/${file.filename}`,
+        {
+          mimeType: "image/png",
+          displayName: `${file.filename}`,
+        }
+      );
+
+      studentFiles = await processImageFile(uploadResult, model, "image/png");
     }
-    console.log(files);
+
+    return studentFiles;
   } catch (error) {
     console.log(error);
   }

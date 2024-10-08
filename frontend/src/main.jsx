@@ -25,12 +25,8 @@ import SettingsClassroom from "./content/classroom/Settings.jsx";
 import ClassworkView from "./content/classroom/ClassworkView.jsx";
 import AdminAuthenticate from "./admin/AdminAuthenticate.jsx";
 import AdminDashboard from "./admin/AdminDashboard.jsx";
-import AdminPendingClassApproval from "./admin/AdminPendingClassApproval.jsx";
-import AdminDeclinedClassApproval from "./admin/AdminDeclinedClassApproval.jsx";
-import AdminApprovedClassApproval from "./admin/AdminApprovedClassApproval.jsx";
 import Classroom from "./content/student/Classroom.jsx";
 import ClassroomSubmition from "./content/student/ClassroomSubmition.jsx";
-import { useGetUser } from "./api/useApi.jsx";
 import Outputs from "./content/student/Outputs.jsx";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 const queryClient = new QueryClient();
@@ -43,16 +39,8 @@ const router = createBrowserRouter(
       <Route path="/admin/dashboard" element={<AdminDashboard />}>
         <Route
           index={true}
-          path="/admin/dashboard/pending"
-          element={<AdminPendingClassApproval />}
-        />
-        <Route
-          path="/admin/dashboard/declined"
-          element={<AdminDeclinedClassApproval />}
-        />
-        <Route
-          path="/admin/dashboard/approved"
-          element={<AdminApprovedClassApproval />}
+          path="/admin/dashboard"
+          element={<AdminDashboard />}
         />
       </Route>
 
