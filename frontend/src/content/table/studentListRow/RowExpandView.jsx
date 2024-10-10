@@ -8,7 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Clock, File, Loader, Star } from "lucide-react";
 import moment from "moment";
 import React, { useState } from "react";
-import { useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 
 const RowExpandView = ({ user }) => {
   const [openAddChanceModal, setAddChanceModal] = useState(false);
@@ -172,10 +172,13 @@ const RowExpandView = ({ user }) => {
               ipsum!
             </p>
 
-            {(isOverdue &&
-              user.files.length !== 0 &&
-              user.workStatus.name !== "Late" &&
-              user.workStatus.name === "Cancelled") ||
+            {isOverdue &&
+            user.files.length !== 0 &&
+            isOverdue &&
+            user.workStatus.name !== "Late" &&
+            isOverdue &&
+            user.workStatus.name === "Cancelled" &&
+            isOverdue &&
             user.workStatus.name === "Shelved" ? (
               <Button
                 variant="ghost"
@@ -192,10 +195,22 @@ const RowExpandView = ({ user }) => {
               {user.files?.map((file) => (
                 <div className="bg-slate-900 text-slate-100 flex items-center gap-2 rounded-md p-3">
                   <File />
-                  <div className="flex flex-col">
-                    <p className="line-clamp-1">{file.filename}</p>
-                    <p>{fileSizeLabel(file.size)}</p>
-                  </div>
+                  <Link
+                    target="_blank"
+                    to="/class/classroom/viewFile"
+                    onClick={() => {
+                      localStorage.setItem("files", JSON.stringify(user.files));
+                      localStorage.setItem(
+                        "path",
+                        JSON.stringify(user.classwork_path + user.path)
+                      );
+                    }}
+                  >
+                    <div className="flex flex-col">
+                      <p className="line-clamp-1">{file.originalname}</p>
+                      <p>{fileSizeLabel(file.size)}</p>
+                    </div>
+                  </Link>
                 </div>
               ))}
             </div>

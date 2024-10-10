@@ -211,7 +211,7 @@ const deleteAnnouncement = asyncHandler(async (req, res) => {
   );
 
   fs.rm(
-    `./${announcementToDelete.path}`,
+    `classworks/${announcementToDelete.path}`,
     { recursive: true, force: true },
     (err) => {
       if (err) {
@@ -220,18 +220,6 @@ const deleteAnnouncement = asyncHandler(async (req, res) => {
       console.log(`${announcementToDelete.path} is deleted!`);
     }
   );
-
-  // Remove files from the file system
-  announcementToDelete.files.forEach((file) => {
-    const filePath = __dirname + file.path;
-    fs.unlink(filePath, (err) => {
-      if (err) {
-        console.error(`Failed to delete file: ${filePath}`, err);
-      } else {
-        console.log(`Deleted file: ${filePath}`);
-      }
-    });
-  });
 
   classroomExist.announcement = updatedAnnouncements;
   await classroomExist.save();
@@ -431,22 +419,20 @@ const acceptJoinStudent = asyncHandler(async (req, res, next) => {
   studentToBeUpdated.approvalStatus = "approved";
   getStudent[studentIndex] = studentToBeUpdated;
 
-  roomExist.students.find((student) => {
-    roomExist.acceptedStudents.push({
-      _id: userId,
-      user_username: student.user_username,
-      user_email: student.user_email,
-      user_profile_path: student.user_profile_path,
-      user_img: student.user_img,
-      user_lastname: student.user_lastname,
-      user_firstname: student.user_firstname,
-      user_middlename: student.user_middlename,
-      user_gender: student.user_gender,
-      class_code: student.class_code,
-      approvalStatus: "approved",
-    });
+  roomExist.acceptedStudents.push({
+    _id: userId,
+    user_username: studentToBeUpdated.user_username,
+    user_email: studentToBeUpdated.user_email,
+    user_profile_path: studentToBeUpdated.user_profile_path,
+    user_img: studentToBeUpdated.user_img,
+    user_lastname: studentToBeUpdated.user_lastname,
+    user_firstname: studentToBeUpdated.user_firstname,
+    user_middlename: studentToBeUpdated.user_middlename,
+    user_gender: studentToBeUpdated.user_gender,
+    class_code: studentToBeUpdated.class_code,
+    approvalStatus: "approved",
   });
-  console.log(roomExist.acceptedStudents);
+
   await roomExist.save();
   res
     .status(200)
@@ -461,6 +447,7 @@ const rejectJoinStudent = asyncHandler(async (req, res, next) => {
 
   const roomExist = await Classroom.findOne({ _id: roomId });
   const getStudent = roomExist.students;
+  const getStudentList = roomExist.acceptedStudents;
   const studentIndex = roomExist.students.findIndex(
     (student) => student._id === userId
   );
@@ -469,10 +456,16 @@ const rejectJoinStudent = asyncHandler(async (req, res, next) => {
 
   studentToBeUpdated.approvalStatus = "declined";
 
+  const removedFromAcceptedList = getStudentList.filter(
+    (student) => student._id !== userId
+  );
+
   getStudent[studentIndex] = studentToBeUpdated;
 
+  roomExist.acceptedStudents = removedFromAcceptedList;
+
   await roomExist.save();
-  res
+  return res
     .status(200)
     .json({ message: `${studentToBeUpdated.user_username} is declined` });
 });

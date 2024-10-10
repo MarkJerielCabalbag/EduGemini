@@ -14,6 +14,7 @@ function DeclinedClassModal({ open, onOpenChange, classId }) {
   const onSuccess = (data) => {
     toast.success(data.message);
     queryClient.invalidateQueries({ queryKey: ["allClassAdmin"] });
+    onOpenChange(false);
   };
   const { mutateAsync, isLoading, isPending } = useDeclineClass({
     onError,

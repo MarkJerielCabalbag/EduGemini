@@ -31,9 +31,9 @@ function TableDataHeader({ header }) {
           {header.column.getCanSort() && (
             <>
               {header.column.getIsSorted() === "asc"
-                ? " 🔼"
-                : header.column.getIsSorted() === "desc"
                 ? " 🔽"
+                : header.column.getIsSorted() === "desc"
+                ? "  🔼"
                 : ""}
             </>
           )}

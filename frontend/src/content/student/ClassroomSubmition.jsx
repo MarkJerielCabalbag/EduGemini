@@ -31,6 +31,7 @@ import moment from "moment";
 import Feedback from "./Feedback";
 import PrivateComment from "./PrivateComment";
 import { Separator } from "@/components/ui/separator";
+import LoadingState from "@/utils/LoadingState";
 function ClassroomSubmition() {
   const [files, setFiles] = useState([]);
   const [showTurnInBtn, setShowTurnInBtn] = useState(false);
@@ -62,7 +63,7 @@ function ClassroomSubmition() {
     toast.success(data.message);
   };
 
-  const { data: attachments } = useGetAttachments({
+  const { data: attachments, isFetching } = useGetAttachments({
     queryFn: () => getAttachments(roomId, workId, userId),
     onError,
     onSuccess,
@@ -173,6 +174,14 @@ function ClassroomSubmition() {
     }
   });
 
+  if (isLoading || isPending) {
+    return (
+      <LoadingState
+        className={"h-screen w-full flex flex-col justify-center items-center"}
+      />
+    );
+  }
+
   return (
     <div className="h-full text-slate-900 sm:container md:container lg:container">
       <div className="mx-5">
@@ -180,7 +189,6 @@ function ClassroomSubmition() {
           className="my-5"
           onClick={() => {
             navigate(`/class/classroom/getCreatedClass/${roomId}/classwork`);
-            console.log("hi");
           }}
         />
         <div className="text-slate-900">
@@ -246,17 +254,19 @@ function ClassroomSubmition() {
                               <div className="flex items-center justify-between p-5 rounded-md bg-slate-400  text-xs md:text-md">
                                 <Link
                                   target="_blank"
-                                  to={`/class/classwork/outputs/${roomId}/${userId}/${workId}`}
                                   onClick={() => {
                                     localStorage.setItem(
-                                      "uri",
-                                      `http://localhost:3000/${info.classwork_folder_path}/answers${file.path}/${file.filename}`
+                                      "files",
+                                      JSON.stringify([
+                                        info.classwork_attach_file,
+                                      ])
                                     );
                                     localStorage.setItem(
-                                      "fileType",
-                                      file.filename.split(".").pop()
+                                      "path",
+                                      JSON.stringify(info.classwork_folder_path)
                                     );
                                   }}
+                                  to="/class/classroom/viewFile"
                                 >
                                   <p>
                                     {info.classwork_attach_file.originalname}
@@ -304,22 +314,25 @@ function ClassroomSubmition() {
                                                 >
                                                   <Link
                                                     target="_blank"
-                                                    to={`/class/classwork/outputs/${roomId}/${userId}/${workId}`}
+                                                    to="/class/classroom/viewFile"
                                                     onClick={() => {
                                                       localStorage.setItem(
-                                                        "uri",
-                                                        `http://localhost:3000/${info.classwork_folder_path}/answers${file.path}/${file.filename}`
+                                                        "files",
+                                                        JSON.stringify(
+                                                          outputs.files
+                                                        )
                                                       );
                                                       localStorage.setItem(
-                                                        "fileType",
-                                                        file.filename
-                                                          .split(".")
-                                                          .pop()
+                                                        "path",
+                                                        JSON.stringify(
+                                                          info.classwork_folder_path +
+                                                            outputs.path
+                                                        )
                                                       );
                                                     }}
                                                   >
                                                     <p className="line-clamp-1">
-                                                      {file.filename}
+                                                      {file.originalname}
                                                     </p>
                                                   </Link>
                                                   <p>
@@ -344,7 +357,9 @@ function ClassroomSubmition() {
                                                       : ""
                                                   }`}
                                                   onClick={async () => {
-                                                    setFilename(file.filename);
+                                                    setFilename(
+                                                      file.originalname
+                                                    );
                                                     console.log(filename);
                                                     await mutateAsync({
                                                       filename,

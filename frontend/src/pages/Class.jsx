@@ -23,10 +23,7 @@ function Class() {
   const userId = localStorage.getItem("userId");
   const {
     data: classData,
-    isLoading,
     isError,
-    isPending,
-    isLoadingError,
     isFetching,
     isRefetching,
     refetch,
@@ -35,7 +32,6 @@ function Class() {
     onError,
     onSuccess,
   });
-  console.log(classData);
 
   return (
     <>

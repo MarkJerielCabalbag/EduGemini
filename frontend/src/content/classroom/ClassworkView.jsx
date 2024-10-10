@@ -32,7 +32,7 @@ import {
   Trash2,
 } from "lucide-react";
 import React from "react";
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams, useNavigate, Link } from "react-router-dom";
 import OpenClassworkSettings from "@/components/modals/OpenClassworkSettings";
 import { Button } from "@/components/ui/button";
 import { Label } from "@radix-ui/react-label";
@@ -93,7 +93,6 @@ function ClassworkView({ userStatus }) {
     onSuccess,
   });
 
-  console.log(room);
   if (isFetching || isLoading || isPending) {
     return (
       <LoadingState
@@ -103,9 +102,9 @@ function ClassworkView({ userStatus }) {
   }
 
   return (
-    <>
+    <div className="h-full">
       {data?.map((classroomInfo) => (
-        <div className="container sm:container md:container lg:container">
+        <div className="h-fullcontainer sm:container md:container lg:container">
           {room?.map((roomInfo) => (
             <div className="my-5">
               <ArrowLeft
@@ -177,7 +176,23 @@ function ClassworkView({ userStatus }) {
               >
                 <div className="bg-slate-700 rounded-sm p-4 text-slate-50 flex gap-2 items-center lg:col-span-4">
                   <File size={50} />
-                  <p>{classroomInfo.classwork_attach_file.filename}</p>
+
+                  <Link
+                    target="_blank"
+                    onClick={() => {
+                      localStorage.setItem(
+                        "files",
+                        JSON.stringify([classroomInfo.classwork_attach_file])
+                      );
+                      localStorage.setItem(
+                        "path",
+                        JSON.stringify(classroomInfo.classwork_folder_path)
+                      );
+                    }}
+                    to="/class/classroom/viewFile"
+                  >
+                    {classroomInfo.classwork_attach_file.filename}
+                  </Link>
                 </div>
 
                 <>
@@ -230,16 +245,14 @@ function ClassworkView({ userStatus }) {
               {isLoading || isPending || isFetching ? (
                 <LoadingState />
               ) : (
-                <>
-                  <DataTable
-                    dataTable={dataTable.data}
-                    columns={setStudentListCol}
-                    statuses={studentListStatus}
-                    paginationVisibility={"show"}
-                    dataSheet={excel}
-                    excelFilename={`${classroomInfo.classwork_title}.xlsx`}
-                  />
-                </>
+                <DataTable
+                  dataTable={dataTable.data}
+                  columns={setStudentListCol}
+                  statuses={studentListStatus}
+                  paginationVisibility={"show"}
+                  dataSheet={excel}
+                  excelFilename={`${classroomInfo.classwork_title}.xlsx`}
+                />
               )}
             </div>
           ))}
@@ -252,7 +265,7 @@ function ClassworkView({ userStatus }) {
           )}
         </div>
       ))}
-    </>
+    </div>
   );
 }
 

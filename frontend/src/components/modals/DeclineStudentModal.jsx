@@ -11,7 +11,7 @@ import { Loader2Icon } from "lucide-react";
 import toast from "react-hot-toast";
 import { useParams } from "react-router-dom";
 
-function DeclineStudentModal({ open, onOpenChange, studentID }) {
+function DeclineStudentModal({ open, onOpenChange, studentDetail }) {
   const queryClient = useQueryClient();
   const onError = (err) => {
     toast.error(err.message);
@@ -28,65 +28,46 @@ function DeclineStudentModal({ open, onOpenChange, studentID }) {
   });
 
   const { roomId } = useParams();
-  const { data, isFetching } = useGetClass({
-    queryFn: () => fetchClassData(roomId),
-    onError,
-    onSuccess,
-  });
+
   return (
-    <>
-      {data?.map((roomDetails) => (
+    <ReusableModal
+      open={open}
+      onOpenChange={onOpenChange}
+      alertDialogTitle={"Decline Student"}
+      alertDialogDescription={
         <>
-          {roomDetails.students.map((student) =>
-            student._id === studentID ? (
-              <>
-                <ReusableModal
-                  open={open}
-                  onOpenChange={onOpenChange}
-                  alertDialogTitle={"Decline Student"}
-                  alertDialogDescription={
-                    <>
-                      Do you want to reject student
-                      <b>
-                        {" "}
-                        {student.user_lastname}, {student.user_firstname}{" "}
-                        {student.user_middlename.charAt(0)}.{" "}
-                      </b>
-                      to join your class <b>{roomDetails.classname}?</b>
-                    </>
-                  }
-                  alertDialogFooter={
-                    <>
-                      <Button
-                        disabled={isPending}
-                        onClick={() => onOpenChange(false)}
-                      >
-                        Cancel
-                      </Button>
-                      <Button
-                        disabled={isPending}
-                        onClick={async () =>
-                          await mutateAsync({
-                            userId: student._id,
-                            roomId: roomDetails._id,
-                          })
-                        }
-                      >
-                        {isLoading || isPending ? (
-                          <Loader2Icon className="animate-spin" />
-                        ) : (
-                          "Approve"
-                        )}
-                      </Button>
-                    </>
-                  }
-                />
-              </>
-            ) : null
-          )}
+          Do you want to reject student
+          <b>
+            {" "}
+            {studentDetail.studentLname}, {studentDetail.studentFname}{" "}
+            {studentDetail.studentMname.charAt(0)}.{" "}
+          </b>
+          to join your class <b>{studentDetail.classname}?</b>
         </>
-      ))}
-    </>
+      }
+      alertDialogFooter={
+        <>
+          <Button disabled={isPending} onClick={() => onOpenChange(false)}>
+            Cancel
+          </Button>
+          <Button
+            disabled={isPending}
+            onClick={async () =>
+              await mutateAsync({
+                userId: studentDetail.studentId,
+                roomId: roomId,
+              })
+            }
+          >
+            {isLoading || isPending ? (
+              <Loader2Icon className="animate-spin" />
+            ) : (
+              "Decline"
+            )}
+          </Button>
+        </>
+      }
+    />
   );
 }
 

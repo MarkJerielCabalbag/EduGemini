@@ -183,8 +183,8 @@ classRouter.post(
 
     // Add the announcement with file paths
     const announcementFiles = files.map((file) => ({
-      filename: file.originalname,
-      path: `classworks/${user.user_username}/${classroomExist.class_code}/announcements/${title}/${file.originalname}`,
+      originalname: file.originalname,
+      path: `${user.user_username}/${classroomExist.class_code}/announcements/${title}/${file.originalname}`,
     }));
 
     classroomExist.announcement.unshift({
@@ -196,7 +196,7 @@ classRouter.post(
       profile_path: user.profile_path,
       user_img: user.profile.filename,
       files: announcementFiles,
-      path: `classworks/${user.user_username}/${classroomExist.class_code}/announcements/${title}`,
+      path: `${user.user_username}/${classroomExist.class_code}/announcements/${title}`,
       publicComment: [],
     });
 

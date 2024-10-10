@@ -29,6 +29,7 @@ import Classroom from "./content/student/Classroom.jsx";
 import ClassroomSubmition from "./content/student/ClassroomSubmition.jsx";
 import Outputs from "./content/student/Outputs.jsx";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
+import ViewFile from "./content/classroom/ViewFile.jsx";
 const queryClient = new QueryClient();
 
 const router = createBrowserRouter(
@@ -88,6 +89,8 @@ const router = createBrowserRouter(
           path="/class/classroom/getCreatedClass/student/:roomId/:announceId"
           element={<Announcement userStatus={"student"} />}
         />
+
+        <Route path="/class/classroom/viewFile" element={<ViewFile />} />
 
         <Route
           path="/class/classwork/outputs/:roomId/:userId/:workId"

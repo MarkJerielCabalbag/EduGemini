@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import MenuBar from "@/content/MenuBar";
-
 import { Button } from "@/components/ui/button";
 import { Plus } from "lucide-react";
 import JoinClass from "@/components/modals/JoinClass";
@@ -85,10 +84,10 @@ function Enrolled() {
                 </Button>
                 <div className="grid gap-3 mt-6 sm:grid-cols-1 md:grid-cols-3 lg:grid-cols-5">
                   {classData?.map((classroom) => (
-                    <div>
+                    <div key={classroom._id}>
                       {classroom.students.map((student) =>
                         student._id === userId ? (
-                          <>
+                          <React.Fragment key={student._id}>
                             {student.approvalStatus === "pending" ||
                             student.approvalStatus === "declined" ? (
                               <>
@@ -103,28 +102,30 @@ function Enrolled() {
                                       ></AvatarImage>
                                     </Avatar>
                                     <CardTitle>
-                                      <h1>{classroom.owner_name}</h1>
+                                      {classroom.owner_name}
                                     </CardTitle>
                                     <CardDescription>
-                                      {isPending && (
-                                        <p style={{ opacity: 0.5 }}>
-                                          {variables}
-                                        </p>
-                                      )}
-                                      <Badge className="my-2">Instructor</Badge>
-                                      <p>{classroom.subject}</p>
-                                      {student.approvalStatus === "pending" ||
-                                      student.approvalStatus === "declined" ? (
-                                        <span
-                                          className={`inline-flex items-center absolute top-2 right-2  rounded-md ${
-                                            student.approvalStatus === "pending"
-                                              ? "bg-yellow-500"
-                                              : "bg-red-500"
-                                          } px-2 py-1 text-xs font-medium text-slate-950 ring-1 ring-inset ring-gray-500/10`}
-                                        >
-                                          {student.approvalStatus}
-                                        </span>
-                                      ) : null}
+                                      <>
+                                        {isPending && { variables }}
+                                        <Badge className="my-2">
+                                          Instructor
+                                        </Badge>
+                                        <p>{classroom.subject}</p>
+                                        {student.approvalStatus === "pending" ||
+                                        student.approvalStatus ===
+                                          "declined" ? (
+                                          <span
+                                            className={`inline-flex items-center absolute top-2 right-2  rounded-md ${
+                                              student.approvalStatus ===
+                                              "pending"
+                                                ? "bg-yellow-500"
+                                                : "bg-red-500"
+                                            } px-2 py-1 text-xs font-medium text-slate-950 ring-1 ring-inset ring-gray-500/10`}
+                                          >
+                                            {student.approvalStatus}
+                                          </span>
+                                        ) : null}
+                                      </>
                                     </CardDescription>
                                   </CardHeader>
                                 </Card>
@@ -144,22 +145,28 @@ function Enrolled() {
                                       ></AvatarImage>
                                     </Avatar>
                                     <CardTitle>
-                                      <h1>{classroom.owner_name}</h1>
+                                      {classroom.owner_name}
                                     </CardTitle>
                                     <CardDescription>
-                                      <Badge className="my-2">Instructor</Badge>
-                                      <p>{classroom.subject}</p>
-                                      <span
-                                        className={`inline-flex items-center absolute top-2 right-2  rounded-md bg-green-500 px-2 py-1 text-xs font-medium text-slate-950 ring-1 ring-inset ring-gray-500/10`}
-                                      >
-                                        {student.approvalStatus}
-                                      </span>
+                                      <>
+                                        <Badge className="my-2">
+                                          Instructor
+                                        </Badge>
+
+                                        <p>{classroom.subject}</p>
+
+                                        <span
+                                          className={`inline-flex items-center absolute top-2 right-2  rounded-md bg-green-500 px-2 py-1 text-xs font-medium text-slate-950 ring-1 ring-inset ring-gray-500/10`}
+                                        >
+                                          {student.approvalStatus}
+                                        </span>
+                                      </>
                                     </CardDescription>
                                   </CardHeader>
                                 </Card>
                               </Link>
                             )}
-                          </>
+                          </React.Fragment>
                         ) : null
                       )}
                     </div>

@@ -20,6 +20,13 @@ const StudentsApprovalStatus = ({ pending, approved, declined }) => {
   const { roomId } = useParams();
   const [openStudentApproveModal, setOpenStudentApproveModal] = useState(false);
   const [openStudentDeclineModal, setOpenStudentDeclineModal] = useState(false);
+  const [studentDetail, setStudentDetail] = useState({
+    studentId: "",
+    studentFname: "",
+    studentMname: "",
+    studentLname: "",
+    classname: "",
+  });
   const queryClient = useQueryClient();
   const onError = () => console.log("error");
   const onSuccess = () => {
@@ -111,7 +118,16 @@ const StudentsApprovalStatus = ({ pending, approved, declined }) => {
                                   ? "hide"
                                   : "show "
                               } w-full bg-red-600 hover:bg-red-300 text-slate-900 `}
-                              onClick={() => setOpenStudentDeclineModal(true)}
+                              onClick={() => {
+                                setOpenStudentDeclineModal(true);
+                                setStudentDetail({
+                                  studentId: student._id,
+                                  studentFname: student.user_firstname,
+                                  studentMname: student.user_middlename,
+                                  studentLname: student.user_lastname,
+                                  classname: roomDetails.classname,
+                                });
+                              }}
                             >
                               Decline
                             </Button>
@@ -122,7 +138,16 @@ const StudentsApprovalStatus = ({ pending, approved, declined }) => {
                                   ? "hide"
                                   : " show"
                               } w-full bg-green-600 hover:bg-green-300 text-slate-900 `}
-                              onClick={() => setOpenStudentApproveModal(true)}
+                              onClick={() => {
+                                setOpenStudentApproveModal(true);
+                                setStudentDetail({
+                                  studentId: student._id,
+                                  studentFname: student.user_firstname,
+                                  studentMname: student.user_middlename,
+                                  studentLname: student.user_lastname,
+                                  classname: roomDetails.classname,
+                                });
+                              }}
                             >
                               Approve
                             </Button>
@@ -138,7 +163,16 @@ const StudentsApprovalStatus = ({ pending, approved, declined }) => {
                                   ? "hide"
                                   : "show "
                               } w-full bg-red-600 hover:bg-red-300 text-slate-900 `}
-                              onClick={() => setOpenStudentDeclineModal(true)}
+                              onClick={() => {
+                                setOpenStudentDeclineModal(true);
+                                setStudentDetail({
+                                  studentId: student._id,
+                                  studentFname: student.user_firstname,
+                                  studentMname: student.user_middlename,
+                                  studentLname: student.user_lastname,
+                                  classname: roomDetails.classname,
+                                });
+                              }}
                             >
                               Re-Decline
                             </Button>
@@ -150,28 +184,22 @@ const StudentsApprovalStatus = ({ pending, approved, declined }) => {
                                   ? "hide"
                                   : " show"
                               } w-full bg-green-600 hover:bg-green-300 text-slate-900 `}
-                              onClick={() => setOpenStudentApproveModal(true)}
+                              onClick={() => {
+                                setOpenStudentApproveModal(true);
+
+                                setStudentDetail({
+                                  studentId: student._id,
+                                  studentFname: student.user_firstname,
+                                  studentMname: student.user_middlename,
+                                  studentLname: student.user_lastname,
+                                  classname: roomDetails.classname,
+                                });
+                              }}
                             >
                               Re-Approve
                             </Button>
                           )}
                         </>
-                      )}
-
-                      {openStudentApproveModal && (
-                        <ApproveStudentModal
-                          open={openStudentApproveModal}
-                          onOpenChange={setOpenStudentApproveModal}
-                          studentID={student._id}
-                        />
-                      )}
-
-                      {openStudentDeclineModal && (
-                        <DeclineStudentModal
-                          open={openStudentDeclineModal}
-                          onOpenChange={setOpenStudentDeclineModal}
-                          studentID={student._id}
-                        />
                       )}
                     </TableCell>
                   </TableRow>
@@ -181,6 +209,22 @@ const StudentsApprovalStatus = ({ pending, approved, declined }) => {
           ))}
         </React.Fragment>
       ))}
+
+      {openStudentApproveModal && (
+        <ApproveStudentModal
+          open={openStudentApproveModal}
+          onOpenChange={setOpenStudentApproveModal}
+          studentDetail={studentDetail}
+        />
+      )}
+
+      {openStudentDeclineModal && (
+        <DeclineStudentModal
+          open={openStudentDeclineModal}
+          onOpenChange={setOpenStudentDeclineModal}
+          studentDetail={studentDetail}
+        />
+      )}
     </>
   );
 };

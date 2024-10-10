@@ -74,9 +74,9 @@ function AdminDashboard() {
           }
         />
       ) : (
-        <>
+        <div className="h-full">
           <Header />
-          <div className="container sm:container md:container lg:container">
+          <div className="h-full container sm:container md:container lg:container">
             <div className="my-5">
               <h1 className="font-bold flex items-center gap-2">
                 <CircleUserRound />
@@ -291,7 +291,7 @@ function AdminDashboard() {
               )}
             </Table>
           </div>
-        </>
+        </div>
       )}
 
       {openModalApproved && (

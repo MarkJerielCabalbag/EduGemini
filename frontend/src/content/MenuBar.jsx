@@ -8,7 +8,7 @@ import {
 } from "@/components/ui/menubar";
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { LogOut, PlusCircle, Settings, Share } from "lucide-react";
 import { useLogout, useGetUser, getUser } from "@/api/useApi";
 import toast from "react-hot-toast";
@@ -18,7 +18,7 @@ import { useState } from "react";
 import CreateClass from "@/components/modals/CreateClass";
 import JoinClass from "@/components/modals/JoinClass";
 import { Button } from "@/components/ui/button";
-
+import React from "react";
 function MenuBar() {
   const navigate = useNavigate();
   const [openCreateClassModal, setOpenCreateClassModal] = useState(false);
@@ -44,7 +44,7 @@ function MenuBar() {
   });
 
   const userId = localStorage.getItem("userId");
-  console.log(userId);
+
   const { mutateAsync } = useLogout({ onSuccess, onError });
   return (
     <div className="w-full flex justify-center mt-4">
@@ -119,7 +119,7 @@ function MenuBar() {
                 onClick={() => navigate("/profile")}
               >
                 {data?.map((user) => (
-                  <>
+                  <React.Fragment key={user._id}>
                     <Avatar>
                       {isLoading ? (
                         <AvatarFallback>Profile</AvatarFallback>
@@ -147,7 +147,7 @@ function MenuBar() {
                         </p>
                       )}
                     </div>
-                  </>
+                  </React.Fragment>
                 ))}
               </MenubarItem>
             </MenubarContent>

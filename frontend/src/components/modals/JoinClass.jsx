@@ -69,6 +69,8 @@ function JoinClass({ open, onOpenChange }) {
     onSuccess,
   });
 
+  console.log(data);
+
   return (
     <>
       {data?.map((user) => (

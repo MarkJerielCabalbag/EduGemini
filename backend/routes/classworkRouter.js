@@ -128,7 +128,7 @@ classworkRouter.post(
       classwork_due_date: classworkDueDate,
       classwork_due_time: classworkDueTime,
       classwork_attach_file: classworkAttachFile,
-      classwork_folder_path: `classworks/${user.user_username}/${roomExist.class_code}/${classworkTitle}`,
+      classwork_folder_path: `${user.user_username}/${roomExist.class_code}/${classworkTitle}/instruction`,
       classwork_outputs: [],
     });
     if (classworkCreated) {
@@ -162,7 +162,7 @@ const storageUpdatedClassworkInstruction = multer.diskStorage({
         return callback(new Error("Classwork not found"), false);
       }
 
-      const classworkFolderFile = `./${classworkToUpdate.classwork_attach_file.destination}/`;
+      const classworkFolderFile = `${classworkToUpdate.classwork_attach_file.destination}`;
 
       console.log(classworkFolderFile);
       callback(null, classworkFolderFile);
@@ -205,7 +205,7 @@ classworkRouter.post(
       // Delete the old file
       console.log(classworkToUpdate.classwork_attach_file.destination);
       console.log(classworkToUpdate.classwork_attach_file.filename);
-      const filePath = `${classworkToUpdate.classwork_folder_path}/instruction/${classworkToUpdate.classwork_attach_file.filename}`;
+      const filePath = `classworks/${classworkToUpdate.classwork_folder_path}/${classworkToUpdate.classwork_attach_file.filename}`;
       try {
         fs.unlinkSync(filePath);
         console.log("File deleted successfully:", filePath);
@@ -284,7 +284,7 @@ const storageAddfiles = multer.diskStorage({
         return callback(new Error("Classwork not found"), null);
       }
 
-      const pathStore = `${pathFile.classwork_folder_path}/answers/${foundStudent.user_lastname}, ${foundStudent.user_firstname} ${foundStudent.user_middlename}`;
+      const pathStore = `classworks/${pathFile.classwork_folder_path}/answers/${foundStudent.user_lastname}, ${foundStudent.user_firstname} ${foundStudent.user_middlename}`;
 
       fs.mkdirsSync(pathStore);
       callback(null, pathStore);
@@ -363,7 +363,7 @@ classworkRouter.post(
 
       // If no duplication, proceed to add files
       const addedFiles = files.map((file) => ({
-        filename: file.originalname,
+        originalname: file.originalname,
         path: `/${foundStudent.user_lastname}, ${foundStudent.user_firstname} ${foundStudent.user_middlename}`,
         size: file.size,
       }));

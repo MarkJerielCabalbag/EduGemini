@@ -5,7 +5,6 @@ import {
   useCreatePublicAnnouncement,
   useGetannouncement,
   useGetClass,
-  useGetUser,
 } from "@/api/useApi";
 import { useQueryClient } from "@tanstack/react-query";
 import React, { useState } from "react";
@@ -25,24 +24,23 @@ import {
   Bell,
   File,
   Files,
-  Info,
   Loader2Icon,
   SendIcon,
 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { baseUrl } from "@/baseUrl";
 import { Skeleton } from "@/components/ui/skeleton";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import toast from "react-hot-toast";
 import moment from "moment";
-import ViewFile from "@/components/modals/ViewFile";
+
 function Announcements({ userStatus }) {
   const [comment, setComment] = useState("");
   const { roomId, announceId } = useParams();
-  const [openFile, setOpenFile] = useState(false);
+
   const userId = localStorage.getItem("userId");
   const queryClient = useQueryClient();
   const navigate = useNavigate();
@@ -190,26 +188,23 @@ function Announcements({ userStatus }) {
                           ) : (
                             <TableCell className="font-medium flex gap-3 items-center">
                               <File />
-                              {openFile && (
-                                <ViewFile
-                                  open={openFile}
-                                  onOpenChange={setOpenFile}
-                                  files={item.files}
-                                  path={item.path}
-                                />
-                              )}
-                              <Button
+
+                              <Link
+                                target="_blank"
                                 onClick={() => {
-                                  setOpenFile(true);
-                                  console.log(
-                                    `${baseUrl}/${item.path}/${item.files.map(
-                                      (file) => file.filename
-                                    )}`
+                                  localStorage.setItem(
+                                    "files",
+                                    JSON.stringify(item.files)
+                                  );
+                                  localStorage.setItem(
+                                    "path",
+                                    JSON.stringify(item.path)
                                   );
                                 }}
+                                to="/class/classroom/viewFile"
                               >
-                                {file.filename}
-                              </Button>
+                                {file.originalname}
+                              </Link>
                             </TableCell>
                           )}
                         </TableRow>

@@ -87,26 +87,28 @@ function Home() {
             <KeyRound size={20} className=" text-slate-900" />
             Key Feature's
           </h1>
+          <ul>
+            <li className="list-disc text-xs md:text-md italic">
+              <span className="font-extrabold">AI-Powered Feedback: </span>
+              Our advanced AI analyzes student submissions to provide detailed
+              feedback on grammar, structure, and content, helping students
+              improve their skills continuously. analysis.
+            </li>
 
-          <li className="list-disc text-xs md:text-md italic">
-            <span className="font-extrabold">AI-Powered Feedback: </span>
-            Our advanced AI analyzes student submissions to provide detailed
-            feedback on grammar, structure, and content, helping students
-            improve their skills continuously. analysis.
-          </li>
+            <li className="list-disc text-xs md:text-md italic">
+              <span className="font-extrabold">Teacher Feedback: </span>
+              Based on student output, teachers receive insights on how their
+              teaching methods have impacted student performance, allowing them
+              to adjust and improve their instructional strategies.
+            </li>
 
-          <li className="list-disc text-xs md:text-md italic">
-            <span className="font-extrabold">Teacher Feedback: </span>
-            Based on student output, teachers receive insights on how their
-            teaching methods have impacted student performance, allowing them to
-            adjust and improve their instructional strategies.
-          </li>
-
-          <li className="list-disc text-xs md:text-md italic">
-            <span className="font-extrabold">Export Overall Score: </span>
-            Easily export overall classroom scores and individual student
-            performance data for record-keeping, reporting, or further analysis.
-          </li>
+            <li className="list-disc text-xs md:text-md italic">
+              <span className="font-extrabold">Export Overall Score: </span>
+              Easily export overall classroom scores and individual student
+              performance data for record-keeping, reporting, or further
+              analysis.
+            </li>
+          </ul>
         </div>
 
         <div className="w-full border-l-4 border-slate-500 p-5 shadow-sm shadow-slate-900 rounded mt-5 flex flex-col gap-5">
@@ -114,39 +116,40 @@ function Home() {
             <NotebookPen size={25} className=" text-slate-900" />
             How to create a Classwork
           </h1>
+          <ul>
+            <li className="list-disc text-xs md:text-md italic">
+              <span className="font-extrabold">Title: </span>
+              Enter a descriptive title for the classwork.
+            </li>
 
-          <li className="list-disc text-xs md:text-md italic">
-            <span className="font-extrabold">Title: </span>
-            Enter a descriptive title for the classwork.
-          </li>
+            <li className="list-disc text-xs md:text-md italic">
+              <span className="font-extrabold">Classwork Type: </span>
+              Select or create a custom classwork type (e.g., assignment,
+              programming, project).
+            </li>
 
-          <li className="list-disc text-xs md:text-md italic">
-            <span className="font-extrabold">Classwork Type: </span>
-            Select or create a custom classwork type (e.g., assignment,
-            programming, project).
-          </li>
+            <li className="list-disc text-xs md:text-md italic">
+              <span className="font-extrabold">Description (optional): </span>
+              Provide a detailed description of the classwork, including
+              objectives and expectations. analysis.
+            </li>
 
-          <li className="list-disc text-xs md:text-md italic">
-            <span className="font-extrabold">Description (optional): </span>
-            Provide a detailed description of the classwork, including
-            objectives and expectations. analysis.
-          </li>
+            <li className="list-disc text-xs md:text-md italic">
+              <span className="font-extrabold">Due Date and Time: </span>
+              Set the due date and time for the classwork submission.
+            </li>
 
-          <li className="list-disc text-xs md:text-md italic">
-            <span className="font-extrabold">Due Date and Time: </span>
-            Set the due date and time for the classwork submission.
-          </li>
+            <li className="list-disc text-xs md:text-md italic">
+              <span className="font-extrabold">Instruction File: </span>
+              Upload the instruction file. Supported formats include DOCX, PNG,
+              PDF, and JPEG
+            </li>
 
-          <li className="list-disc text-xs md:text-md italic">
-            <span className="font-extrabold">Instruction File: </span>
-            Upload the instruction file. Supported formats include DOCX, PNG,
-            PDF, and JPEG
-          </li>
-
-          <li className="list-disc text-xs md:text-md italic">
-            <span className="font-extrabold">Create: </span>
-            Click the “Create” button to finalize and publish the classwork.
-          </li>
+            <li className="list-disc text-xs md:text-md italic">
+              <span className="font-extrabold">Create: </span>
+              Click the “Create” button to finalize and publish the classwork.
+            </li>
+          </ul>
         </div>
 
         <div className="w-full border-l-4 border-slate-500 p-5 shadow-sm shadow-slate-900 rounded mt-5 flex flex-col gap-5">
@@ -154,51 +157,52 @@ function Home() {
             <Send size={25} className=" text-slate-900" />
             Submitting Classwork
           </h1>
-
-          <li className="list-disc text-xs md:text-md italic">
-            <span className="font-extrabold">View Classwork: </span>
-            Go to the “Classwork” section to see all assigned tasks.
-          </li>
-
-          <li className="list-disc text-xs md:text-md italic">
-            <span className="font-extrabold">Select Classwork: </span>
-            Click on the specific classwork you need to submit.
-          </li>
-
-          <li className="list-disc text-xs md:text-md italic">
-            <span className="font-extrabold">Upload Submission: </span>
-            <li className="list-disc text-xs indent-1 md:text-md italic">
-              <span className="font-extrabold">Documents: </span>
-              .docx, .pdf, .xlsx, .pptx
+          <ul>
+            <li className="list-disc text-xs md:text-md italic">
+              <span className="font-extrabold">View Classwork: </span>
+              Go to the “Classwork” section to see all assigned tasks.
             </li>
 
-            <li className="list-disc text-xs indent-1 md:text-md italic">
-              <span className="font-extrabold">Code Files: </span>
-              .html, .css, .js, .php, .dart, .py, .c, .cpp, .cs, .swift, .rs,
-              .go, .ru, .r, .sql, .java
+            <li className="list-disc text-xs md:text-md italic">
+              <span className="font-extrabold">Select Classwork: </span>
+              Click on the specific classwork you need to submit.
             </li>
 
-            <li className="list-disc text-xs indent-1 md:text-md italic">
-              <span className="font-extrabold">Images: </span>
-              image/png, image/jpg
+            <li className="list-disc text-xs md:text-md italic">
+              <span className="font-extrabold">Upload Submission: </span>
+              <li className="list-disc text-xs indent-1 md:text-md italic">
+                <span className="font-extrabold">Documents: </span>
+                .docx, .pdf, .xlsx, .pptx
+              </li>
+
+              <li className="list-disc text-xs indent-1 md:text-md italic">
+                <span className="font-extrabold">Code Files: </span>
+                .html, .css, .js, .php, .dart, .py, .c, .cpp, .cs, .swift, .rs,
+                .go, .ru, .r, .sql, .java
+              </li>
+
+              <li className="list-disc text-xs indent-1 md:text-md italic">
+                <span className="font-extrabold">Images: </span>
+                image/png, image/jpg
+              </li>
             </li>
-          </li>
 
-          <li className="list-disc text-xs md:text-md italic">
-            <span className="font-extrabold">Due Date and Time: </span>
-            Set the due date and time for the classwork submission.
-          </li>
+            <li className="list-disc text-xs md:text-md italic">
+              <span className="font-extrabold">Due Date and Time: </span>
+              Set the due date and time for the classwork submission.
+            </li>
 
-          <li className="list-disc text-xs md:text-md italic">
-            <span className="font-extrabold">Instruction File: </span>
-            Upload the instruction file. Supported formats include DOCX, PNG,
-            PDF, and JPEG
-          </li>
+            <li className="list-disc text-xs md:text-md italic">
+              <span className="font-extrabold">Instruction File: </span>
+              Upload the instruction file. Supported formats include DOCX, PNG,
+              PDF, and JPEG
+            </li>
 
-          <li className="list-disc text-xs md:text-md italic">
-            <span className="font-extrabold">Create: </span>
-            Click the “Create” button to finalize and publish the classwork.
-          </li>
+            <li className="list-disc text-xs md:text-md italic">
+              <span className="font-extrabold">Create: </span>
+              Click the “Create” button to finalize and publish the classwork.
+            </li>
+          </ul>
         </div>
       </div>
     </div>
