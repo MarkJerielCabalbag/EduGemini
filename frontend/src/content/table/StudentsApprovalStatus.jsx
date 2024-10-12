@@ -15,9 +15,14 @@ import { TableBody, TableCell, TableRow } from "@/components/ui/table";
 import { Avatar, AvatarImage } from "@/components/ui/avatar";
 import { useParams } from "react-router-dom";
 import { baseUrl } from "@/baseUrl";
+import RejectAllStudent from "@/components/modals/RejectAllStudent";
 
 const StudentsApprovalStatus = ({ pending, approved, declined }) => {
   const { roomId } = useParams();
+  const [check, setCheck] = useState(false);
+  const [checkedList, setCheckList] = useState([]);
+  const [showCheckedList, setShowCheckList] = useState(false);
+  const [showRejectAll, setShowRejectAll] = useState(false);
   const [openStudentApproveModal, setOpenStudentApproveModal] = useState(false);
   const [openStudentDeclineModal, setOpenStudentDeclineModal] = useState(false);
   const [studentDetail, setStudentDetail] = useState({
@@ -37,15 +42,65 @@ const StudentsApprovalStatus = ({ pending, approved, declined }) => {
     onError,
     onSuccess,
   });
+
+  console.log(checkedList);
+
   return (
     <>
       {data?.map((roomDetails) => (
         <React.Fragment key={roomDetails._id}>
+          {showRejectAll && (
+            <RejectAllStudent
+              open={showRejectAll}
+              onOpenChange={setShowRejectAll}
+              checkedList={checkedList}
+            />
+          )}
+
+          {showCheckedList && checkedList.length > 1 ? (
+            <TableRow>
+              <TableCell>
+                <Button
+                  className="bg-red-600"
+                  disabled={
+                    checkedList.length === 1 || checkedList.length === 0
+                  }
+                  onClick={() => setShowRejectAll(true)}
+                >
+                  Reject {`(${checkedList.length})`}
+                </Button>
+              </TableCell>
+            </TableRow>
+          ) : null}
+
           {roomDetails.students.map((student) => (
-            <React.Fragment key={roomDetails._id}>
+            <React.Fragment key={student._id}>
               {student.approvalStatus === pending ? (
                 <TableBody>
                   <TableRow>
+                    <TableCell>
+                      <input
+                        type="checkbox"
+                        value={check}
+                        name="check"
+                        onChange={(e) => {
+                          const studentId = student._id;
+                          if (e.target.checked) {
+                            setCheckList((prev) => [
+                              ...prev,
+                              { _id: studentId },
+                            ]);
+                            setShowCheckList(true);
+                          } else {
+                            setCheckList((prev) =>
+                              prev.filter(
+                                (student) => student._id !== studentId
+                              )
+                            );
+                          }
+                        }}
+                      />
+                    </TableCell>
                     <TableCell className="flex gap-2 items-center">
                       <Avatar>
                         {student.user_profile_path && (
@@ -158,6 +213,7 @@ const StudentsApprovalStatus = ({ pending, approved, declined }) => {
                           {student.approvalStatus === "approved" ? (
                             <Button
                               value="decline"
+                              disabled={checkedList.length > 1}
                               className={`${
                                 student.approvalStatus === pending
                                   ? "hide"

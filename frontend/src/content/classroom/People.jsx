@@ -1,5 +1,5 @@
 import { Table, TableCell, TableHeader, TableRow } from "@/components/ui/table";
-import React from "react";
+import React, { useState } from "react";
 import {
   Bookmark,
   BookmarkMinus,
@@ -13,6 +13,7 @@ import { Separator } from "@/components/ui/separator";
 import StudentsApprovalStatus from "../table/StudentsApprovalStatus";
 import { fetchClassData, useGetClass } from "@/api/useApi";
 import { useParams } from "react-router-dom";
+
 function People() {
   const onError = () => console.log("error");
   const onSuccess = () => console.log("success");
@@ -135,9 +136,11 @@ function People() {
         sequi aliquid possimus corporis odio voluptatum consectetur! Officia,
         placeat nobis! Ipsam.
       </p>
+
       <Table>
         <TableHeader>
           <TableRow>
+            <TableCell></TableCell>
             <TableCell>Student</TableCell>
             <TableCell>Email</TableCell>
             <TableCell>Status</TableCell>
@@ -148,6 +151,7 @@ function People() {
             <TableCell>Action</TableCell>
           </TableRow>
         </TableHeader>
+
         <StudentsApprovalStatus
           pending={"approved"}
           approved={"declined"}

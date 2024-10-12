@@ -470,6 +470,17 @@ const rejectJoinStudent = asyncHandler(async (req, res, next) => {
     .json({ message: `${studentToBeUpdated.user_username} is declined` });
 });
 
+//@desc     reject join student
+//@route    POST /api/eduGemini/classroom/rejectMultiple
+//@access   private
+const rejectMultipleStudent = asyncHandler(async (req, res, next) => {
+  const { allId, roomId } = req.body;
+
+  const roomExist = await Classroom.findById(roomId);
+
+  
+});
+
 export default {
   createClass,
   allClass,
