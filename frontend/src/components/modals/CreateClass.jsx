@@ -48,9 +48,9 @@ function CreateClass({ open, onOpenChange }) {
         <div className="h-[300px] overflow-y-scroll">
           <div className="border-l-4 border-slate-500  p-5 shadow-md rounded mt-5">
             <p className="pb-3">
-              Lorem ipsum dolor sit amet consectetur adipisicing elit. Quia
-              placeat soluta debitis aut totam tenetur assumenda optio est.
-              Odio, tempora?
+              Please fill out the following form with the required class
+              details, including the class name, section, subject, and room
+              number. Ensure all information is accurate before submitting.
             </p>
 
             <Label className="font-bold italic flex items-center gap-2 my-2">

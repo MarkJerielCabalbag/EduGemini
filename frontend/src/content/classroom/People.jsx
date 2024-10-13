@@ -107,25 +107,15 @@ function People() {
         sequi aliquid possimus corporis odio voluptatum consectetur! Officia,
         placeat nobis! Ipsam.
       </p>
-      <Table className="overflow-auto">
-        <TableHeader>
-          <TableRow>
-            <TableCell>Student</TableCell>
-            <TableCell>Email</TableCell>
-            <TableCell>Status</TableCell>
-            <TableCell>Lastname</TableCell>
-            <TableCell>Firstname</TableCell>
-            <TableCell>Middlename</TableCell>
-            <TableCell>Gender</TableCell>
-            <TableCell>Action</TableCell>
-          </TableRow>
-        </TableHeader>
-        <StudentsApprovalStatus
-          pending={"pending"}
-          approved={"approved"}
-          declined={"declined"}
-        />
-      </Table>
+
+      <StudentsApprovalStatus
+        pending={"pending"}
+        approved={"approved"}
+        declined={"declined"}
+        approveStudentsBtn={"show"}
+        declineStudentsBtn={"show"}
+      />
+
       <Separator className="my-10" />
       <h1 className="text-slate-600 font-bold text-md italic flex gap-2 items-center">
         <BookmarkPlus /> Students Approved
@@ -137,27 +127,14 @@ function People() {
         placeat nobis! Ipsam.
       </p>
 
-      <Table>
-        <TableHeader>
-          <TableRow>
-            <TableCell></TableCell>
-            <TableCell>Student</TableCell>
-            <TableCell>Email</TableCell>
-            <TableCell>Status</TableCell>
-            <TableCell>Lastname</TableCell>
-            <TableCell>Firstname</TableCell>
-            <TableCell>Middlename</TableCell>
-            <TableCell>Gender</TableCell>
-            <TableCell>Action</TableCell>
-          </TableRow>
-        </TableHeader>
+      <StudentsApprovalStatus
+        pending={"approved"}
+        approved={"declined"}
+        declined={"pending"}
+        approveStudentsBtn={"hidden"}
+        declineStudentsBtn={"show"}
+      />
 
-        <StudentsApprovalStatus
-          pending={"approved"}
-          approved={"declined"}
-          declined={"pending"}
-        />
-      </Table>
       <Separator className="my-10" />
       <h1 className="text-slate-600 font-bold text-md italic flex gap-2 items-center">
         <BookmarkX /> Students Declines
@@ -168,25 +145,14 @@ function People() {
         sequi aliquid possimus corporis odio voluptatum consectetur! Officia,
         placeat nobis! Ipsam.
       </p>
-      <Table>
-        <TableHeader>
-          <TableRow>
-            <TableCell>Student</TableCell>
-            <TableCell>Email</TableCell>
-            <TableCell>Status</TableCell>
-            <TableCell>Lastname</TableCell>
-            <TableCell>Firstname</TableCell>
-            <TableCell>Middlename</TableCell>
-            <TableCell>Gender</TableCell>
-            <TableCell>Action</TableCell>
-          </TableRow>
-        </TableHeader>
-        <StudentsApprovalStatus
-          pending={"declined"}
-          approved={"pending"}
-          declined={"approved"}
-        />
-      </Table>
+
+      <StudentsApprovalStatus
+        pending={"declined"}
+        approved={"pending"}
+        declined={"approved"}
+        approveStudentsBtn={"show"}
+        declineStudentsBtn={"hidden"}
+      />
     </div>
   );
 }

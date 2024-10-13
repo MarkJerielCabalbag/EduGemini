@@ -11,17 +11,32 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { TableBody, TableCell, TableRow } from "@/components/ui/table";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
 import { Avatar, AvatarImage } from "@/components/ui/avatar";
 import { useParams } from "react-router-dom";
 import { baseUrl } from "@/baseUrl";
 import RejectAllStudent from "@/components/modals/RejectAllStudent";
+import AcceptAllStudents from "@/components/modals/AcceptAllStudents";
 
-const StudentsApprovalStatus = ({ pending, approved, declined }) => {
+const StudentsApprovalStatus = ({
+  pending,
+  approved,
+  declined,
+  approveStudentsBtn,
+  declineStudentsBtn,
+}) => {
   const { roomId } = useParams();
   const [check, setCheck] = useState(false);
   const [checkedList, setCheckList] = useState([]);
   const [showCheckedList, setShowCheckList] = useState(false);
+  const [showAcceptAll, setShowAcceptAll] = useState(false);
   const [showRejectAll, setShowRejectAll] = useState(false);
   const [openStudentApproveModal, setOpenStudentApproveModal] = useState(false);
   const [openStudentDeclineModal, setOpenStudentDeclineModal] = useState(false);
@@ -54,215 +69,246 @@ const StudentsApprovalStatus = ({ pending, approved, declined }) => {
               open={showRejectAll}
               onOpenChange={setShowRejectAll}
               checkedList={checkedList}
+              setCheckList={setCheckList}
+              roomId={roomId}
+            />
+          )}
+
+          {showAcceptAll && (
+            <AcceptAllStudents
+              open={showAcceptAll}
+              onOpenChange={setShowAcceptAll}
+              checkedList={checkedList}
+              setCheckList={setCheckList}
+              roomId={roomId}
             />
           )}
 
           {showCheckedList && checkedList.length > 1 ? (
-            <TableRow>
-              <TableCell>
-                <Button
-                  className="bg-red-600"
-                  disabled={
-                    checkedList.length === 1 || checkedList.length === 0
-                  }
-                  onClick={() => setShowRejectAll(true)}
-                >
-                  Reject {`(${checkedList.length})`}
-                </Button>
-              </TableCell>
-            </TableRow>
+            <div className="flex gap-3 justify-end my-3 mx-4">
+              <Button
+                className={`bg-red-600 ${declineStudentsBtn}`}
+                disabled={checkedList.length === 1 || checkedList.length === 0}
+                onClick={() => setShowRejectAll(true)}
+              >
+                Re-Decline {`(${checkedList.length})`}
+              </Button>
+
+              <Button
+                className={`bg-green-600 ${approveStudentsBtn}`}
+                disabled={checkedList.length === 1 || checkedList.length === 0}
+                onClick={() => setShowAcceptAll(true)}
+              >
+                Re-Approve {`(${checkedList.length})`}
+              </Button>
+            </div>
           ) : null}
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead></TableHead>
+                <TableHead>Student</TableHead>
+                <TableHead>Email</TableHead>
+                <TableHead>Status</TableHead>
+                <TableHead>Lastname</TableHead>
+                <TableHead>Firstname</TableHead>
+                <TableHead>Middlename</TableHead>
+                <TableHead>Gender</TableHead>
+                <TableHead>Action</TableHead>
+              </TableRow>
+            </TableHeader>
 
-          {roomDetails.students.map((student) => (
-            <React.Fragment key={student._id}>
-              {student.approvalStatus === pending ? (
-                <TableBody>
-                  <TableRow>
-                    <TableCell>
-                      <input
-                        type="checkbox"
-                        value={check}
-                        name="check"
-                        onChange={(e) => {
-                          const studentId = student._id;
-                          if (e.target.checked) {
-                            setCheckList((prev) => [
-                              ...prev,
-                              { _id: studentId },
-                            ]);
-                            setShowCheckList(true);
-                          } else {
-                            setCheckList((prev) =>
-                              prev.filter(
-                                (student) => student._id !== studentId
-                              )
-                            );
-                          }
-                        }}
-                      />
-                    </TableCell>
-                    <TableCell className="flex gap-2 items-center">
-                      <Avatar>
-                        {student.user_profile_path && (
-                          <AvatarImage
-                            className="h-10 w-10 rounded-full border-2 border-slate-900"
-                            src={`${baseUrl}/${student.user_profile_path}/${student.user_img}`}
-                          />
-                        )}
-                      </Avatar>
+            {roomDetails.students.map((student) => (
+              <React.Fragment key={student._id}>
+                {student.approvalStatus === pending ? (
+                  <TableBody>
+                    <TableRow>
+                      <TableCell>
+                        <input
+                          type="checkbox"
+                          value={check}
+                          name="check"
+                          onChange={(e) => {
+                            const studentId = student._id;
+                            if (e.target.checked) {
+                              setCheckList((prev) => [
+                                ...prev,
+                                { _id: studentId },
+                              ]);
+                              setShowCheckList(true);
+                            } else {
+                              setCheckList((prev) =>
+                                prev.filter(
+                                  (student) => student._id !== studentId
+                                )
+                              );
+                            }
+                          }}
+                        />
+                      </TableCell>
+                      <TableCell className="flex gap-2 items-center">
+                        <Avatar>
+                          {student.user_profile_path && (
+                            <AvatarImage
+                              className="h-10 w-10 rounded-full border-2 border-slate-900"
+                              src={`${baseUrl}/${student.user_profile_path}/${student.user_img}`}
+                            />
+                          )}
+                        </Avatar>
 
-                      <div>
-                        {student.user_lastname}, {student.user_firstname}{" "}
-                        {student.user_middlename.charAt(0)}.
-                      </div>
-                    </TableCell>
-                    <TableCell>{student.user_email}</TableCell>
-                    <TableCell>
-                      {student.approvalStatus === pending ? (
-                        <>
-                          <Badge
-                            className={`${
-                              student.approvalStatus === "approved"
-                                ? "bg-green-500"
-                                : ""
-                            } ${
-                              student.approvalStatus === "pending"
-                                ? "bg-yellow-500"
-                                : ""
-                            } ${
-                              student.approvalStatus === "declined"
-                                ? "bg-red-500"
-                                : ""
-                            }`}
-                          >
-                            {student.approvalStatus}
-                          </Badge>
-                        </>
-                      ) : (
-                        <>
-                          {student.approvalStatus === approved ||
-                          student.approvalStatus === declined ? (
+                        <div>
+                          {student.user_lastname}, {student.user_firstname}{" "}
+                          {student.user_middlename.charAt(0)}.
+                        </div>
+                      </TableCell>
+                      <TableCell>{student.user_email}</TableCell>
+                      <TableCell>
+                        {student.approvalStatus === pending ? (
+                          <>
                             <Badge
                               className={`${
-                                student.approvalStatus === approved
+                                student.approvalStatus === "approved"
                                   ? "bg-green-500"
-                                  : "bg-red-500"
-                              } `}
+                                  : ""
+                              } ${
+                                student.approvalStatus === "pending"
+                                  ? "bg-yellow-500"
+                                  : ""
+                              } ${
+                                student.approvalStatus === "declined"
+                                  ? "bg-red-500"
+                                  : ""
+                              }`}
                             >
                               {student.approvalStatus}
                             </Badge>
-                          ) : null}
-                        </>
-                      )}
-                    </TableCell>
-                    <TableCell>{student.user_lastname}</TableCell>
-                    <TableCell>{student.user_firstname}</TableCell>
-                    <TableCell>{student.user_middlename}</TableCell>
-                    <TableCell>{student.user_gender}</TableCell>
-                    <TableCell>
-                      {student.approvalStatus === "pending" ? (
-                        <Select>
-                          <SelectTrigger>
-                            <SelectValue placeholder="Select Action" />
-                          </SelectTrigger>
-                          <SelectContent>
-                            <Button
-                              value="decline"
-                              className={`${
-                                student.approvalStatus === pending
-                                  ? "hide"
-                                  : "show "
-                              } w-full bg-red-600 hover:bg-red-300 text-slate-900 `}
-                              onClick={() => {
-                                setOpenStudentDeclineModal(true);
-                                setStudentDetail({
-                                  studentId: student._id,
-                                  studentFname: student.user_firstname,
-                                  studentMname: student.user_middlename,
-                                  studentLname: student.user_lastname,
-                                  classname: roomDetails.classname,
-                                });
-                              }}
-                            >
-                              Decline
-                            </Button>
-                            <Button
-                              value="approve"
-                              className={`${
-                                student.approvalStatus === pending
-                                  ? "hide"
-                                  : " show"
-                              } w-full bg-green-600 hover:bg-green-300 text-slate-900 `}
-                              onClick={() => {
-                                setOpenStudentApproveModal(true);
-                                setStudentDetail({
-                                  studentId: student._id,
-                                  studentFname: student.user_firstname,
-                                  studentMname: student.user_middlename,
-                                  studentLname: student.user_lastname,
-                                  classname: roomDetails.classname,
-                                });
-                              }}
-                            >
-                              Approve
-                            </Button>
-                          </SelectContent>
-                        </Select>
-                      ) : (
-                        <>
-                          {student.approvalStatus === "approved" ? (
-                            <Button
-                              value="decline"
-                              disabled={checkedList.length > 1}
-                              className={`${
-                                student.approvalStatus === pending
-                                  ? "hide"
-                                  : "show "
-                              } w-full bg-red-600 hover:bg-red-300 text-slate-900 `}
-                              onClick={() => {
-                                setOpenStudentDeclineModal(true);
-                                setStudentDetail({
-                                  studentId: student._id,
-                                  studentFname: student.user_firstname,
-                                  studentMname: student.user_middlename,
-                                  studentLname: student.user_lastname,
-                                  classname: roomDetails.classname,
-                                });
-                              }}
-                            >
-                              Re-Decline
-                            </Button>
-                          ) : (
-                            <Button
-                              value="approve"
-                              className={`${
-                                student.approvalStatus === pending
-                                  ? "hide"
-                                  : " show"
-                              } w-full bg-green-600 hover:bg-green-300 text-slate-900 `}
-                              onClick={() => {
-                                setOpenStudentApproveModal(true);
+                          </>
+                        ) : (
+                          <>
+                            {student.approvalStatus === approved ||
+                            student.approvalStatus === declined ? (
+                              <Badge
+                                className={`${
+                                  student.approvalStatus === approved
+                                    ? "bg-green-500"
+                                    : "bg-red-500"
+                                } `}
+                              >
+                                {student.approvalStatus}
+                              </Badge>
+                            ) : null}
+                          </>
+                        )}
+                      </TableCell>
+                      <TableCell>{student.user_lastname}</TableCell>
+                      <TableCell>{student.user_firstname}</TableCell>
+                      <TableCell>{student.user_middlename}</TableCell>
+                      <TableCell>{student.user_gender}</TableCell>
+                      <TableCell>
+                        {student.approvalStatus === "pending" ? (
+                          <Select>
+                            <SelectTrigger>
+                              <SelectValue placeholder="Select Action" />
+                            </SelectTrigger>
+                            <SelectContent>
+                              <Button
+                                value="decline"
+                                className={`${
+                                  student.approvalStatus === pending
+                                    ? "hide"
+                                    : "show "
+                                } w-full bg-red-600 hover:bg-red-300 text-slate-900 `}
+                                onClick={() => {
+                                  setOpenStudentDeclineModal(true);
+                                  setStudentDetail({
+                                    studentId: student._id,
+                                    studentFname: student.user_firstname,
+                                    studentMname: student.user_middlename,
+                                    studentLname: student.user_lastname,
+                                    classname: roomDetails.classname,
+                                  });
+                                }}
+                              >
+                                Decline
+                              </Button>
+                              <Button
+                                value="approve"
+                                className={`${
+                                  student.approvalStatus === pending
+                                    ? "hide"
+                                    : " show"
+                                } w-full bg-green-600 hover:bg-green-300 text-slate-900 `}
+                                onClick={() => {
+                                  setOpenStudentApproveModal(true);
+                                  setStudentDetail({
+                                    studentId: student._id,
+                                    studentFname: student.user_firstname,
+                                    studentMname: student.user_middlename,
+                                    studentLname: student.user_lastname,
+                                    classname: roomDetails.classname,
+                                  });
+                                }}
+                              >
+                                Approve
+                              </Button>
+                            </SelectContent>
+                          </Select>
+                        ) : (
+                          <>
+                            {student.approvalStatus === "approved" ? (
+                              <Button
+                                value="decline"
+                                disabled={checkedList.length > 1}
+                                className={`${
+                                  student.approvalStatus === pending
+                                    ? "hide"
+                                    : "show "
+                                } w-full bg-red-600 hover:bg-red-300 text-slate-900 `}
+                                onClick={() => {
+                                  setOpenStudentDeclineModal(true);
+                                  setStudentDetail({
+                                    studentId: student._id,
+                                    studentFname: student.user_firstname,
+                                    studentMname: student.user_middlename,
+                                    studentLname: student.user_lastname,
+                                    classname: roomDetails.classname,
+                                  });
+                                }}
+                              >
+                                Re-Decline
+                              </Button>
+                            ) : (
+                              <Button
+                                value="approve"
+                                className={`${
+                                  student.approvalStatus === pending
+                                    ? "hide"
+                                    : " show"
+                                } w-full bg-green-600 hover:bg-green-300 text-slate-900 `}
+                                onClick={() => {
+                                  setOpenStudentApproveModal(true);
 
-                                setStudentDetail({
-                                  studentId: student._id,
-                                  studentFname: student.user_firstname,
-                                  studentMname: student.user_middlename,
-                                  studentLname: student.user_lastname,
-                                  classname: roomDetails.classname,
-                                });
-                              }}
-                            >
-                              Re-Approve
-                            </Button>
-                          )}
-                        </>
-                      )}
-                    </TableCell>
-                  </TableRow>
-                </TableBody>
-              ) : null}
-            </React.Fragment>
-          ))}
+                                  setStudentDetail({
+                                    studentId: student._id,
+                                    studentFname: student.user_firstname,
+                                    studentMname: student.user_middlename,
+                                    studentLname: student.user_lastname,
+                                    classname: roomDetails.classname,
+                                  });
+                                }}
+                              >
+                                Re-Approve
+                              </Button>
+                            )}
+                          </>
+                        )}
+                      </TableCell>
+                    </TableRow>
+                  </TableBody>
+                ) : null}
+              </React.Fragment>
+            ))}
+          </Table>
         </React.Fragment>
       ))}
 

@@ -2,13 +2,13 @@ import React from "react";
 import ReusableModal from "./ReusableModal";
 import { Button } from "../ui/button";
 import {
-  rejectMultipleStudents,
+  approveMultipleStudents,
   useRejectMultipleStudents,
 } from "@/api/useApi";
 import toast from "react-hot-toast";
 import { Loader2Icon } from "lucide-react";
 import { useQueryClient } from "@tanstack/react-query";
-const RejectAllStudent = ({
+const AcceptAllStudents = ({
   open,
   onOpenChange,
   checkedList,
@@ -18,16 +18,15 @@ const RejectAllStudent = ({
   const queryClient = useQueryClient();
   const onError = (error) => {
     toast.error(error.message);
-    setCheckList([]);
   };
 
   const onSuccess = (data) => {
     toast.success(data.message);
-    setCheckList([]);
     queryClient.invalidateQueries({ queryKey: ["room"] });
+    setCheckList([]);
   };
   const { mutateAsync, isLoading, isPending } = useRejectMultipleStudents({
-    mutationFn: () => rejectMultipleStudents(checkedList, roomId),
+    mutationFn: () => approveMultipleStudents(checkedList, roomId),
     onError,
     onSuccess,
   });
@@ -35,10 +34,10 @@ const RejectAllStudent = ({
     <ReusableModal
       open={open}
       onOpenChange={onOpenChange}
-      alertDialogTitle={`Decline ${checkedList.length} Students`}
+      alertDialogTitle={`Approve ${checkedList.length} Students`}
       alertDialogDescription={
         <>
-          Are you sure to decline <b>{checkedList.length} students</b>?
+          Are you sure to approve <b>{checkedList.length} students</b>?
         </>
       }
       alertDialogFooter={
@@ -61,7 +60,7 @@ const RejectAllStudent = ({
               }
             }}
           >
-            {isLoading ? <Loader2Icon className="animate-spin" /> : "Decline"}
+            {isLoading ? <Loader2Icon className="animate-spin" /> : "Approve"}
           </Button>
         </>
       }
@@ -69,4 +68,4 @@ const RejectAllStudent = ({
   );
 };
 
-export default RejectAllStudent;
+export default AcceptAllStudents;

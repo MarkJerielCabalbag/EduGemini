@@ -497,6 +497,38 @@ async function rejectJoinStudent(formData) {
   });
 }
 
+export async function rejectMultipleStudents(checkedList, roomId) {
+  return await fetch(`${baseUrl}/api/eduGemini/classroom/rejectStudents`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ checkedList, roomId }),
+  }).then(async (res) => {
+    const response = await res.json();
+
+    if (!res.ok) {
+      throw new Error(response.message || "An Error Occured");
+    }
+
+    return response;
+  });
+}
+
+export async function approveMultipleStudents(checkedList, roomId) {
+  return await fetch(`${baseUrl}/api/eduGemini/classroom/approveStudents`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ checkedList, roomId }),
+  }).then(async (res) => {
+    const response = await res.json();
+
+    if (!res.ok) {
+      throw new Error(response.message || "An Error Occured");
+    }
+
+    return response;
+  });
+}
+
 export async function classwork(workId) {
   return await fetch(
     `${baseUrl}/api/eduGemini/classwork/classworkData/${workId}`,
@@ -1057,6 +1089,18 @@ export const useGetExportOverallReport = ({ queryFn, onError, onSuccess }) => {
 export const useGetExportActivity = ({ queryFn, onError, onSuccess }) => {
   return useQuery({
     queryFn,
+    onError,
+    onSuccess,
+  });
+};
+
+export const useRejectMultipleStudents = ({
+  mutationFn,
+  onError,
+  onSuccess,
+}) => {
+  return useMutation({
+    mutationFn,
     onError,
     onSuccess,
   });

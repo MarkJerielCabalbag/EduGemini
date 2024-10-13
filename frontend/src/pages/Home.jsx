@@ -3,19 +3,27 @@ import MenuBar from "@/content/MenuBar";
 import { Button } from "@/components/ui/button";
 import {
   BookMarked,
+  BookType,
   BrainCircuit,
+  BrainCog,
+  Calendar,
+  Captions,
+  FileDown,
+  FileUp,
   GraduationCap,
-  KeyRound,
-  NotebookPen,
-  Send,
+  NotepadText,
+  Pencil,
+  UserRoundCheck,
 } from "lucide-react";
 import { useState } from "react";
 import CreateClass from "@/components/modals/CreateClass";
 import JoinClass from "@/components/modals/JoinClass";
+import ViewSupportedFormats from "@/components/modals/ViewSupportedFormats";
 
 function Home() {
   const [openCreateClassModal, setOpenCreateClassModal] = useState(false);
   const [openJoinClassModal, setOpenJoinClassModal] = useState(false);
+  const [openViewFormats, setViewFormats] = useState(false);
 
   return (
     <div className="container h-full sm:container md:container lg:container">
@@ -29,6 +37,12 @@ function Home() {
         <JoinClass
           open={openJoinClassModal}
           onOpenChange={setOpenJoinClassModal}
+        />
+      )}
+      {openViewFormats && (
+        <ViewSupportedFormats
+          open={openViewFormats}
+          onOpenChange={setViewFormats}
         />
       )}
       <MenuBar />
@@ -82,127 +96,194 @@ function Home() {
           experience for everyone involved.
         </p>
 
-        <div className="w-full border-l-4 border-slate-500 p-5 shadow-sm shadow-slate-900 rounded mt-5 flex flex-col gap-5">
-          <h1 className="font-extrabold text-sm flex items-center gap-3 md:text-2xl">
-            <KeyRound size={20} className=" text-slate-900" />
-            Key Feature's
-          </h1>
-          <ul>
-            <li className="list-disc text-xs md:text-md italic">
-              <span className="font-extrabold">AI-Powered Feedback: </span>
+        <div className="grid grid-cols-1 gap-3 md:grid-cols-3">
+          <div className="bg-slate-900 text-white text-justify p-5 rounded-sm relative">
+            <h1 className="text-md font-bold mb-3 md:text-2xl">
+              AI-Powered Feedback
+            </h1>
+            <p className="text-md opacity-90 italic">
               Our advanced AI analyzes student submissions to provide detailed
-              feedback on grammar, structure, and content, helping students
-              improve their skills continuously. analysis.
-            </li>
-
-            <li className="list-disc text-xs md:text-md italic">
-              <span className="font-extrabold">Teacher Feedback: </span>
+              feedback on their output by providing constructive feedback making
+              sure that every students improves their skills continuously.
+            </p>
+            <BrainCog
+              size={100}
+              className="absolute bottom-3 right-3 -rotate-45 opacity-30"
+            />
+          </div>
+          <div className="bg-slate-900 text-white text-justify p-5 rounded-sm relative">
+            <h1 className="text-md font-bold mb-3 md:text-2xl">
+              Teacher Feedback
+            </h1>
+            <p className="text-md opacity-90 italic">
               Based on student output, teachers receive insights on how their
               teaching methods have impacted student performance, allowing them
               to adjust and improve their instructional strategies.
-            </li>
-
-            <li className="list-disc text-xs md:text-md italic">
-              <span className="font-extrabold">Export Overall Score: </span>
+            </p>
+            <UserRoundCheck
+              size={100}
+              className="absolute bottom-3 right-3 opacity-30"
+            />
+          </div>
+          <div className="bg-slate-900 text-white text-justify p-5 rounded-sm relative">
+            <h1 className="text-md font-bold mb-3 md:text-2xl">
+              Export Overall Score
+            </h1>
+            <p className="text-md opacity-90 italic">
               Easily export overall classroom scores and individual student
               performance data for record-keeping, reporting, or further
               analysis.
-            </li>
-          </ul>
+            </p>
+            <FileDown
+              size={100}
+              className="absolute bottom-3 right-3 opacity-30"
+            />
+          </div>
         </div>
 
-        <div className="w-full border-l-4 border-slate-500 p-5 shadow-sm shadow-slate-900 rounded mt-5 flex flex-col gap-5">
-          <h1 className="font-extrabold text-sm flex items-center gap-3 md:text-2xl">
-            <NotebookPen size={25} className=" text-slate-900" />
-            How to create a Classwork
-          </h1>
-          <ul>
-            <li className="list-disc text-xs md:text-md italic">
-              <span className="font-extrabold">Title: </span>
-              Enter a descriptive title for the classwork.
-            </li>
+        <h1 className="mt-36 text-center italic text-slate-600 font-extrabold text-2xl my-3 md:text-4xl">
+          Streamlining Classwork Creation with EduGemini
+        </h1>
+        <p className="italic opacity-70 text-sm md:text-lg text-center p-5">
+          EduGemini empowers educators by <b>simplifying the process </b>of
+          creating and managing classwork, offering an intuitive platform backed
+          by cutting-edge AI technology. Designed to{" "}
+          <b>enhance both teaching and learning experiences</b>, this tool
+          provides a streamlined workflow for instructors to efficiently set up
+          classwork, allowing for greater focus on student engagement and
+          personalized education.
+        </p>
 
-            <li className="list-disc text-xs md:text-md italic">
-              <span className="font-extrabold">Classwork Type: </span>
+        <div className="grid grid-cols-1 gap-3 md:grid-cols-2 lg:grid-cols-3">
+          <div className="bg-slate-900 text-white text-justify p-5 rounded-sm relative">
+            <h1 className="text-md font-bold mb-3 md:text-2xl">01</h1>
+            <h2 className="text-xl md:2xl font-extrabold">
+              Create Classwork Title
+            </h2>
+            <p className="text-md opacity-90 italic">
+              Enter a descriptive title for the classwork.
+            </p>
+            <Captions
+              size={100}
+              className="absolute bottom-3 right-3 opacity-30"
+            />
+          </div>
+          <div className="bg-slate-900 text-white text-justify p-5 rounded-sm relative">
+            <h1 className="text-md font-bold mb-3 md:text-2xl">02</h1>
+            <h2 className="text-xl md:2xl font-extrabold">Classwork Type</h2>
+            <p className="text-md opacity-90 italic">
               Select or create a custom classwork type (e.g., assignment,
               programming, project).
-            </li>
-
-            <li className="list-disc text-xs md:text-md italic">
-              <span className="font-extrabold">Description (optional): </span>
+            </p>
+            <BookType
+              size={100}
+              className="absolute bottom-3 right-3 opacity-30"
+            />
+          </div>
+          <div className="bg-slate-900 text-white text-justify p-5 rounded-sm relative">
+            <h1 className="text-md font-bold mb-3 md:text-2xl">03</h1>
+            <h2 className="text-xl md:2xl font-extrabold">
+              Description (optional)
+            </h2>
+            <p className="text-md opacity-90 italic">
               Provide a detailed description of the classwork, including
               objectives and expectations. analysis.
-            </li>
-
-            <li className="list-disc text-xs md:text-md italic">
-              <span className="font-extrabold">Due Date and Time: </span>
+            </p>
+            <NotepadText
+              size={100}
+              className="absolute bottom-3 right-3 opacity-30"
+            />
+          </div>
+          <div className="bg-slate-900 text-white text-justify p-5 rounded-sm relative">
+            <h1 className="text-lg font-bold mb-3 md:text-2xl">04</h1>
+            <h2 className="text-xl md:2xl font-extrabold">
+              Set Due Date and Time
+            </h2>
+            <p className="text-md opacity-90 italic">
               Set the due date and time for the classwork submission.
-            </li>
-
-            <li className="list-disc text-xs md:text-md italic">
-              <span className="font-extrabold">Instruction File: </span>
+            </p>
+            <Calendar
+              size={100}
+              className="absolute bottom-3 right-3 opacity-30"
+            />
+          </div>
+          <div className="bg-slate-900 text-white text-justify p-5 rounded-sm relative">
+            <h1 className="text-md font-bold mb-3 md:text-2xl">05</h1>
+            <h2 className="text-xl md:2xl font-extrabold">
+              Import Instruction file
+            </h2>
+            <p className="text-md opacity-90 italic">
               Upload the instruction file. Supported formats include DOCX, PNG,
               PDF, and JPEG
-            </li>
-
-            <li className="list-disc text-xs md:text-md italic">
-              <span className="font-extrabold">Create: </span>
+            </p>
+            <FileUp
+              size={100}
+              className="absolute bottom-3 right-3 opacity-30"
+            />
+          </div>
+          <div className="bg-slate-900 text-white text-justify p-5 rounded-sm relative">
+            <h1 className="text-md font-bold mb-3 md:text-2xl">06</h1>
+            <h2 className="text-xl md:2xl font-extrabold">Create</h2>
+            <p className="text-md opacity-90 italic">
               Click the “Create” button to finalize and publish the classwork.
-            </li>
-          </ul>
+            </p>
+            <Pencil
+              size={100}
+              className="absolute bottom-3 right-3 -rotate-45 opacity-30"
+            />
+          </div>
         </div>
 
-        <div className="w-full border-l-4 border-slate-500 p-5 shadow-sm shadow-slate-900 rounded mt-5 flex flex-col gap-5">
-          <h1 className="font-extrabold text-sm flex items-center gap-3 md:text-2xl">
-            <Send size={25} className=" text-slate-900" />
-            Submitting Classwork
-          </h1>
-          <ul>
-            <li className="list-disc text-xs md:text-md italic">
-              <span className="font-extrabold">View Classwork: </span>
+        <h1 className="mt-36 text-center italic text-slate-600 font-extrabold text-2xl my-3 md:text-4xl">
+          Submitting Classwork: A Simple Guide
+        </h1>
+        <p className="italic opacity-70 text-sm md:text-lg text-center p-5">
+          Submitting classwork in EduGemini is designed to be intuitive and
+          straightforward. By following a few easy steps, students can
+          seamlessly upload their assignments across various formats.
+        </p>
+
+        <div className="grid grid-cols-1 gap-3 mb-36 md:grid-cols-3">
+          <div className="bg-slate-900 text-white text-justify p-5 rounded-sm relative">
+            <h1 className="text-md font-bold mb-3 md:text-2xl">01</h1>
+            <h2 className="text-xl md:2xl font-extrabold">View Classwork</h2>
+            <p className="text-md opacity-90 italic">
               Go to the “Classwork” section to see all assigned tasks.
-            </li>
-
-            <li className="list-disc text-xs md:text-md italic">
-              <span className="font-extrabold">Select Classwork: </span>
+            </p>
+            <Captions
+              size={100}
+              className="absolute bottom-3 right-3 opacity-30"
+            />
+          </div>
+          <div className="bg-slate-900 text-white text-justify p-5 rounded-sm relative">
+            <h1 className="text-md font-bold mb-3 md:text-2xl">02</h1>
+            <h2 className="text-xl md:2xl font-extrabold">Select Classwork</h2>
+            <p className="text-md opacity-90 italic">
               Click on the specific classwork you need to submit.
-            </li>
-
-            <li className="list-disc text-xs md:text-md italic">
-              <span className="font-extrabold">Upload Submission: </span>
-              <li className="list-disc text-xs indent-1 md:text-md italic">
-                <span className="font-extrabold">Documents: </span>
-                .docx, .pdf, .xlsx, .pptx
-              </li>
-
-              <li className="list-disc text-xs indent-1 md:text-md italic">
-                <span className="font-extrabold">Code Files: </span>
-                .html, .css, .js, .php, .dart, .py, .c, .cpp, .cs, .swift, .rs,
-                .go, .ru, .r, .sql, .java
-              </li>
-
-              <li className="list-disc text-xs indent-1 md:text-md italic">
-                <span className="font-extrabold">Images: </span>
-                image/png, image/jpg
-              </li>
-            </li>
-
-            <li className="list-disc text-xs md:text-md italic">
-              <span className="font-extrabold">Due Date and Time: </span>
-              Set the due date and time for the classwork submission.
-            </li>
-
-            <li className="list-disc text-xs md:text-md italic">
-              <span className="font-extrabold">Instruction File: </span>
-              Upload the instruction file. Supported formats include DOCX, PNG,
-              PDF, and JPEG
-            </li>
-
-            <li className="list-disc text-xs md:text-md italic">
-              <span className="font-extrabold">Create: </span>
-              Click the “Create” button to finalize and publish the classwork.
-            </li>
-          </ul>
+            </p>
+            <BookType
+              size={100}
+              className="absolute bottom-3 right-3 opacity-30"
+            />
+          </div>
+          <div className="bg-slate-900 text-white text-justify p-5 rounded-sm relative">
+            <h1 className="text-md font-bold mb-3 md:text-2xl">03</h1>
+            <h2 className="text-xl md:2xl font-extrabold">Upload Submission</h2>
+            <p className="text-md opacity-90 italic">
+              Make sure the the file is included in
+              <p
+                className="text-white italic font-semibold underline hover:pointer underline-offset-8"
+                onClick={() => setViewFormats(true)}
+              >
+                {" "}
+                supported file formats
+              </p>
+            </p>
+            <NotepadText
+              size={100}
+              className="absolute bottom-3 right-3 opacity-30"
+            />
+          </div>
         </div>
       </div>
     </div>

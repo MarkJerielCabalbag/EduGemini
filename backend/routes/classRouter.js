@@ -249,4 +249,16 @@ classRouter.post("/join", classroomControllers.joinStudent);
 classRouter.post("/rejectStudent", classroomControllers.rejectJoinStudent);
 
 classRouter.post("/acceptStudent", classroomControllers.acceptJoinStudent);
+
+//reject multiple students
+classRouter.post(
+  "/rejectStudents",
+  classroomControllers.rejectMultipleStudents
+);
+
+//approve multople students
+classRouter.post(
+  "/approveStudents",
+  classroomControllers.approveMultipleStudents
+);
 export default classRouter;

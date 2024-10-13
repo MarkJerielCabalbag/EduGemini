@@ -471,14 +471,77 @@ const rejectJoinStudent = asyncHandler(async (req, res, next) => {
 });
 
 //@desc     reject join student
-//@route    POST /api/eduGemini/classroom/rejectMultiple
+//@route    POST /api/eduGemini/classroom/rejectStudents
 //@access   private
-const rejectMultipleStudent = asyncHandler(async (req, res, next) => {
-  const { allId, roomId } = req.body;
+const rejectMultipleStudents = asyncHandler(async (req, res, next) => {
+  const { checkedList, roomId } = req.body;
 
-  const roomExist = await Classroom.findById(roomId);
+  const roomExist = await Classroom.findOne({ _id: roomId });
+  const getStudent = roomExist.students;
+  const getStudentList = roomExist.acceptedStudents;
 
-  
+  checkedList.map((listedStudent) => {
+    const studentIndex = roomExist.students.findIndex(
+      (student) => student._id === listedStudent._id
+    );
+
+    const studentToBeUpdated = getStudent[studentIndex];
+
+    studentToBeUpdated.approvalStatus = "declined";
+
+    const removedFromAcceptedList = getStudentList.filter(
+      (student) => student._id !== listedStudent._id
+    );
+
+    getStudent[studentIndex] = studentToBeUpdated;
+
+    roomExist.acceptedStudents = removedFromAcceptedList;
+  });
+  await roomExist.save();
+
+  return res
+    .status(200)
+    .json({ message: `${checkedList.length} students successfully declined` });
+});
+
+//@desc     reject join student
+//@route    POST /api/eduGemini/classroom/approveStudents
+//@access   private
+const approveMultipleStudents = asyncHandler(async (req, res, next) => {
+  const { checkedList, roomId } = req.body;
+
+  const roomExist = await Classroom.findOne({ _id: roomId });
+  const getStudent = roomExist.students;
+  const getStudentList = roomExist.acceptedStudents;
+
+  checkedList.map((listedStudent) => {
+    const studentIndex = roomExist.students.findIndex(
+      (student) => student._id === listedStudent._id
+    );
+
+    const studentToBeUpdated = getStudent[studentIndex];
+    studentToBeUpdated.approvalStatus = "approved";
+    getStudent[studentIndex] = studentToBeUpdated;
+
+    roomExist.acceptedStudents.push({
+      _id: listedStudent._id,
+      user_username: studentToBeUpdated.user_username,
+      user_email: studentToBeUpdated.user_email,
+      user_profile_path: studentToBeUpdated.user_profile_path,
+      user_img: studentToBeUpdated.user_img,
+      user_lastname: studentToBeUpdated.user_lastname,
+      user_firstname: studentToBeUpdated.user_firstname,
+      user_middlename: studentToBeUpdated.user_middlename,
+      user_gender: studentToBeUpdated.user_gender,
+      class_code: studentToBeUpdated.class_code,
+      approvalStatus: "approved",
+    });
+  });
+  await roomExist.save();
+
+  return res
+    .status(200)
+    .json({ message: `${checkedList.length} students successfully approved` });
 });
 
 export default {
@@ -495,6 +558,8 @@ export default {
   // joinedClass,
   acceptJoinStudent,
   rejectJoinStudent,
+  rejectMultipleStudents,
+  approveMultipleStudents,
   adminAllClass,
   createPublicComment,
 };
