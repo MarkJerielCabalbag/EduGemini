@@ -478,25 +478,27 @@ const rejectMultipleStudents = asyncHandler(async (req, res, next) => {
 
   const roomExist = await Classroom.findOne({ _id: roomId });
   const getStudent = roomExist.students;
-  const getStudentList = roomExist.acceptedStudents;
 
-  checkedList.map((listedStudent) => {
+  checkedList.forEach((listedStudent) => {
     const studentIndex = roomExist.students.findIndex(
-      (student) => student._id === listedStudent._id
+      (student) => student._id.toString() === listedStudent._id.toString()
     );
 
     const studentToBeUpdated = getStudent[studentIndex];
 
     studentToBeUpdated.approvalStatus = "declined";
 
-    const removedFromAcceptedList = getStudentList.filter(
-      (student) => student._id !== listedStudent._id
-    );
-
     getStudent[studentIndex] = studentToBeUpdated;
+
+    const removedFromAcceptedList = roomExist.acceptedStudents.filter(
+      (student) => student._id.toString() !== listedStudent._id.toString()
+    );
 
     roomExist.acceptedStudents = removedFromAcceptedList;
   });
+
+  roomExist.markModified("acceptedStudents");
+  roomExist.markModified("students");
   await roomExist.save();
 
   return res
@@ -512,7 +514,6 @@ const approveMultipleStudents = asyncHandler(async (req, res, next) => {
 
   const roomExist = await Classroom.findOne({ _id: roomId });
   const getStudent = roomExist.students;
-  const getStudentList = roomExist.acceptedStudents;
 
   checkedList.map((listedStudent) => {
     const studentIndex = roomExist.students.findIndex(

@@ -219,30 +219,38 @@ function Announcements({ userStatus }) {
                   </h1>
 
                   <p className="italic opacity-75 text-balance text-sm md:text-md">
-                    Lorem ipsum dolor sit amet consectetur adipisicing elit. A
-                    ab qui repudiandae quas incidunt facere atque! Perspiciatis
-                    vero minima ipsam.
+                    This section allows students to share their thoughts and
+                    feedback openly. Engage in constructive discussions, ask
+                    questions, and collaborate with classmates. All comments are
+                    visible to everyone, promoting a transparent and interactive
+                    learning environment.
                   </p>
 
-                  <div>
+                  <div className="w-full">
                     {item.publicComment.length === 0 ? (
                       <div className="my-5">No Comments Available</div>
                     ) : (
-                      <>
-                        <div className="h-3/4">
-                          {item.publicComment.map((comment) => (
+                      <div className="h-3/4 w-full">
+                        {item.publicComment.map((comment) => (
+                          <div
+                            className={`my-5 w-full h-full text-wrap ${
+                              userId === comment.user
+                                ? "flex flex-col items-end"
+                                : "flex flex-col items-start"
+                            }`}
+                          >
                             <div
-                              className={`my-5 ${
+                              className={`h-full w-full ${
                                 userId === comment.user
                                   ? "flex flex-col items-end"
                                   : "flex flex-col items-start"
                               }`}
                             >
                               <div
-                                className={`w-full text-wrap md:w-1/2 ${
+                                className={`text-wrap overflow-auto ${
                                   userId === comment.user
-                                    ? "bg-slate-900 p-5 rounded-md text-white"
-                                    : "bg-slate-300 p-5 rounded-md text-slate-900"
+                                    ? "bg-slate-900 p-5 rounded-md text-white w-full"
+                                    : "bg-slate-300 p-5 rounded-md text-slate-900 w-full"
                                 }`}
                               >
                                 <div className="flex gap-3 items-center">
@@ -260,14 +268,14 @@ function Announcements({ userStatus }) {
                                   </div>
                                 </div>
 
-                                <p className="w-full text-xs italic md:text-sm">
+                                <p className="w-full text-xs italic md:text-sm overflow-wrap break-word word-break-all whitespace-pre-wrap">
                                   <span className="">{comment.comment}</span>
                                 </p>
                               </div>
                             </div>
-                          ))}
-                        </div>
-                      </>
+                          </div>
+                        ))}
+                      </div>
                     )}
                     <div className="flex gap-3 items-center my-5 sticky z-50">
                       <Input

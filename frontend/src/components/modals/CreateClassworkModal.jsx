@@ -132,9 +132,10 @@ function CreateClassworkModal({ open, onOpenChange }) {
           <div className="h-[300px] overflow-y-scroll">
             <div className="border-l-4 border-slate-500  p-5 shadow-md rounded mt-5">
               <p className="">
-                Lorem ipsum dolor sit amet consectetur adipisicing elit. Quia
-                placeat soluta debitis aut totam tenetur assumenda optio est.
-                Odio, tempora?
+                Provide the required details to create the classwork, including
+                a clear title, type, instructions, due date, and time. Attach
+                any relevant files, such as instructions or criteria, to ensure
+                the classwork is set up correctly.
               </p>
 
               <div className="my-3">

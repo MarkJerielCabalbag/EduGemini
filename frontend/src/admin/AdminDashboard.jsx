@@ -74,7 +74,7 @@ function AdminDashboard() {
           }
         />
       ) : (
-        <div className="h-full">
+        <div className="h-screen">
           <Header />
           <div className="h-full container sm:container md:container lg:container">
             <div className="my-5">
@@ -84,22 +84,22 @@ function AdminDashboard() {
               </h1>
               <Separator className="my-2" />
               <p className="italic opacity-70 text-pretty">
-                Lorem, ipsum dolor sit amet consectetur adipisicing elit.
-                Nesciunt temporibus aperiam corrupti repellendus. Repellat
-                voluptates voluptatibus quam sunt dolor, illum minus totam
-                doloremque, excepturi, veritatis dolorum architecto nisi
-                similique eos.
+                Welcome to the Admin Dashboard, your central hub for managing
+                and overseeing all classroom activities. From here, you can
+                monitor student progress, manage class materials, and ensure a
+                smooth educational experience. The dashboard provides real-time
+                updates and allows for quick decision-making.
               </p>
             </div>
             <div className="my-5">
               <h1 className="font-bold flex items-center gap-2">Overview</h1>
               <Separator className="my-2" />
               <p className="italic opacity-70 text-pretty">
-                Lorem, ipsum dolor sit amet consectetur adipisicing elit.
-                Nesciunt temporibus aperiam corrupti repellendus. Repellat
-                voluptates voluptatibus quam sunt dolor, illum minus totam
-                doloremque, excepturi, veritatis dolorum architecto nisi
-                similique eos.
+                The Overview section offers a quick summary of the key metrics
+                and insights for your classroom. Stay up-to-date with class
+                participation, assignment submissions, and student performance,
+                enabling you to maintain a well-organized and efficient learning
+                environment.
               </p>
 
               <div className="grid grid-cols-1 md:grid-cols-3 ">

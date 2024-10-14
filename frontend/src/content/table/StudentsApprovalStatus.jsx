@@ -279,6 +279,7 @@ const StudentsApprovalStatus = ({
                               </Button>
                             ) : (
                               <Button
+                                disabled={checkedList.length > 1}
                                 value="approve"
                                 className={`${
                                   student.approvalStatus === pending

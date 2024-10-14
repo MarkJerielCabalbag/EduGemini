@@ -47,11 +47,13 @@ function CreateClass({ open, onOpenChange }) {
       alertDialogDescription={
         <div className="h-[300px] overflow-y-scroll">
           <div className="border-l-4 border-slate-500  p-5 shadow-md rounded mt-5">
-            <p className="pb-3">
-              Please fill out the following form with the required class
-              details, including the class name, section, subject, and room
-              number. Ensure all information is accurate before submitting.
-            </p>
+            <span>
+              <p className="pb-3">
+                Please fill out the following form with the required class
+                details, including the class name, section, subject, and room
+                number. Ensure all information is accurate before submitting.
+              </p>
+            </span>
 
             <Label className="font-bold italic flex items-center gap-2 my-2">
               Classname
@@ -63,20 +65,20 @@ function CreateClass({ open, onOpenChange }) {
               placeholder="Enter Classname"
               className={`${isError ? "border-red-500" : ""}`}
             />
-            <p
+            <span
               className={`${
                 isError ? "show" : " "
               }hidden text-red-500 text-xs italic mt-2`}
             >
               {isError ? (
-                <div className="flex items-center gap-1">
+                <p className="flex items-center gap-1">
                   <Info size={13} />
                   Fill out all fields
-                </div>
+                </p>
               ) : (
                 ""
               )}
-            </p>
+            </span>
 
             <Label className="font-bold italic flex items-center gap-2 my-2">
               Section
@@ -88,20 +90,20 @@ function CreateClass({ open, onOpenChange }) {
               placeholder="Enter Section"
               className={`${isError ? "border-red-500" : ""}`}
             />
-            <p
+            <span
               className={`${
                 isError ? "show" : " "
               }hidden text-red-500 text-xs italic mt-2`}
             >
               {isError ? (
-                <div className="flex items-center gap-1">
+                <p className="flex items-center gap-1">
                   <Info size={13} />
                   Fill out all fields
-                </div>
+                </p>
               ) : (
                 ""
               )}
-            </p>
+            </span>
 
             <Label className="font-bold italic flex items-center gap-2 my-2">
               Subject
@@ -113,20 +115,20 @@ function CreateClass({ open, onOpenChange }) {
               placeholder="Enter Subject"
               className={`${isError ? "border-red-500" : ""}`}
             />
-            <p
+            <span
               className={`${
                 isError ? "show" : " "
               }hidden text-red-500 text-xs italic mt-2`}
             >
               {isError ? (
-                <div className="flex items-center gap-1">
+                <p className="flex items-center gap-1">
                   <Info size={13} />
                   Fill out all fields
-                </div>
+                </p>
               ) : (
                 ""
               )}
-            </p>
+            </span>
 
             <Label className="font-bold italic flex items-center gap-2 my-2">
               Room
@@ -138,20 +140,20 @@ function CreateClass({ open, onOpenChange }) {
               placeholder="Enter Room"
               className={`${isError ? "border-red-500" : ""}`}
             />
-            <p
+            <span
               className={`${
                 isError ? "show" : " "
               }hidden text-red-500 text-xs italic mt-2`}
             >
               {isError ? (
-                <div className="flex items-center gap-1">
+                <p className="flex items-center gap-1">
                   <Info size={13} />
                   Fill out all fields
-                </div>
+                </p>
               ) : (
                 ""
               )}
-            </p>
+            </span>
           </div>
         </div>
       }

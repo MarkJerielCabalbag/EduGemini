@@ -45,10 +45,10 @@ function People() {
         Student Approval
       </h1>
       <p className="opacity-75 italic my-2 text-pretty">
-        Lorem ipsum dolor sit, amet consectetur adipisicing elit. Impedit
-        eveniet doloremque, placeat, eum ad quisquam soluta rerum iure quaerat
-        sequi aliquid possimus corporis odio voluptatum consectetur! Officia,
-        placeat nobis! Ipsam.
+        This section allows you to manage the approval status of students within
+        the class. You can view an overview of students who are approved,
+        pending approval, or declined. The interface offers options to approve
+        or decline students and track their current status at a glance.
       </p>
 
       <Separator className="my-10" />
@@ -57,10 +57,9 @@ function People() {
         Overview
       </h1>
       <p className="opacity-75 italic my-2 text-balance">
-        Lorem ipsum dolor sit, amet consectetur adipisicing elit. Impedit
-        eveniet doloremque, placeat, eum ad quisquam soluta rerum iure quaerat
-        sequi aliquid possimus corporis odio voluptatum consectetur! Officia,
-        placeat nobis! Ipsam.
+        A summary of the student approval statuses is displayed, including the
+        total number of approved, pending, and declined students. This provides
+        a quick snapshot of where each student stands in the approval process.
       </p>
 
       <div className="grid grid-cols-1 md:grid-cols-3 ">
@@ -102,10 +101,9 @@ function People() {
         <BookmarkMinus /> Students Pending Approval
       </h1>
       <p className="opacity-75 italic my-2 text-balance">
-        Lorem ipsum dolor sit, amet consectetur adipisicing elit. Impedit
-        eveniet doloremque, placeat, eum ad quisquam soluta rerum iure quaerat
-        sequi aliquid possimus corporis odio voluptatum consectetur! Officia,
-        placeat nobis! Ipsam.
+        This section lists all students whose approval is still pending. You can
+        take action by either approving or declining their participation in the
+        class.
       </p>
 
       <StudentsApprovalStatus
@@ -121,10 +119,8 @@ function People() {
         <BookmarkPlus /> Students Approved
       </h1>
       <p className="opacity-75 italic my-2 text-balance">
-        Lorem ipsum dolor sit, amet consectetur adipisicing elit. Impedit
-        eveniet doloremque, placeat, eum ad quisquam soluta rerum iure quaerat
-        sequi aliquid possimus corporis odio voluptatum consectetur! Officia,
-        placeat nobis! Ipsam.
+        Here, you can see the list of students who have already been approved.
+        There’s also an option to remove approval if needed.
       </p>
 
       <StudentsApprovalStatus
@@ -140,10 +136,8 @@ function People() {
         <BookmarkX /> Students Declines
       </h1>
       <p className="opacity-75 italic my-2 text-balance">
-        Lorem ipsum dolor sit, amet consectetur adipisicing elit. Impedit
-        eveniet doloremque, placeat, eum ad quisquam soluta rerum iure quaerat
-        sequi aliquid possimus corporis odio voluptatum consectetur! Officia,
-        placeat nobis! Ipsam.
+        This final section displays students whose approval has been declined,
+        with the option to reverse the decision if necessary.
       </p>
 
       <StudentsApprovalStatus

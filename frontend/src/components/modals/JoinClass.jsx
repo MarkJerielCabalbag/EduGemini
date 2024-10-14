@@ -98,9 +98,11 @@ function JoinClass({ open, onOpenChange }) {
               </div>
               <div className="border-l-4 border-slate-500  p-5 shadow-md rounded mt-5">
                 <p className="pb-3">
-                  Lorem ipsum dolor sit amet consectetur adipisicing elit. Quia
-                  placeat soluta debitis aut totam tenetur assumenda optio est.
-                  Odio, tempora?
+                  Kindly complete all the required fields below to join the
+                  class. Ensure your details are accurate, including your full
+                  name, gender, and the class code provided by your instructor.
+                  This information helps us confirm your identity and
+                  successfully enroll you in the class.
                 </p>
 
                 <div className="flex gap-2">

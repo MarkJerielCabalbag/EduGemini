@@ -51,15 +51,17 @@ function Home() {
         <div className="text-center my-20">
           <div className="flex flex-col items-center justify-center font-semibold italic">
             <BrainCircuit size={100} />
-
             <h1 className="text-[40px]">EduGemini</h1>
           </div>
+
           <h1 className="font-extrabold flex flex-col text-2xl my-3 md:text-4xl">
             EduGemini: AI Assisted Classroom Management
+          </h1>
+          <span>
             <p className="italic opacity-70 text-sm md:text-2xl text-center px-5">
               Empowering Educators: Unleashing Student Potential with eduGemini!
             </p>
-          </h1>
+          </span>
 
           <p className="italic opacity-70 text-sm my-2 md:text-lg text-center px-5">
             EduGemini is a cutting-edge classroom management tool designed to
@@ -269,16 +271,15 @@ function Home() {
           <div className="bg-slate-900 text-white text-justify p-5 rounded-sm relative">
             <h1 className="text-md font-bold mb-3 md:text-2xl">03</h1>
             <h2 className="text-xl md:2xl font-extrabold">Upload Submission</h2>
-            <p className="text-md opacity-90 italic">
+            <div className="text-md opacity-90 italic">
               Make sure the the file is included in
-              <p
+              <span
                 className="text-white italic font-semibold underline hover:pointer underline-offset-8"
                 onClick={() => setViewFormats(true)}
               >
-                {" "}
                 supported file formats
-              </p>
-            </p>
+              </span>
+            </div>
             <NotepadText
               size={100}
               className="absolute bottom-3 right-3 opacity-30"

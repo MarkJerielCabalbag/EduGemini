@@ -101,10 +101,34 @@ function ClassworkView({ userStatus }) {
     );
   }
 
+  const shelved = dataTable?.data?.filter(
+    (workStatus) => workStatus.workStatus.name === "Shelved"
+  ).length;
+
+  const missing = dataTable?.data?.filter(
+    (workStatus) => workStatus.workStatus.name === "Missing"
+  ).length;
+
+  const turnedIn = dataTable?.data?.filter(
+    (workStatus) => workStatus.workStatus.name === "Turned in"
+  ).length;
+
+  const cancelled = dataTable?.data?.filter(
+    (workStatus) => workStatus.workStatus.name === "Cancelled"
+  ).length;
+
+  const noActionYet = dataTable?.data?.filter(
+    (workStatus) => workStatus.workStatus.name === "No Action Yet"
+  ).length;
+
+  const late = dataTable?.data?.filter(
+    (workStatus) => workStatus.workStatus.name === "Late"
+  ).length;
+
   return (
     <div className="h-full">
       {data?.map((classroomInfo) => (
-        <div className="h-fullcontainer sm:container md:container lg:container">
+        <div className="h-full container sm:container md:container lg:container">
           {room?.map((roomInfo) => (
             <div className="my-5">
               <ArrowLeft
@@ -220,6 +244,68 @@ function ClassworkView({ userStatus }) {
                     <p className="italic opacity-80">Classcode</p>
                   </div>
                 </>
+              </div>
+
+              <div className="grid grid-cols-1 my-20 md:grid-cols-3 lg:grid-cols-6 ">
+                <div className=" text-slate-900 p-5 rounded-sm flex items-center gap-3">
+                  <div className="p-2 bg-blue-500 rounded-sm w-10 h-10"></div>
+                  <div className="flex flex-col">
+                    <h1 className="text-5xl font-extrabold">{shelved}</h1>
+                    <p className="italic opacity-70 flex items-center gap-2">
+                      Shelved
+                    </p>
+                  </div>
+                </div>
+
+                <div className=" text-slate-900 p-5 rounded-sm flex items-center gap-3">
+                  <div className="p-2 bg-red-500 rounded-sm w-10 h-10"></div>
+                  <div className="flex flex-col">
+                    <h1 className="text-5xl font-extrabold">{missing}</h1>
+                    <p className="italic opacity-70 flex items-center gap-2">
+                      Missing
+                    </p>
+                  </div>
+                </div>
+
+                <div className=" text-slate-900 p-5 rounded-sm flex items-center gap-3">
+                  <div className="p-2 bg-green-500 rounded-sm w-10 h-10"></div>
+                  <div className="flex flex-col">
+                    <h1 className="text-5xl font-extrabold">{turnedIn}</h1>
+                    <p className="italic opacity-70 flex items-center gap-2">
+                      Turned in
+                    </p>
+                  </div>
+                </div>
+
+                <div className=" text-slate-900 p-5 rounded-sm flex items-center gap-3">
+                  <div className="p-2 bg-red-800 rounded-sm w-10 h-10"></div>
+                  <div className="flex flex-col">
+                    <h1 className="text-5xl font-extrabold">{cancelled}</h1>
+                    <p className="italic opacity-70 flex items-center gap-2">
+                      Cancelled
+                    </p>
+                  </div>
+                </div>
+
+                <div className=" text-slate-900 p-5 rounded-sm flex items-center gap-3">
+                  <div className="p-2 bg-slate-900 rounded-sm w-10 h-10"></div>
+                  <div className="flex flex-col">
+                    <h1 className="text-5xl font-extrabold">{noActionYet}</h1>
+                    <p className="italic opacity-70 flex items-center gap-2">
+                      No Action Yet
+                    </p>
+                  </div>
+                </div>
+
+                <div className=" text-slate-900 p-5 rounded-sm flex items-center gap-3">
+                  <div className="p-2 bg-yellow-500 rounded-sm w-10 h-10"></div>
+                  <div className="flex flex-col">
+                    <h1 className="text-5xl font-extrabold">{late}</h1>
+                    <p className="italic opacity-70 flex items-center gap-2">
+                      Late
+                    </p>
+                  </div>
+                </div>
               </div>
 
               <div className="mt-5 flex justify-between items-center">

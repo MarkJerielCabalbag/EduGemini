@@ -99,7 +99,7 @@ function ClassworkUpdate({ setOpenSettingModal }) {
     });
     setOpenSettingModal(false);
     setClassworkAttachFile([]);
-
+    queryClient.invalidateQueries({ queryKey: ["listedStudents"] });
     setDate(null);
   };
   const onError = (error) => {
