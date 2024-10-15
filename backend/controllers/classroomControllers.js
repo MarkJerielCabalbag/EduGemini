@@ -177,7 +177,7 @@ const createPublicComment = asyncHandler(async (req, res, next) => {
   roomExist.announcement[findAnnouncement] = anounceIndex;
   await roomExist.save();
 
-  return res.status(200).json({ message: "hi" });
+  return res.status(200).json({ message: "Comment sent" });
 });
 
 //@desc     DELETE announcement

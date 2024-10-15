@@ -16,15 +16,7 @@ const RowExpandView = ({ user }) => {
   const [openPrivateCommentModal, setOpenPrivateModal] = useState(false);
 
   const { workId } = useParams();
-  const workStatus = (user) => {
-    if (user.workStatus === "Turned in") {
-      return "bg-green-500";
-    } else if (user.workStatus === "shelved") {
-      return "bg-sky-500";
-    } else if (user.workStatus === "cancelled") {
-      return "bg-red-500";
-    }
-  };
+
   const fileSizeLabel = (size) => {
     if (size >= 8589934592) {
       return size + " GB";
@@ -136,13 +128,17 @@ const RowExpandView = ({ user }) => {
             </p>
           </div>
 
-          <Button
-            variant={"secondary"}
-            className="my-5"
-            onClick={() => setOpenPrivateModal(true)}
-          >
-            See All Comments
-          </Button>
+          {user.workStatus.name === "Turned in" ||
+          user.workStatus.name === "Late" ||
+          user.workStatus.name === "Cancelled" ? (
+            <Button
+              variant={"secondary"}
+              className="my-5"
+              onClick={() => setOpenPrivateModal(true)}
+            >
+              See All Comments
+            </Button>
+          ) : null}
 
           <div>
             <h1 className="text-slate-900 text-sm italic font-bold md:text-lg">

@@ -171,7 +171,7 @@ const createPrivateComment = asyncHandler(async (req, res, next) => {
 
   await roomExist.save();
 
-  return res.status(200).json({ message: "good" });
+  return res.status(200).json({ message: "Comment sent" });
 });
 
 //@desc     get classwork attachments

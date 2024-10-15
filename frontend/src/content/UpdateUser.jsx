@@ -107,8 +107,10 @@ function UpdateUser() {
         Update Account Information
       </h1>
       <p className="pb-3">
-        Lorem ipsum dolor sit amet consectetur adipisicing elit. Quia placeat
-        soluta debitis aut totam tenetur assumenda optio est. Odio, tempora?
+        Keeping your account information up to date is essential for ensuring
+        your security and access to our services. Please review your personal
+        details, such as your email address and contact number, to ensure we can
+        reach you regarding important updates and notifications.
       </p>
 
       <form onSubmit={(e) => e.preventDefault()}>

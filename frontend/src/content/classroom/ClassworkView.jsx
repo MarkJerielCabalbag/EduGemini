@@ -246,7 +246,27 @@ function ClassworkView({ userStatus }) {
                 </>
               </div>
 
-              <div className="grid grid-cols-1 my-20 md:grid-cols-3 lg:grid-cols-6 ">
+              <div className="mt-5 flex justify-between items-center">
+                <div>
+                  <h1 className="text-2xl font-extrabold text-slate-900">
+                    Description
+                  </h1>
+                  <p className="italic opacity-80">
+                    {classroomInfo.classwork_description}
+                  </p>
+                </div>
+                <ToolTipComponent
+                  trigger={
+                    <Settings
+                      size={30}
+                      onClick={() => setOpenSettingModal(true)}
+                    />
+                  }
+                  content={<p>Open Settings</p>}
+                />
+              </div>
+
+              <div className="grid grid-cols-1 my-5 md:grid-cols-3 lg:grid-cols-6 ">
                 <div className=" text-slate-900 p-5 rounded-sm flex items-center gap-3">
                   <div className="p-2 bg-blue-500 rounded-sm w-10 h-10"></div>
                   <div className="flex flex-col">
@@ -306,26 +326,6 @@ function ClassworkView({ userStatus }) {
                     </p>
                   </div>
                 </div>
-              </div>
-
-              <div className="mt-5 flex justify-between items-center">
-                <div>
-                  <h1 className="text-2xl font-extrabold text-slate-900">
-                    Description
-                  </h1>
-                  <p className="italic opacity-80">
-                    {classroomInfo.classwork_description}
-                  </p>
-                </div>
-                <ToolTipComponent
-                  trigger={
-                    <Settings
-                      size={30}
-                      onClick={() => setOpenSettingModal(true)}
-                    />
-                  }
-                  content={<p>Open Settings</p>}
-                />
               </div>
 
               {isLoading || isPending || isFetching ? (

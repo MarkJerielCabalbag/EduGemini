@@ -21,10 +21,7 @@ function Profile() {
         <CardHeader>
           <CardTitle>User Profile</CardTitle>
           <CardDescription className="py-5">
-            Lorem ipsum, dolor sit amet consectetur adipisicing elit. Fugit
-            fugiat, nihil asperiores repudiandae quia repellat reiciendis,
-            similique obcaecati temporibus modi voluptas dolorum dolorem unde
-            quam? Blanditiis, voluptate dicta. A, in?
+            Your user profile is the key to a personalized experience.
           </CardDescription>
         </CardHeader>
         <CardContent>

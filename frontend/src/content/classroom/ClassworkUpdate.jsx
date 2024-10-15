@@ -6,7 +6,7 @@ import { Loader2, Paperclip } from "lucide-react";
 import React, { useState } from "react";
 import ClassworkTypeField from "./ClassworkTypeField";
 import { Textarea } from "@/components/ui/textarea";
-import { DatePickerDemo } from "@/components/ui/date-picker-with-range";
+
 import { Button } from "@/components/ui/button";
 import { useParams } from "react-router-dom";
 import { useQueryClient, useMutation } from "@tanstack/react-query";

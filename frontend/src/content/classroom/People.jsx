@@ -25,7 +25,7 @@ function People() {
   });
 
   const students = data?.map((roomDetails) => roomDetails.students).flat();
-
+  console.log(students);
   const totalStudentApproved = students?.filter(
     (student) => student.approvalStatus === "approved"
   ).length;
@@ -38,6 +38,13 @@ function People() {
     (student) => student.approvalStatus === "declined"
   ).length;
 
+  const male = students?.filter(
+    (student) => student.user_gender === "male"
+  ).length;
+
+  const female = students?.filter(
+    (student) => student.user_gender === "female"
+  ).length;
   return (
     <div className="container sm:container md:container lg:container">
       <h1 className="text-slate-900 font-bold text-md flex gap-2 items-center">
@@ -91,6 +98,33 @@ function People() {
             <p className="italic opacity-70 flex items-center gap-2">
               <XCircleIcon className="opacity-70" size={20} /> Declined
             </p>
+          </div>
+        </div>
+      </div>
+
+      <Separator className="my-10" />
+
+      <h1 className="text-slate-600 font-bold text-md italic flex gap-2 items-center">
+        Gender
+      </h1>
+      <p className="opacity-75 italic my-2 text-balance">
+        This section provides a summary of the gender distribution among
+        students, including the total number of male and female students. It
+        offers a quick snapshot of the gender demographics within the class.
+      </p>
+
+      <div className="grid grid-cols-1 gap-2">
+        <div className=" text-slate-900 flex items-center gap-3 ">
+          <div className="flex items-center gap-4">
+            <h1 className="text-5xl font-extrabold">{male}</h1>
+            <h1 className="font-extrabold text-lg">Males</h1>
+          </div>
+        </div>
+
+        <div className=" text-slate-900 flex items-center gap-3">
+          <div className="flex items-center gap-4">
+            <h1 className="text-5xl font-extrabold">{female}</h1>
+            <h1 className="font-extrabold text-lg">Females</h1>
           </div>
         </div>
       </div>

@@ -10,8 +10,8 @@ function Classroom() {
   const navigate = useNavigate();
   const userId = localStorage.getItem("userId");
   return (
-    <div className="sm:container md:container lg:container">
-      <div className="h-screen w-full mt-5 grid sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-2">
+    <div className="h-full sm:container md:container lg:container">
+      <div className="h-full w-full mt-5 grid sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-2">
         <div className="py-4 bg-primary rounded mx-8 md:mx-0">
           <div className="text-white">
             <ClassroomInfo

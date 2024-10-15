@@ -11,6 +11,8 @@ import { useParams } from "react-router-dom";
 import { useState } from "react";
 import { createColumnHelper } from "@tanstack/react-table";
 import { studentGender } from "../table/studentListRow/sudentListStatus";
+import { SettingsIcon } from "lucide-react";
+import { Separator } from "@/components/ui/separator";
 
 function Settings() {
   const { roomId } = useParams();
@@ -92,15 +94,29 @@ function Settings() {
     .toString();
 
   return (
-    <div className="container sm:container md:container lg:container">
-      <DataTable
-        dataTable={dataTable}
-        columns={setGetAllActivities}
-        statuses={studentGender}
-        paginationVisibility={"show"}
-        excelFilename={filename}
-        dataSheet={excel}
-      />
+    <div className="h-full container sm:container md:container lg:container">
+      <h1 className="text-slate-900 font-bold text-md flex gap-2 items-center">
+        <SettingsIcon size={30} />
+        Settings
+      </h1>
+      <p className="opacity-75 italic my-2 text-pretty">
+        You can easily access an overview of overall student scores through the
+        Data Table, which displays the scores clearly. Additionally, you have
+        the option to export this data as an Excel file for convenient
+        record-keeping and sharing.
+      </p>
+
+      <Separator className="mt-5" />
+      <div className="h-screen">
+        <DataTable
+          dataTable={dataTable}
+          columns={setGetAllActivities}
+          statuses={studentGender}
+          paginationVisibility={"show"}
+          excelFilename={filename}
+          dataSheet={excel}
+        />
+      </div>
     </div>
   );
 }

@@ -21,10 +21,8 @@ function Settings() {
         <CardHeader>
           <CardTitle>Settings</CardTitle>
           <CardDescription className="py-5">
-            Lorem ipsum, dolor sit amet consectetur adipisicing elit. Fugit
-            fugiat, nihil asperiores repudiandae quia repellat reiciendis,
-            similique obcaecati temporibus modi voluptas dolorum dolorem unde
-            quam? Blanditiis, voluptate dicta. A, in?
+            Manage your account settings here. Update your information, change
+            your password, or customize your preferences.
           </CardDescription>
         </CardHeader>
         <CardContent>

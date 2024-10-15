@@ -23,7 +23,7 @@ const Feedback = () => {
     refetchInterval: 60000,
   });
   return (
-    <div>
+    <div className="h-full">
       {data?.map((feedbacks) => (
         <div>
           <div className="flex justify-between items-center">
