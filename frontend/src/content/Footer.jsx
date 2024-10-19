@@ -8,29 +8,29 @@ import {
   HoverCardContent,
   HoverCardTrigger,
 } from "@/components/ui/hover-card";
+import { Separator } from "@radix-ui/react-menubar";
 
 const Footer = () => {
   return (
     <>
-      <div className="bg-slate-800 text-white py-20">
+      <div className=" bg-slate-800 text-white py-20">
         <div className="container sm:container md:container lg:container">
-          <div className="grid w-full grid-cols-1 items-center gap-5 md:grid-cols-2 lg:grid-cols-4">
-            <div className="">
-              <h1 className="flex gap-2 items-center font-bold">
-                <BrainCircuit />
-                EduGemini
-              </h1>
-              <p className="my-5" />
-              <p className="text-sm opacity-70 italic text-justify">
-                EduGemini is a cutting-edge classroom management tool designed
-                to enhance the educational experience for both students and
-                teachers. Leveraging the power of Gemini AI, EduGemini provides
-                real-time, personalized feedback on student assignments and
-                teacher evaluations, making the learning process more efficient
-                and
-              </p>
-            </div>
-
+          <div className="container">
+            <h1 className="flex gap-2 items-center justify-center font-bold">
+              <BrainCircuit />
+              EduGemini
+            </h1>
+            <p className="my-5" />
+            <p className="text-sm opacity-70 italic text-center">
+              EduGemini is a cutting-edge classroom management tool designed to
+              enhance the educational experience for both students and teachers.
+              Leveraging the power of Gemini AI, EduGemini provides real-time,
+              personalized feedback on student assignments and teacher
+              evaluations, making the learning process more efficient and
+            </p>
+          </div>
+          <Separator className="my-10" />
+          <div className="flex flex-col items-center justify-evenly md:flex-row">
             <div className="flex justify-start lg:justify-center">
               <HoverCard>
                 <HoverCardTrigger>
@@ -45,6 +45,20 @@ const Footer = () => {
                 </HoverCardContent>
               </HoverCard>
             </div>
+            <div className="flex justify-start lg:justify-center">
+              <HoverCard>
+                <HoverCardTrigger>
+                  <BrainCircuit className="h-32 w-32" />
+                </HoverCardTrigger>
+                <HoverCardContent className="flex gap-2 items-center w-full">
+                  <BrainCircuit className="h-20 w-20" />
+                  <div className="font-semibold">
+                    <h1>EduGemini</h1>
+                    <p className="italic opacity-5">mjc</p>
+                  </div>
+                </HoverCardContent>
+              </HoverCard>
+            </div>
             <div className="flex justify-start lg:justify-center border-none lg:border-r-2 border-l-2 border-slate-600">
               <HoverCard>
                 <HoverCardTrigger>
@@ -55,20 +69,6 @@ const Footer = () => {
                   <div className="font-semibold">
                     <h1>Ilocos Sur Polytechnic State College</h1>
                     <p>Sta. Maria Campus</p>
-                  </div>
-                </HoverCardContent>
-              </HoverCard>
-            </div>
-            <div className="flex justify-start lg:justify-center">
-              <HoverCard>
-                <HoverCardTrigger>
-                  <BrainCircuit className="h-28 w-28" />
-                </HoverCardTrigger>
-                <HoverCardContent className="flex gap-2 items-center w-full">
-                  <BrainCircuit className="h-20 w-20" />
-                  <div className="font-semibold">
-                    <h1>EduGemini</h1>
-                    <p className="italic opacity-5">mjc</p>
                   </div>
                 </HoverCardContent>
               </HoverCard>
