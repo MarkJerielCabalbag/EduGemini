@@ -7,7 +7,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { Folder, Plus, Settings } from "lucide-react";
+import { AlignRight, Folder, Plus, Settings } from "lucide-react";
 import { Link } from "react-router-dom";
 
 import LoadingState from "@/utils/LoadingState";
@@ -16,6 +16,8 @@ import { Button } from "@/components/ui/button";
 import { useState } from "react";
 import CreateClass from "@/components/modals/CreateClass";
 import Error from "@/utils/Error";
+import Header from "@/content/Header";
+import { SheetNavbar } from "@/content/SheetNavbar";
 function Class() {
   const onSuccess = () => console.log("success");
   const onError = () => console.log("error");
@@ -52,8 +54,24 @@ function Class() {
               className={"h-screen flex flex-col items-center justify-center"}
             />
           ) : (
-            <div className="container sm:container md:container lg:container">
-              <MenuBar />
+            <div className="h-screen overflow-auto container sm:container md:container lg:container">
+              <Header
+                endContent={
+                  <>
+                    <div className="hidden lg:block">
+                      <MenuBar />
+                    </div>
+                    <SheetNavbar
+                      visibility={"block lg:hidden"}
+                      trigger={
+                        <Button>
+                          <AlignRight />
+                        </Button>
+                      }
+                    />
+                  </>
+                }
+              />
               {classData?.length === 0 ? (
                 <div className="h-screen flex flex-col justify-center items-center">
                   <img src={noData} style={{ width: "300px" }} />

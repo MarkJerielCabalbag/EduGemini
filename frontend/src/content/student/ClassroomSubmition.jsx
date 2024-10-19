@@ -183,16 +183,16 @@ function ClassroomSubmition() {
   }
 
   return (
-    <div className="h-full text-slate-900 sm:container md:container lg:container">
-      <div className="mx-5">
-        <ArrowLeft
-          className="my-5"
-          onClick={() => {
-            navigate(`/class/classroom/getCreatedClass/${roomId}/classwork`);
-          }}
-        />
-        <div className="text-slate-900">
-          <div className="">
+    <>
+      <div className=" text-slate-900 sm:container md:container lg:container">
+        <div className="mx-5 h-full">
+          <ArrowLeft
+            className="my-5"
+            onClick={() => {
+              navigate(`/class/classroom/getCreatedClass/${roomId}/classwork`);
+            }}
+          />
+          <div className="text-slate-900">
             {data?.map((classworkInfo) => {
               return (
                 <>
@@ -206,7 +206,7 @@ function ClassroomSubmition() {
                         )
                       );
                       return (
-                        <>
+                        <div className="h-full">
                           {info._id === workId ? (
                             <div>
                               <h1 className="flex flex-col gap-2 md:flex-row justify-between">
@@ -477,7 +477,7 @@ function ClassroomSubmition() {
                               <PrivateComment teacherId={classworkInfo.owner} />
                             </div>
                           ) : null}
-                        </>
+                        </div>
                       );
                     })}
                   </div>
@@ -485,12 +485,12 @@ function ClassroomSubmition() {
               );
             })}
           </div>
-        </div>
-        <div className="mt-5 h-screen">
-          <Feedback />
+          <div className="h-screen overflow-auto">
+            <Feedback />
+          </div>
         </div>
       </div>
-    </div>
+    </>
   );
 }
 

@@ -1,16 +1,18 @@
 import { BrainCircuit } from "lucide-react";
 import React from "react";
+import MenuBar from "./MenuBar";
+import { Button } from "@/components/ui/button";
 
-const Header = () => {
+const Header = ({ centerContent, endContent }) => {
   return (
-    <div className="bg-slate-900 text-white py-5">
-      <div className="container sm:container md:container lg:container">
-        <div className="flex justify-between items-center">
-          <h1 className="flex gap-2 items-center">
-            <BrainCircuit />
-            EduGemini
-          </h1>
-        </div>
+    <div className="py-5">
+      <div className="flex justify-between items-center">
+        <h1 className="flex gap-2 items-center font-bold">
+          <BrainCircuit />
+          EduGemini
+        </h1>
+
+        <>{endContent}</>
       </div>
     </div>
   );

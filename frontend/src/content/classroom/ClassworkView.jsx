@@ -331,14 +331,16 @@ function ClassworkView({ userStatus }) {
               {isLoading || isPending || isFetching ? (
                 <LoadingState />
               ) : (
-                <DataTable
-                  dataTable={dataTable.data}
-                  columns={setStudentListCol}
-                  statuses={studentListStatus}
-                  paginationVisibility={"show"}
-                  dataSheet={excel}
-                  excelFilename={`${classroomInfo.classwork_title}.xlsx`}
-                />
+                <div className="h-full">
+                  <DataTable
+                    dataTable={dataTable.data}
+                    columns={setStudentListCol}
+                    statuses={studentListStatus}
+                    paginationVisibility={"show"}
+                    dataSheet={excel}
+                    excelFilename={`${classroomInfo.classwork_title}.xlsx`}
+                  />
+                </div>
               )}
             </div>
           ))}

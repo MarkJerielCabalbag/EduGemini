@@ -168,14 +168,8 @@ const RowExpandView = ({ user }) => {
               ipsum!
             </p>
 
-            {isOverdue &&
-            user.files.length !== 0 &&
-            isOverdue &&
-            user.workStatus.name !== "Late" &&
-            isOverdue &&
-            user.workStatus.name === "Cancelled" &&
-            isOverdue &&
-            user.workStatus.name === "Shelved" ? (
+            {(isOverdue && user.workStatus.name === "Cancelled") ||
+            (isOverdue && user.workStatus.name === "Shelved") ? (
               <Button
                 variant="ghost"
                 className="bg-yellow-500 my-5"

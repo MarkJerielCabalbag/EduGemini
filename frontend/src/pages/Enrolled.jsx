@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import MenuBar from "@/content/MenuBar";
 import { Button } from "@/components/ui/button";
-import { Plus } from "lucide-react";
+import { AlignRight, Plus } from "lucide-react";
 import JoinClass from "@/components/modals/JoinClass";
 import {
   getAllClassroom,
@@ -23,6 +23,8 @@ import { Badge } from "@/components/ui/badge";
 import noData from "../assets/noData.png";
 import { useQueryClient } from "@tanstack/react-query";
 import { baseUrl } from "@/baseUrl";
+import { SheetNavbar } from "@/content/SheetNavbar";
+import Header from "@/content/Header";
 function Enrolled() {
   const queryClient = useQueryClient();
   const { userId } = useParams();
@@ -43,7 +45,7 @@ function Enrolled() {
   });
 
   return (
-    <div className="h-screen">
+    <div className="h-screen overflow-auto">
       {openJoinClassModal && (
         <JoinClass
           open={openJoinClassModal}
@@ -57,7 +59,23 @@ function Enrolled() {
         />
       ) : (
         <div className="container sm:container md:container lg:container">
-          <MenuBar />
+          <Header
+            endContent={
+              <>
+                <div className="hidden lg:block">
+                  <MenuBar />
+                </div>
+                <SheetNavbar
+                  visibility={"block lg:hidden"}
+                  trigger={
+                    <Button>
+                      <AlignRight />
+                    </Button>
+                  }
+                />
+              </>
+            }
+          />
 
           {classData?.length === 0 ? (
             <div className="h-screen flex flex-col justify-center items-center">
@@ -74,7 +92,7 @@ function Enrolled() {
             </div>
           ) : (
             <>
-              <div>
+              <div className="">
                 <Button
                   onClick={() => setOpenJoinClassModal(true)}
                   className="flex gap-2 items-center my-6 w-full md:w-auto"

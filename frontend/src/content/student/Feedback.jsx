@@ -32,33 +32,27 @@ const Feedback = () => {
               Score: {!feedbacks.score ? 0 : feedbacks.score}
             </p>
           </div>
-          <p className="opacity-70 italic mb-3 text-xs leading-6 md:text-md">
-            Lorem ipsum dolor sit amet consectetur adipisicing elit. Fuga
-            distinctio reprehenderit id corrupti, vel velit quae libero eligendi
-            obcaecati pariatur?
-          </p>
+
           {!feedbacks.studentFeedback ? (
-            <>
-              <div className="flex flex-col gap-5 text-xs leading-6 my-5 md:text-md">
-                <img src={ai} className="w-1/2 h-1/2" />
-                <div>
-                  <div className="flex items-center gap-2">
-                    <Info />
-                    <p className="font-extrabold">No Data</p>
-                  </div>
-                  <p className="italic opacity-65">
-                    After clicking 'Turn In', please allow about{" "}
-                    <span className="font-bold">1 minute</span> for your
-                    <span className="font-bold"> feedback and score</span> to be
-                    generated. This ensures that your submission is thoroughly{" "}
-                    <span className="font-bold">analyzed for accuracy</span>.
-                  </p>
+            <div className="flex flex-col gap-5 text-xs leading-6 my-5 md:text-md">
+              <img src={ai} className="w-1/2 h-1/2" />
+              <div>
+                <div className="flex items-center gap-2">
+                  <Info />
+                  <p className="font-extrabold">No Data</p>
                 </div>
+                <p className="italic opacity-65">
+                  After clicking 'Turn In', please allow about{" "}
+                  <span className="font-bold">1 minute</span> for your
+                  <span className="font-bold"> feedback and score</span> to be
+                  generated. This ensures that your submission is thoroughly{" "}
+                  <span className="font-bold">analyzed for accuracy</span>.
+                </p>
               </div>
-            </>
+            </div>
           ) : (
             <>
-              <pre className="w-full text-pretty text-justify opacity-80 leading-9">
+              <pre className="w-full h-full  text-pretty text-justify opacity-80 leading-9">
                 {feedbacks.studentFeedback}
               </pre>
             </>

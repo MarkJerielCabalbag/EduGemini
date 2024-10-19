@@ -9,7 +9,16 @@ import {
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { useNavigate } from "react-router-dom";
-import { LogOut, PlusCircle, Settings, Share } from "lucide-react";
+import {
+  Building,
+  GraduationCap,
+  Home,
+  LogOut,
+  PlusCircle,
+  Settings,
+  Share,
+  User,
+} from "lucide-react";
 import { useLogout, useGetUser, getUser } from "@/api/useApi";
 import toast from "react-hot-toast";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -47,7 +56,7 @@ function MenuBar() {
 
   const { mutateAsync } = useLogout({ onSuccess, onError });
   return (
-    <div className="w-full flex justify-center mt-4">
+    <div className="w-full flex justify-center">
       {openCreateClassModal && (
         <CreateClass
           open={openCreateClassModal}
@@ -57,25 +66,35 @@ function MenuBar() {
       {openJoinClassModal && (
         <JoinClass open={openJoinClassModal} onOpenChange={setJoinClassModal} />
       )}
-      <Menubar className="shadow-lg flex justify-center">
+      <Menubar className="flex justify-center">
         <MenubarMenu>
-          <Button variant={"ghost"} onClick={() => navigate("/home")}>
+          <Button
+            className="flex gap-2"
+            variant={"ghost"}
+            onClick={() => navigate("/home")}
+          >
+            <Home className="bg-slate-900 text-white rounded-full p-1" />
             Home
           </Button>
           <Button
+            className="flex gap-2"
             variant={"ghost"}
             onClick={() => navigate(`/class/${userId}`)}
           >
+            <Building className="bg-slate-900 text-white rounded-full p-1" />
             Class
           </Button>
           <Button
+            className="flex gap-2"
             variant={"ghost"}
             onClick={() => navigate(`/enrolled/${userId}`)}
           >
+            <GraduationCap className="bg-slate-900 text-white rounded-full p-1" />
             Enrolled
           </Button>
 
-          <MenubarTrigger variant={"ghost"}>
+          <MenubarTrigger variant={"ghost"} className="flex gap-2">
+            <User className="bg-slate-900 text-white rounded-full p-1" />
             Profile
             <MenubarContent>
               <MenubarItem

@@ -2,6 +2,7 @@ import MenuBar from "@/content/MenuBar";
 
 import { Button } from "@/components/ui/button";
 import {
+  AlignRight,
   BookMarked,
   BookType,
   BrainCircuit,
@@ -15,15 +16,32 @@ import {
   Pencil,
   UserRoundCheck,
 } from "lucide-react";
-import { useState } from "react";
+import React, { useState } from "react";
 import CreateClass from "@/components/modals/CreateClass";
 import JoinClass from "@/components/modals/JoinClass";
 import ViewSupportedFormats from "@/components/modals/ViewSupportedFormats";
+import Header from "@/content/Header";
+import { getUser, useGetUser } from "@/api/useApi";
+import { Avatar } from "@radix-ui/react-avatar";
+import { AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Skeleton } from "@/components/ui/skeleton";
+import { baseUrl } from "@/baseUrl";
+import { useNavigate } from "react-router-dom";
+import { SheetNavbar } from "@/content/SheetNavbar";
 
 function Home() {
   const [openCreateClassModal, setOpenCreateClassModal] = useState(false);
   const [openJoinClassModal, setOpenJoinClassModal] = useState(false);
   const [openViewFormats, setViewFormats] = useState(false);
+  const navigate = useNavigate();
+  const onSuccess = () => console.log("success");
+  const onError = () => console.log("error");
+  const userId = localStorage.getItem("userId");
+  const { data, isLoading, isError } = useGetUser({
+    queryFn: () => getUser(userId),
+    onSuccess,
+    onError,
+  });
 
   return (
     <div className="container h-full sm:container md:container lg:container">
@@ -45,7 +63,23 @@ function Home() {
           onOpenChange={setViewFormats}
         />
       )}
-      <MenuBar />
+      <Header
+        endContent={
+          <>
+            <div className="hidden lg:block">
+              <MenuBar />
+            </div>
+            <SheetNavbar
+              visibility={"block lg:hidden"}
+              trigger={
+                <Button>
+                  <AlignRight />
+                </Button>
+              }
+            />
+          </>
+        }
+      />
 
       <div className="flex flex-col">
         <div className="text-center my-20">
