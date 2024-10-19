@@ -36,7 +36,7 @@ function Class() {
   });
 
   return (
-    <>
+    <div className="overflow-auto">
       {openCreateClassModal && (
         <CreateClass
           open={openCreateClassModal}
@@ -54,7 +54,7 @@ function Class() {
               className={"h-screen flex flex-col items-center justify-center"}
             />
           ) : (
-            <div className="h-screen overflow-auto container sm:container md:container lg:container">
+            <div className="h-screen container sm:container md:container lg:container">
               <Header
                 endContent={
                   <>
@@ -173,7 +173,7 @@ function Class() {
           )}
         </>
       )}
-    </>
+    </div>
   );
 }
 

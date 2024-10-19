@@ -1,9 +1,8 @@
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { BrainCircuit } from "lucide-react";
-import mainBg from "../assets/main-bg.mp4";
+
 import SignIn from "../content/SignIn";
 import SignUp from "../content/SignUp";
-import Video from "../content/Video";
 
 function Auth() {
   return (

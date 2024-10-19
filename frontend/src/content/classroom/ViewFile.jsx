@@ -19,7 +19,21 @@ const ViewFile = () => {
     fileType: file.originalname.split(".").pop(),
     fileName: file.originalname,
   }));
-  return <DocViewer documents={docs} pluginRenderers={DocViewerRenderers} />;
+  return (
+    <div className="h-screen">
+      <DocViewer
+        documents={docs}
+        pluginRenderers={DocViewerRenderers}
+        config={{
+          header: {
+            disableHeader: false,
+            disableFileName: false,
+            retainURLParams: false,
+          },
+        }}
+      />
+    </div>
+  );
 };
 
 export default ViewFile;
