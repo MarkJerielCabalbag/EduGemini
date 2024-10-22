@@ -128,10 +128,7 @@ function ClassworkUpdate({ setOpenSettingModal }) {
         <UpdateIcon />
         Update
       </Label>
-      <p className="my-2">
-        Lorem ipsum dolor sit amet consectetur, adipisicing elit. Voluptatem,
-        perspiciatis.
-      </p>
+      <p className="my-2">Configure and update your classwork details below</p>
       <>
         <div className="my-3">
           <Label className="font-bold italic flex items-center gap-2 mb-2">

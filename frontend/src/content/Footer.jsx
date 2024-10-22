@@ -13,7 +13,7 @@ import { Separator } from "@radix-ui/react-menubar";
 const Footer = () => {
   return (
     <>
-      <div className=" bg-slate-800 text-white py-20">
+      <div className=" bg-slate-800 text-white py-5">
         <div className="container sm:container md:container lg:container">
           <div className="container">
             <h1 className="flex gap-2 items-center justify-center font-bold">
@@ -30,11 +30,11 @@ const Footer = () => {
             </p>
           </div>
           <Separator className="my-10" />
-          <div className="flex flex-col items-center justify-evenly md:flex-row">
+          <div className="flex gap-5 items-center justify-center">
             <div className="flex justify-start lg:justify-center">
               <HoverCard>
                 <HoverCardTrigger>
-                  <img src={css} className="h-28 w-28" />
+                  <img src={css} className="h-16 w-16" />
                 </HoverCardTrigger>
                 <HoverCardContent className="flex gap-2 items-center w-full">
                   <img src={css} className="h-20 w-20" />
@@ -48,7 +48,7 @@ const Footer = () => {
             <div className="flex justify-start lg:justify-center">
               <HoverCard>
                 <HoverCardTrigger>
-                  <BrainCircuit className="h-32 w-32" />
+                  <BrainCircuit className="h-16 w-16" />
                 </HoverCardTrigger>
                 <HoverCardContent className="flex gap-2 items-center w-full">
                   <BrainCircuit className="h-20 w-20" />
@@ -62,7 +62,7 @@ const Footer = () => {
             <div className="flex justify-start lg:justify-center border-none lg:border-r-2 border-l-2 border-slate-600">
               <HoverCard>
                 <HoverCardTrigger>
-                  <img src={ispsc} className="h-36 w-36" />
+                  <img src={ispsc} className="h-16 w-16" />
                 </HoverCardTrigger>
                 <HoverCardContent className="flex gap-2 items-center w-full">
                   <img src={ispsc} className="h-36 w-36" />
@@ -76,7 +76,7 @@ const Footer = () => {
           </div>
         </div>
       </div>
-      <div className="bg-slate-900 italic text-white py-3">
+      <div className="bg-slate-900 italic text-white py-3 text-sm">
         <div className=" flex justify-between container sm:container md:container lg:container">
           <p>&copy; {new Date().getFullYear()} EduGemini All Rights Reserved</p>
           <p className="italic opacity-15">mjc</p>

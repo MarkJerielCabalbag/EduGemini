@@ -23,12 +23,6 @@ function OpenClassworkSettings({
       alertDialogDescription={
         <>
           <div className="border-l-4 border-slate-500 p-5 shadow-md rounded mt-5 h-[330px] overflow-y-scroll">
-            <p className="mb-3">
-              Lorem ipsum dolor sit amet consectetur adipisicing elit. Quia
-              placeat soluta debitis aut totam tenetur assumenda optio est.
-              Odio, tempora?
-            </p>
-
             <ClassworkUpdate setOpenSettingModal={onOpenChange} />
 
             <div>
@@ -43,8 +37,8 @@ function OpenClassworkSettings({
                 />
               )}
               <p className="my-2">
-                Lorem ipsum dolor sit amet consectetur, adipisicing elit.
-                Deserunt, officia!
+                Are you sure you want to delete this classwork? This action
+                cannot be undone
               </p>
               <Button
                 className={"w-full hover:bg-red-700"}

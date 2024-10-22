@@ -516,6 +516,286 @@ const submitAttachment = asyncHandler(async (req, res, next) => {
   });
 });
 
+//@desc     check similarity index
+//@route    GET /api/eduGemini/classwork/similarityIndex/:roomId/:workId/:userId
+//@access   private
+const similarityIndex = asyncHandler(async (req, res, next) => {
+  const { roomId, workId, userId } = req.params;
+
+  const roomExist = await Classroom.findById(roomId);
+  if (!roomExist) {
+    return res.status(400).json({ message: `${roomId} id does not exist` });
+  }
+
+  const foundStudent = roomExist.students.find(
+    (student) => student._id.toString() === userId
+  );
+
+  if (!foundStudent) {
+    return res.status(400).json({ message: `Student ${userId} not found` });
+  }
+
+  const findClasswork = roomExist.classwork.findIndex(
+    (classwork) => classwork._id.toString() === workId
+  );
+
+  if (findClasswork === -1) {
+    return res.status(400).json({ message: `Classwork ${workId} not found` });
+  }
+
+  const workIndex = roomExist.classwork[findClasswork];
+
+  let studentExist = workIndex.classwork_outputs.find(
+    (output) => output._id.toString() === userId
+  );
+  //student files
+
+  const students = workIndex.classwork_outputs.map(
+    (output) => output._id.toString() === userId
+  );
+  if (!students._id) {
+    return res.status(400).json({ message: "No turned in output yet" });
+  }
+  const studentFiles = studentExist.files;
+
+  //student folder path
+  const studentFolderpath = studentExist.files.path;
+  //classwork folder path
+  const classworkPath = workIndex.classwork_folder_path;
+  //classwork attach file
+  const classworkAttachFile = workIndex.classwork_attach_file.originalname;
+
+  const filesToBeprompted = await Promise.all(
+    studentFiles.map(async (file) => {
+      let fileFormat = file.originalname.split(".").pop();
+      let studentFiles;
+      let answerPath = fs.readFileSync(
+        `classworks/${classworkPath}/answers${file.path}/${file.originalname}`
+      );
+
+      if (
+        fileFormat === "html" ||
+        fileFormat === "css" ||
+        fileFormat === "js" ||
+        fileFormat === "php" ||
+        fileFormat === "dart" ||
+        fileFormat === "py" ||
+        fileFormat === "c" ||
+        fileFormat === "cpp" ||
+        fileFormat === "cs" ||
+        fileFormat === "swift" ||
+        fileFormat === "rs" ||
+        fileFormat === "go" ||
+        fileFormat === "ru" ||
+        fileFormat === "r" ||
+        fileFormat === "sql" ||
+        fileFormat === "java"
+      ) {
+        studentFiles = answerPath;
+      } else if (
+        fileFormat === "docx" ||
+        fileFormat === "pptx" ||
+        fileFormat === "xlsx" ||
+        fileFormat === "pdf"
+      ) {
+        studentFiles = await officeParser.parseOfficeAsync(answerPath);
+      } else if (fileFormat === "png") {
+        const uploadResult = await fileManager.uploadFile(
+          `classworks/${classworkPath}/answers${file.path}/${file.originalname}`,
+          {
+            mimeType: "image/png",
+            displayName: `${file.originalname}`,
+          }
+        );
+        const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
+        const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+
+        const result = await model.generateContent([
+          "Analyze and describe the image provided as this serves as the answer of the student.",
+          {
+            fileData: {
+              fileUri: uploadResult.file.uri,
+              mimeType: uploadResult.file.mimeType,
+            },
+          },
+        ]);
+        studentFiles = result.response.text();
+      } else if (fileFormat === "jpg") {
+        const uploadResult = await fileManager.uploadFile(
+          `classworks/${classworkPath}/answers${file.path}/${file.originalname}`,
+          {
+            mimeType: "image/png",
+            displayName: `${file.originalname}`,
+          }
+        );
+        const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
+        const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+
+        const result = await model.generateContent([
+          "Analyze and describe the image provided as this serves as the answer of the student.",
+          {
+            fileData: {
+              fileUri: uploadResult.file.uri,
+              mimeType: uploadResult.file.mimeType,
+            },
+          },
+        ]);
+        studentFiles = result.response.text();
+      }
+
+      return studentFiles;
+    })
+  );
+
+  //student output
+  const studentOutput = {
+    _id: foundStudent._id,
+    name: `${foundStudent.user_lastname}, ${
+      foundStudent.user_firstname
+    } ${foundStudent.user_middlename.charAt(0)}.`,
+    output: filesToBeprompted,
+  };
+
+  const filterStudent = workIndex.classwork_outputs.filter(
+    (student) => student._id !== foundStudent._id
+  );
+
+  const studentsOutput = filterStudent.filter(
+    (students) =>
+      students.workStatus.name === "Turned in" ||
+      students.workStatus.name === "Late"
+  );
+
+  const fileOutputs = studentsOutput.map((outputFiles) => outputFiles);
+
+  const studentListOutputs = await Promise.all(
+    fileOutputs.map(async (file) => {
+      let fileFormat = file.files
+        .map((fileFormat) => fileFormat.originalname.split(".").pop())
+        .toString();
+
+      let studentFiles;
+      let answerPath = fs.readFileSync(
+        `classworks/${classworkPath}${file.path}/${file.files.map(
+          (file) => file.originalname
+        )}`
+      );
+
+      if (
+        fileFormat === "html" ||
+        fileFormat === "css" ||
+        fileFormat === "js" ||
+        fileFormat === "php" ||
+        fileFormat === "dart" ||
+        fileFormat === "py" ||
+        fileFormat === "c" ||
+        fileFormat === "cpp" ||
+        fileFormat === "cs" ||
+        fileFormat === "swift" ||
+        fileFormat === "rs" ||
+        fileFormat === "go" ||
+        fileFormat === "ru" ||
+        fileFormat === "r" ||
+        fileFormat === "sql" ||
+        fileFormat === "java"
+      ) {
+        studentFiles = answerPath;
+      } else if (
+        fileFormat === "docx" ||
+        fileFormat === "pptx" ||
+        fileFormat === "xlsx" ||
+        fileFormat === "pdf"
+      ) {
+        studentFiles = await officeParser.parseOfficeAsync(answerPath);
+      } else if (fileFormat === "png") {
+        const uploadResult = await fileManager.uploadFile(
+          `classworks/${classworkPath}${file.path}/${file.files.map(
+            (file) => file.originalname
+          )}`,
+          {
+            mimeType: "image/png",
+            displayName: `${file.originalname}`,
+          }
+        );
+        const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
+        const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+
+        const result = await model.generateContent([
+          "Analyze and describe the image provided as this serves as the answer of the student.",
+          {
+            fileData: {
+              fileUri: uploadResult.file.uri,
+              mimeType: uploadResult.file.mimeType,
+            },
+          },
+        ]);
+        studentFiles = result.response.text();
+      } else if (fileFormat === "jpg") {
+        const uploadResult = await fileManager.uploadFile(
+          `classworks/${classworkPath}${file.path}/${file.files.map(
+            (file) => file.originalname
+          )}`,
+          {
+            mimeType: "image/png",
+            displayName: `${file.originalname}`,
+          }
+        );
+        const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
+        const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+
+        const result = await model.generateContent([
+          "Analyze and describe the image provided as this serves as the answer of the student.",
+          {
+            fileData: {
+              fileUri: uploadResult.file.uri,
+              mimeType: uploadResult.file.mimeType,
+            },
+          },
+        ]);
+        studentFiles = result.response.text();
+      }
+
+      const foundStudent = roomExist.students.find(
+        (student) => student._id.toString() === file._id
+      );
+
+      return {
+        _id: foundStudent._id,
+        name: `${foundStudent.user_lastname}, ${
+          foundStudent.user_firstname
+        } ${foundStudent.user_middlename.charAt(0)}.`,
+        output: studentFiles,
+      };
+    })
+  );
+
+  const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
+  const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+
+  const prompt = `
+    Compare the similarity between this student's output: ${JSON.stringify(
+      studentOutput.output
+    )} 
+    and the following students' outputs: ${JSON.stringify(studentListOutputs)}. 
+    Return only an array of objects in the format: [{ "name": "student full name", "similarityIndex": percentage }]. 
+    The result should be pure JSON type with no extra characters included.
+  `;
+
+  try {
+    const result = await model.generateContent(prompt);
+
+    const similarityData = result.response.text();
+
+    console.log(similarityData);
+    return res.status(200).send(similarityData);
+  } catch (error) {
+    console.error("Error generating similarity index:", error);
+    return res
+      .status(500)
+      .json({ message: "Failed to generate similarity index." });
+  }
+});
+
 //@desc     cancel classwork attachment
 //@route    POST /api/eduGemini/classwork/cancel/:roomId/:workId/:userId
 //@access   private
@@ -1134,4 +1414,5 @@ export default {
   createPrivateComment,
   getExportActivities,
   exportSpecificActivity,
+  similarityIndex,
 };

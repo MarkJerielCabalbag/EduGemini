@@ -641,11 +641,30 @@ export async function cancelSubmition(
   });
 }
 
-export async function acceptLate(roomId, workId, userId) {
+export async function acceptLate(roomId, workId, userId, date, timeAction) {
   return await fetch(
     `${baseUrl}/api/eduGemini/classwork/late/${roomId}/${workId}/${userId}`,
     {
       method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ date, timeAction }),
+    }
+  ).then(async (res) => {
+    const response = await res.json();
+
+    if (!res.ok) {
+      throw new Error(response.message || "An Error Occured");
+    }
+
+    return response;
+  });
+}
+
+export async function similarityIndex(roomId, workId, userId) {
+  return await fetch(
+    `${baseUrl}/api/eduGemini/classwork/similarityIndex/${roomId}/${workId}/${userId}`,
+    {
+      method: "GET",
       headers: { "Content-Type": "application/json" },
     }
   ).then(async (res) => {
@@ -1101,6 +1120,14 @@ export const useRejectMultipleStudents = ({
 }) => {
   return useMutation({
     mutationFn,
+    onError,
+    onSuccess,
+  });
+};
+
+export const useGetSimilarityIndex = ({ queryFn, onError, onSuccess }) => {
+  return useQuery({
+    queryFn,
     onError,
     onSuccess,
   });

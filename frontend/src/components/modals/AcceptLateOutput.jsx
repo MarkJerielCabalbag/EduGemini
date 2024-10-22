@@ -5,7 +5,7 @@ import { acceptLate, useAcceptLate } from "@/api/useApi";
 import toast from "react-hot-toast";
 import { Loader2 } from "lucide-react";
 import { useQueryClient } from "@tanstack/react-query";
-
+import moment from "moment";
 const AcceptLateOutput = ({
   open,
   onOpenChange,
@@ -24,8 +24,12 @@ const AcceptLateOutput = ({
     queryClient.invalidateQueries({ queryKey: ["room"] });
     onOpenChange(false);
   };
+  const date = moment().format("MMMM Do YYYY");
+  let options = { hour: "2-digit", minute: "2-digit", hour12: true };
+  let dateAction = new Date();
+  let timeAction = dateAction.toLocaleString("en-US", options);
   const { mutateAsync, isPending } = useAcceptLate({
-    mutationFn: () => acceptLate(roomId, workId, userId),
+    mutationFn: () => acceptLate(roomId, workId, userId, date, timeAction),
     onError,
     onSuccess,
   });
@@ -51,7 +55,7 @@ const AcceptLateOutput = ({
             disabled={isPending}
             onClick={async () => {
               try {
-                await mutateAsync();
+                await mutateAsync({ date, timeAction });
               } catch (error) {
                 console.log(error);
               }

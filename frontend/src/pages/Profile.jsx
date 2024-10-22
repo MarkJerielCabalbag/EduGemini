@@ -9,26 +9,33 @@ import {
 import { ArrowLeft } from "lucide-react";
 import GetUser from "@/content/GetUser";
 import { useNavigate } from "react-router-dom";
+import UpdateUser from "@/content/UpdateUser";
 
 function Profile() {
   const navigate = useNavigate();
   return (
-    <div className="h-screen container sm:container md:container lg:container">
-      <div className="my-5">
-        <ArrowLeft onClick={() => navigate("/home")} />
+    <div className="h-full container sm:container md:container lg:container">
+      <div className="">
+        <div className="my-5">
+          <ArrowLeft onClick={() => navigate("/home")} />
+        </div>
+        <Card className="shadow-lg">
+          <CardHeader>
+            <CardTitle>User Profile</CardTitle>
+            <CardDescription className="py-5">
+              Your user profile is the key to a personalized experience.
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <div className="lg:h-screen">
+              <GetUser />
+            </div>
+            <div className="lg:hidden">
+              <UpdateUser />
+            </div>
+          </CardContent>
+        </Card>
       </div>
-      <Card className="shadow-lg">
-        <CardHeader>
-          <CardTitle>User Profile</CardTitle>
-          <CardDescription className="py-5">
-            Your user profile is the key to a personalized experience.
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
-          <GetUser />
-        </CardContent>
-        <CardFooter></CardFooter>
-      </Card>
     </div>
   );
 }

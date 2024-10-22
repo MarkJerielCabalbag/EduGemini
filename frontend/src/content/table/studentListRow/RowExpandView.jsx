@@ -1,3 +1,4 @@
+import { similarityIndex, useGetSimilarityIndex } from "@/api/useApi";
 import { baseUrl } from "@/baseUrl";
 import AcceptLateOutput from "@/components/modals/AcceptLateOutput";
 import AddChances from "@/components/modals/AddChances";
@@ -5,6 +6,7 @@ import PrivateCommentModal from "@/components/modals/PrivateCommentModal";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { Skeleton } from "@/components/ui/skeleton";
 import { Clock, File, Loader, Star } from "lucide-react";
 import moment from "moment";
 import React, { useState } from "react";
@@ -16,6 +18,9 @@ const RowExpandView = ({ user }) => {
   const [openPrivateCommentModal, setOpenPrivateModal] = useState(false);
 
   const { workId } = useParams();
+
+  const onError = () => console.log("error");
+  const onSuccess = () => console.log("success");
 
   const fileSizeLabel = (size) => {
     if (size >= 8589934592) {
@@ -35,6 +40,17 @@ const RowExpandView = ({ user }) => {
   const isOverdue = now.isAfter(
     moment(`${user.isOverdue}`, "MMM Do YYYY h:mm A")
   );
+
+  const roomId = user.roomId;
+  const userId = user._id;
+
+  const { data, isFetching, isLoading, error } = useGetSimilarityIndex({
+    queryFn: () => similarityIndex(roomId, workId, userId),
+    onError,
+    onSuccess,
+  });
+
+  console.log(data);
   return (
     <div className="p-5 w-full">
       {openAddChanceModal && (
@@ -164,8 +180,7 @@ const RowExpandView = ({ user }) => {
               Files
             </h1>
             <p className="italic text-slate-500 my-2 text-xs md:text-lg">
-              Lorem ipsum dolor sit, amet consectetur adipisicing elit. Officia,
-              ipsum!
+              These are the files of student
             </p>
 
             {(isOverdue && user.workStatus.name === "Cancelled") ||
@@ -204,6 +219,35 @@ const RowExpandView = ({ user }) => {
                 </div>
               ))}
             </div>
+            <h1 className="text-slate-900 my-5 text-sm italic font-bold md:text-lg">
+              Similarity Index
+            </h1>
+            {isFetching || isLoading ? (
+              <div className="grid grid-cols-3">
+                <div className="w-60 bg-slate-900 text-white p-5 rounded-md flex flex-col gap-3">
+                  <Skeleton className={"bg-slate-500 rounded-sm p-2 w-36"} />
+                  <Skeleton className={"bg-slate-500 rounded-sm p-2 w-32"} />
+                </div>
+              </div>
+            ) : (
+              <>
+                {user.workStatus.name === "Turned in" ||
+                user.workStatus.name === "Late" ? (
+                  <div className="grid grid-cols-3 gap-3">
+                    {data?.map((similar) => (
+                      <div className="w-full bg-slate-900 text-white p-5 rounded-md flex flex-col">
+                        <h1>{similar.name}</h1>
+                        <p className="font-bold">{similar.similarityIndex}%</p>
+                      </div>
+                    ))}
+                  </div>
+                ) : (
+                  <p className="italic text-slate-500 my-2 text-xs md:text-lg">
+                    {error.message}
+                  </p>
+                )}
+              </>
+            )}
           </div>
         </div>
       </div>

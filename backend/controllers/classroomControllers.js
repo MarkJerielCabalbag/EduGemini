@@ -360,11 +360,7 @@ const joinStudent = asyncHandler(async (req, res, next) => {
     });
   }
 
-  const accountInstructorExistAsStudent = classroomExist.students.find(
-    (student) => student.user_email === classroomExist.owner_email
-  );
-
-  if (accountInstructorExistAsStudent) {
+  if (classroomExist.owner_email === user_email) {
     return res
       .status(400)
       .json({ message: "You can not join the class you created" });
