@@ -548,15 +548,28 @@ const similarityIndex = asyncHandler(async (req, res, next) => {
   let studentExist = workIndex.classwork_outputs.find(
     (output) => output._id.toString() === userId
   );
-  //student files
 
   const students = workIndex.classwork_outputs.map(
     (output) => output._id.toString() === userId
   );
-  if (!students._id) {
-    return res.status(400).json({ message: "No turned in output yet" });
+
+  console.log(students);
+
+  if (
+    (students && !studentExist) ||
+    (studentExist && studentExist.workStatus.name === "Shelved") ||
+    (studentExist && studentExist.workStatus.name === "Cancelled") ||
+    (studentExist && studentExist.workStatus.name === "No Action Yet")
+  ) {
+    return res.status(400).send({ message: "No output yet" });
   }
+
+  //student files
   const studentFiles = studentExist.files;
+
+  const filterStudent = workIndex.classwork_outputs.filter(
+    (student) => student._id !== foundStudent._id
+  );
 
   //student folder path
   const studentFolderpath = studentExist.files.path;
@@ -564,6 +577,7 @@ const similarityIndex = asyncHandler(async (req, res, next) => {
   const classworkPath = workIndex.classwork_folder_path;
   //classwork attach file
   const classworkAttachFile = workIndex.classwork_attach_file.originalname;
+  const fileManager = new GoogleAIFileManager(process.env.GEMINI_API_KEY);
 
   const filesToBeprompted = await Promise.all(
     studentFiles.map(async (file) => {
@@ -656,10 +670,6 @@ const similarityIndex = asyncHandler(async (req, res, next) => {
     output: filesToBeprompted,
   };
 
-  const filterStudent = workIndex.classwork_outputs.filter(
-    (student) => student._id !== foundStudent._id
-  );
-
   const studentsOutput = filterStudent.filter(
     (students) =>
       students.workStatus.name === "Turned in" ||
@@ -714,7 +724,7 @@ const similarityIndex = asyncHandler(async (req, res, next) => {
           )}`,
           {
             mimeType: "image/png",
-            displayName: `${file.originalname}`,
+            displayName: `${file.files.map((file) => file.originalname)}`,
           }
         );
         const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
@@ -736,8 +746,8 @@ const similarityIndex = asyncHandler(async (req, res, next) => {
             (file) => file.originalname
           )}`,
           {
-            mimeType: "image/png",
-            displayName: `${file.originalname}`,
+            mimeType: "image/jpeg",
+            displayName: `${file.files.map((file) => file.originalname)}`,
           }
         );
         const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
@@ -786,7 +796,6 @@ const similarityIndex = asyncHandler(async (req, res, next) => {
 
     const similarityData = result.response.text();
 
-    console.log(similarityData);
     return res.status(200).send(similarityData);
   } catch (error) {
     console.error("Error generating similarity index:", error);
@@ -836,7 +845,7 @@ const cancelSubmition = asyncHandler(async (req, res, next) => {
   };
 
   let chances = studentExist.chancesResubmition - 1;
-
+  studentExist.timeSubmition = `${date}, ${timeAction}`;
   studentExist.studentFeedback = "";
   studentExist.score = "";
   studentExist.teacherFeedback = "";
