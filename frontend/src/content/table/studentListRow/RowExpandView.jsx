@@ -243,7 +243,7 @@ const RowExpandView = ({ user }) => {
                   </div>
                 ) : (
                   <p className="italic text-slate-500 my-2 text-xs md:text-lg">
-                    {error.message}
+                    {error?.message}
                   </p>
                 )}
               </>
