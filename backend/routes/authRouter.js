@@ -66,11 +66,9 @@ authRouter.post(
     const userExistStudentAccepted = await Classroom.find({
       acceptedStudents: { $elemMatch: { _id: userId } },
     });
-    console.log(userExistStudentAccepted.user_img);
 
     if (user) {
       user.user_username = req.body.user_username || user.user_username;
-      user.user_email = req.body.user_email || user.user_email;
 
       await user.save();
       if (req.file) {

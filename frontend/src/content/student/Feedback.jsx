@@ -34,14 +34,14 @@ const Feedback = () => {
           </div>
 
           {!feedbacks.studentFeedback ? (
-            <div className="flex flex-col gap-5 text-xs leading-6 my-5 md:text-md">
-              <img src={ai} className="w-1/2 h-1/2" />
+            <div className="flex flex-col items-center gap-5 text-xs leading-6 my-5 md:text-md">
+              <img src={ai} className="w-48 h-20" />
               <div>
-                <div className="flex items-center gap-2">
+                <div className="flex items-center justify-center gap-2">
                   <Info />
                   <p className="font-extrabold">No Data</p>
                 </div>
-                <p className="italic opacity-65">
+                <p className="italic opacity-65 text-center">
                   After clicking 'Turn In', please allow about{" "}
                   <span className="font-bold">1 minute</span> for your
                   <span className="font-bold"> feedback and score</span> to be

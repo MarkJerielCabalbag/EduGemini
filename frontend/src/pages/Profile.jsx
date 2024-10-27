@@ -27,12 +27,8 @@ function Profile() {
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <div className="lg:h-screen">
-              <GetUser />
-            </div>
-            <div className="lg:hidden">
-              <UpdateUser />
-            </div>
+            <GetUser />
+            <UpdateUser />
           </CardContent>
         </Card>
       </div>

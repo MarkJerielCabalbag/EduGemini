@@ -6,7 +6,7 @@ import SignUp from "../content/SignUp";
 
 function Auth() {
   return (
-    <div className="h-screen w-screen flex flex-col justify-center items-center my-28 p-5 md:my-0">
+    <div className="h-screen flex flex-col justify-center items-center my-28 p-5 md:my-0">
       <div className="text-center">
         <h1 className="flex gap-2 items-center justify-center italic font-bold sm:text-md md:text-2xl lg:text-2xl">
           <BrainCircuit />

@@ -18,7 +18,6 @@ import {
   Info,
   Loader2Icon,
   NotebookPen,
-  Timer,
   X,
 } from "lucide-react";
 import toast from "react-hot-toast";
@@ -32,6 +31,7 @@ import Feedback from "./Feedback";
 import PrivateComment from "./PrivateComment";
 import { Separator } from "@/components/ui/separator";
 import LoadingState from "@/utils/LoadingState";
+import { Badge } from "@/components/ui/badge";
 function ClassroomSubmition() {
   const [files, setFiles] = useState([]);
   const [showTurnInBtn, setShowTurnInBtn] = useState(false);
@@ -122,6 +122,11 @@ function ClassroomSubmition() {
       "image/png",
       "image/jpg",
       "image/jpeg",
+      "video/mp4",
+      "video/mpeg",
+      "video/mov",
+      "audio/wav",
+      "audio/mp3",
     ],
     multiple: true,
     readAs: "BinaryString",
@@ -182,6 +187,10 @@ function ClassroomSubmition() {
     );
   }
 
+  const workStatus = attachments
+    ?.map((output) => output.workStatus.name)
+    .toString();
+
   return (
     <>
       <div className=" text-slate-900 sm:container md:container lg:container">
@@ -218,9 +227,7 @@ function ClassroomSubmition() {
                                 </div>
                                 <div className="flex flex-col-reverse gap-2 md:flex-row">
                                   <h1 className={`${workBadge} text-xs`}>
-                                    {attachments?.map(
-                                      (output) => output.workStatus.name
-                                    )}
+                                    {workStatus}
                                   </h1>
 
                                   <h1 className="text-xs">
@@ -231,15 +238,13 @@ function ClassroomSubmition() {
 
                               <Separator className="my-5" />
 
-                              <div className="flex flex-col gap-2 my-2 md:flex-row justify-between">
-                                <p className="flex gap-2 items-center text-xs md:text-md">
-                                  <Calendar />
-                                  {info.classwork_due_date}
-                                </p>
-                                <p className="flex gap-2 items-center text-xs md:text-md">
-                                  <Timer />
-                                  {info.classwork_due_time}
-                                </p>
+                              <div className="flex gap-2 items-center font-semibold italic text-sm">
+                                <Calendar />
+                                <span className="font-bold">
+                                  Due Date:{" "}
+                                </span>{" "}
+                                {info.classwork_due_date},{" "}
+                                {info.classwork_due_time}
                               </div>
 
                               <p className="font-light italic my-2 text-xs md:text-md">
@@ -474,7 +479,12 @@ function ClassroomSubmition() {
                                 </div>
                               </div>
 
-                              <PrivateComment teacherId={classworkInfo.owner} />
+                              {workStatus === "Shelved" ||
+                              workStatus === "Turned in" ||
+                              workStatus === "Late" ||
+                              workStatus === "Cancelled" ? (
+                                <PrivateComment />
+                              ) : null}
                             </div>
                           ) : null}
                         </div>

@@ -406,7 +406,9 @@ const submitAttachment = asyncHandler(async (req, res, next) => {
         fileFormat === "pdf"
       ) {
         studentFiles = await officeParser.parseOfficeAsync(answerPath);
-      } else if (fileFormat === "png") {
+      }
+      //Visuals picture
+      else if (fileFormat === "png") {
         const uploadResult = await fileManager.uploadFile(
           `classworks/${classworkPath}/answers${file.path}/${file.originalname}`,
           {
@@ -447,6 +449,120 @@ const submitAttachment = asyncHandler(async (req, res, next) => {
             },
           },
         ]);
+        studentFiles = result.response.text();
+      }
+      //Visuals video
+      else if (fileFormat === "mp4") {
+        const uploadResult = await fileManager.uploadFile(
+          `classworks/${classworkPath}/answers${file.path}/${file.originalname}`,
+          {
+            mimeType: "video/mp4",
+            displayName: `${file.originalname}`,
+          }
+        );
+
+        const result = await model.generateContent([
+          {
+            fileData: {
+              mimeType: uploadResult.file.mimeType,
+              fileUri: uploadResult.file.uri,
+            },
+          },
+          {
+            text: "Analyze and describe the video provided as this serves as the answer of the student.",
+          },
+        ]);
+
+        studentFiles = result.response.text();
+      } else if (fileFormat === "mpeg") {
+        const uploadResult = await fileManager.uploadFile(
+          `classworks/${classworkPath}/answers${file.path}/${file.originalname}`,
+          {
+            mimeType: "video/mpeg",
+            displayName: `${file.originalname}`,
+          }
+        );
+
+        const result = await model.generateContent([
+          {
+            fileData: {
+              mimeType: uploadResult.file.mimeType,
+              fileUri: uploadResult.file.uri,
+            },
+          },
+          {
+            text: "Analyze and describe the video provided as this serves as the answer of the student.",
+          },
+        ]);
+
+        studentFiles = result.response.text();
+      } else if (fileFormat === "mov") {
+        const uploadResult = await fileManager.uploadFile(
+          `classworks/${classworkPath}/answers${file.path}/${file.originalname}`,
+          {
+            mimeType: "video/mov",
+            displayName: `${file.originalname}`,
+          }
+        );
+
+        const result = await model.generateContent([
+          {
+            fileData: {
+              mimeType: uploadResult.file.mimeType,
+              fileUri: uploadResult.file.uri,
+            },
+          },
+          {
+            text: "Analyze and describe the video provided as this serves as the answer of the student.",
+          },
+        ]);
+
+        studentFiles = result.response.text();
+      }
+      //Audio
+      else if (fileFormat === "wav") {
+        const uploadResult = await fileManager.uploadFile(
+          `classworks/${classworkPath}/answers${file.path}/${file.originalname}`,
+          {
+            mimeType: "audio/wav",
+            displayName: `${file.originalname}`,
+          }
+        );
+
+        const result = await model.generateContent([
+          {
+            fileData: {
+              mimeType: uploadResult.file.mimeType,
+              fileUri: uploadResult.file.uri,
+            },
+          },
+          {
+            text: "Analyze and describe the video provided as this serves as the answer of the student.",
+          },
+        ]);
+
+        studentFiles = result.response.text();
+      } else if (fileFormat === "mp3") {
+        const uploadResult = await fileManager.uploadFile(
+          `classworks/${classworkPath}/answers${file.path}/${file.originalname}`,
+          {
+            mimeType: "audio/mp3",
+            displayName: `${file.originalname}`,
+          }
+        );
+
+        const result = await model.generateContent([
+          {
+            fileData: {
+              mimeType: uploadResult.file.mimeType,
+              fileUri: uploadResult.file.uri,
+            },
+          },
+          {
+            text: "Analyze and describe the video provided as this serves as the answer of the student.",
+          },
+        ]);
+
         studentFiles = result.response.text();
       }
 

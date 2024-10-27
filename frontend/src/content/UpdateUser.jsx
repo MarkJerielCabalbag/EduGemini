@@ -33,13 +33,12 @@ function UpdateUser() {
   const userId = localStorage.getItem("userId");
 
   const [user_profile, setUserProfile] = useState([]);
-  const { user_email, user_username, user_password, confirm_password } =
-    updateInfo;
+  const { user_username, user_password, confirm_password } = updateInfo;
 
   async function handleUpload() {
     try {
       const formData = new FormData();
-      formData.append("user_email", user_email);
+
       formData.append("user_username", user_username);
       formData.append("user_password", user_password);
       formData.append("user_profile", user_profile);
@@ -66,7 +65,6 @@ function UpdateUser() {
 
   const handleReset = () =>
     setUpdateInfo({
-      user_email: "",
       user_username: "",
       user_password: "",
       confirm_password: "",
@@ -133,122 +131,93 @@ function UpdateUser() {
             </label>
           </Avatar>
         </div>
-        <div className="flex flex-col gap-2 my-3 md:flex-row">
-          <div className="w-full md:w-2/4">
-            <Label className="font-bold italic flex items-center gap-2 mb-2">
-              <MailCheck />
-              New Email
-            </Label>
-            <Input
-              type="text"
-              name="user_email"
-              value={user_email}
-              onChange={handleChange}
-              placeholder="Enter new email"
-              className={`${isError ? "border-red-500" : ""}`}
-            />
-            <p
-              className={`${
-                isError ? "show" : " "
-              }hidden text-red-500 text-xs italic mt-2`}
-            >
-              {isError ? (
-                <div className="flex items-center gap-1">
-                  <Info size={13} />
-                  Fill out all fields
-                </div>
-              ) : (
-                ""
-              )}
-            </p>
-          </div>
-          <div className="w-full md:w-2/4">
-            <Label className="font-bold italic flex items-center gap-2 mb-2">
-              <UserCheck />
-              New Username
-            </Label>
-            <Input
-              type="text"
-              name="user_username"
-              value={user_username}
-              onChange={handleChange}
-              placeholder="Enter new username"
-              className={`${isError ? "border-red-500" : ""}`}
-            />
-            <p
-              className={`${
-                isError ? "show" : " "
-              }hidden text-red-500 text-xs italic mt-2`}
-            >
-              {isError ? (
-                <div className="flex items-center gap-1">
-                  <Info size={13} />
-                  Fill out all fields
-                </div>
-              ) : (
-                ""
-              )}
-            </p>
-          </div>
+
+        <div className="w-full md:w-2/4">
+          <Label className="font-bold italic flex items-center gap-2 mb-2">
+            <UserCheck />
+            New Username
+          </Label>
+          <Input
+            type="text"
+            name="user_username"
+            value={user_username}
+            onChange={handleChange}
+            placeholder="Enter new username"
+            className={`${isError ? "border-red-500" : ""}`}
+          />
+          <p
+            className={`${
+              isError ? "show" : " "
+            }hidden text-red-500 text-xs italic mt-2`}
+          >
+            {isError ? (
+              <div className="flex items-center gap-1">
+                <Info size={13} />
+                Fill out all fields
+              </div>
+            ) : (
+              ""
+            )}
+          </p>
         </div>
-        <div className="flex gap-2 my-3 flex-col md:flex-row">
-          <div className="w-full md:w-2/4">
-            <Label className="font-bold italic flex items-center gap-2 mb-2">
-              <LockIcon />
-              New Password
-            </Label>
-            <Input
-              type="password"
-              name="user_password"
-              value={user_password}
-              onChange={handleChange}
-              placeholder="Enter new password"
-              className={`${isError ? "border-red-500" : ""}`}
-            />
-            <p
-              className={`${
-                isError ? "show" : " "
-              }hidden text-red-500 text-xs italic mt-2`}
-            >
-              {isError ? (
-                <div className="flex items-center gap-1">
-                  <Info size={13} />
-                  Fill out all fields
-                </div>
-              ) : (
-                ""
-              )}
-            </p>
-          </div>
-          <div className="w-full md:w-2/4">
-            <Label className="font-bold italic flex items-center gap-2 mb-2">
-              <LockKeyholeOpen />
-              Confirm Password
-            </Label>
-            <Input
-              type="password"
-              name="confirm_password"
-              value={confirm_password}
-              onChange={handleChange}
-              placeholder="Enter password to confirm"
-              className={`${isError ? "border-red-500" : ""}`}
-            />
-            <p
-              className={`${
-                isError ? "show" : " "
-              }hidden text-red-500 text-xs italic mt-2`}
-            >
-              {isError ? (
-                <div className="flex items-center gap-1">
-                  <Info size={13} />
-                  Fill out all fields
-                </div>
-              ) : (
-                ""
-              )}
-            </p>
-          </div>
+
+        <div className="w-full md:w-2/4">
+          <Label className="font-bold italic flex items-center gap-2 mb-2">
+            <LockIcon />
+            New Password
+          </Label>
+          <Input
+            type="password"
+            name="user_password"
+            value={user_password}
+            onChange={handleChange}
+            placeholder="Enter new password"
+            className={`${isError ? "border-red-500" : ""}`}
+          />
+          <p
+            className={`${
+              isError ? "show" : " "
+            }hidden text-red-500 text-xs italic mt-2`}
+          >
+            {isError ? (
+              <div className="flex items-center gap-1">
+                <Info size={13} />
+                Fill out all fields
+              </div>
+            ) : (
+              ""
+            )}
+          </p>
         </div>
+        <div className="w-full md:w-2/4">
+          <Label className="font-bold italic flex items-center gap-2 mb-2">
+            <LockKeyholeOpen />
+            Confirm Password
+          </Label>
+          <Input
+            type="password"
+            name="confirm_password"
+            value={confirm_password}
+            onChange={handleChange}
+            placeholder="Enter password to confirm"
+            className={`${isError ? "border-red-500" : ""}`}
+          />
+          <p
+            className={`${
+              isError ? "show" : " "
+            }hidden text-red-500 text-xs italic mt-2`}
+          >
+            {isError ? (
+              <div className="flex items-center gap-1">
+                <Info size={13} />
+                Fill out all fields
+              </div>
+            ) : (
+              ""
+            )}
+          </p>
+        </div>
+
         <Button
           type="submit"
           className="w-full my-3"

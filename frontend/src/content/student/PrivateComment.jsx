@@ -6,7 +6,7 @@ import moment from "moment";
 import React, { useState } from "react";
 import { useParams } from "react-router-dom";
 
-const PrivateComment = ({ teacherId }) => {
+const PrivateComment = () => {
   const [openPrivateCommentModal, setOpenPrivateModal] = useState(false);
   const { workId, roomId, userId } = useParams();
 
@@ -22,6 +22,7 @@ const PrivateComment = ({ teacherId }) => {
           studentId={userId}
         />
       )}
+
       <Button
         variant={"secondary"}
         className="w-full my-5 flex justify-start"

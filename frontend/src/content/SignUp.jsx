@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { useRegister } from "@/api/useApi";
 import { Navigate, useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
+import { Separator } from "@/components/ui/separator";
 
 function SignUp() {
   const [user, setUser] = useState({
@@ -43,10 +44,7 @@ function SignUp() {
   return (
     <>
       <h1 className="mt-5 mb-2 text-xl font-bold text-center">Join Us!</h1>
-      <p className="italic opacity-50 text-center">
-        Lorem ipsum dolor sit amet consectetur adipisicing elit. Doloremque,
-        totam!
-      </p>
+      <Separator className="my-5" />
       <form onSubmit={(e) => e.preventDefault()}>
         <div className="flex gap-2 w-full my-5">
           <div className=" w-2/4">
