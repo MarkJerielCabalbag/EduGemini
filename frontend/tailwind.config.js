@@ -2,10 +2,10 @@
 module.exports = {
   darkMode: ["class"],
   content: [
-    './pages/**/*.{js,jsx}',
-    './components/**/*.{js,jsx}',
-    './app/**/*.{js,jsx}',
-    './src/**/*.{js,jsx}',
+    "./pages/**/*.{js,jsx}",
+    "./components/**/*.{js,jsx}",
+    "./app/**/*.{js,jsx}",
+    "./src/**/*.{js,jsx}",
   ],
   prefix: "",
   theme: {
@@ -17,6 +17,21 @@ module.exports = {
       },
     },
     extend: {
+      keyframes: {
+        gauge_fadeIn: {
+          from: { opacity: "0" },
+          to: { opacity: "1" },
+        },
+        gauge_fill: {
+          from: { "stroke-dashoffset": "332", opacity: "0" },
+          to: { opacity: "1" },
+        },
+      },
+      animation: {
+        gauge_fadeIn: "gauge_fadeIn 1s ease forwards",
+        gauge_fill: "gauge_fill 1s ease forwards",
+      },
+
       colors: {
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",
@@ -74,4 +89,4 @@ module.exports = {
     },
   },
   plugins: [require("tailwindcss-animate")],
-}
+};

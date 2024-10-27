@@ -31,7 +31,7 @@ function DeleteClassworkType({ open, onOpenChange, classworkId }) {
       <ReusableModal
         open={open}
         onOpenChange={onOpenChange}
-        alertDialogTitle={"Delete Classwork"}
+        alertDialogTitle={"Delete Classwork Type"}
         alertDialogDescription={
           <>Are you sure to delete this classwork type?</>
         }

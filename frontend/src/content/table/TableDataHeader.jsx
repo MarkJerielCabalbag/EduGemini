@@ -29,7 +29,13 @@ function TableDataHeader({ header }) {
             ? null
             : flexRender(header.column.columnDef.header, header.getContext())}
           {header.column.getCanSort() && (
-            <>{header.column.getIsSorted() === "asc" ? " 🔼" : " 🔽"}</>
+            <>
+              <>
+                {header.column.getIsSorted() === "desc" ? " 🔼" : ""}
+
+                {header.column.getIsSorted() === "asc" ? "  🔽" : ""}
+              </>
+            </>
           )}
         </div>
       </TableHead>

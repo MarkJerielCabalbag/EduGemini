@@ -43,7 +43,7 @@ const RejectAllStudent = ({
       }
       alertDialogFooter={
         <>
-          <Button disabled={isPending} onClick={() => onOpenChange(true)}>
+          <Button disabled={isPending} onClick={() => onOpenChange(false)}>
             Cancel
           </Button>
           <Button

@@ -257,10 +257,15 @@ function ClassworkView({ userStatus }) {
                 </div>
                 <ToolTipComponent
                   trigger={
-                    <Settings
-                      size={30}
+                    <Button
+                      className="bg-transparent hover:bg-transparent md:flex flex-row-reverse gap-2"
                       onClick={() => setOpenSettingModal(true)}
-                    />
+                    >
+                      <span className="hidden md:inline text-slate-900">
+                        Open Settings
+                      </span>
+                      <Settings size={25} className="text-slate-900" />
+                    </Button>
                   }
                   content={<p>Open Settings</p>}
                 />

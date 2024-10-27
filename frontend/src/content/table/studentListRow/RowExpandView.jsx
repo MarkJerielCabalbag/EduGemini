@@ -6,6 +6,7 @@ import PrivateCommentModal from "@/components/modals/PrivateCommentModal";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { Gauge } from "@/components/ui/gauge";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Clock, File, Loader, Star } from "lucide-react";
 import moment from "moment";
@@ -50,7 +51,6 @@ const RowExpandView = ({ user }) => {
     onSuccess,
   });
 
-  console.log(data);
   return (
     <div className="p-3">
       {openAddChanceModal && (
@@ -224,9 +224,11 @@ const RowExpandView = ({ user }) => {
             </h1>
             {isFetching || isLoading ? (
               <div className="grid grid-cols-3">
-                <div className="w-60 bg-slate-900 text-white p-5 rounded-md flex flex-col gap-3">
+                <div className="w-60 bg-slate-900 text-white p-5 rounded-md flex flex-col-reverse items-start gap-2">
                   <Skeleton className={"bg-slate-500 rounded-sm p-2 w-36"} />
-                  <Skeleton className={"bg-slate-500 rounded-sm p-2 w-32"} />
+                  <Skeleton
+                    className={"bg-slate-500 p-2 h-16 w-16 rounded-full"}
+                  />
                 </div>
               </div>
             ) : (
@@ -235,9 +237,14 @@ const RowExpandView = ({ user }) => {
                 user.workStatus.name === "Late" ? (
                   <div className="grid grid-cols-3 gap-3">
                     {data?.map((similar) => (
-                      <div className="w-full bg-slate-900 text-white p-5 rounded-md flex flex-col">
+                      <div className=" bg-slate-900 text-white p-5 rounded-md flex flex-col-reverse items-start gap-2">
                         <h1>{similar.name}</h1>
-                        <p className="font-bold">{similar.similarityIndex}%</p>
+
+                        <Gauge
+                          value={similar.similarityIndex}
+                          size="medium"
+                          showValue={true}
+                        />
                       </div>
                     ))}
                   </div>

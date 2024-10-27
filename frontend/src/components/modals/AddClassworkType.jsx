@@ -41,9 +41,10 @@ function AddClassworkType({ open, onOpenChange }) {
         alertDialogDescription={
           <>
             <p>
-              Lorem ipsum dolor sit amet consectetur adipisicing elit. Animi
-              debitis dolores illo. Cum itaque illo aliquid eius, labore omnis
-              minima?
+              By adding classwork type, it ensures that the classworks are
+              organized and has labels to identify it with ease. Please provide
+              a well structured classwork type. (exp: 'Assignment', 'Project',
+              'Presentation')
             </p>
             <form onSubmit={(e) => e.preventDefault()}>
               <div className="mt-5">
