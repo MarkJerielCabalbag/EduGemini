@@ -24,6 +24,7 @@ import Filters from "./Filters";
 import { useRef } from "react";
 import * as XLSX from "xlsx";
 import { Button } from "@/components/ui/button";
+
 const DataTable = ({
   dataTable,
   columns,
@@ -106,7 +107,7 @@ const DataTable = ({
         </TableHeader>
         <TableBody>
           {table.getRowModel().rows.map((row) => (
-            <React.Fragment key={row.id}>
+            <>
               <TableRow>
                 {row.getVisibleCells().map((cell) => (
                   <TableCell key={cell.id}>
@@ -114,10 +115,9 @@ const DataTable = ({
                   </TableCell>
                 ))}
               </TableRow>
-              <>
-                {row.getIsExpanded() && <RowExpandView user={row.original} />}
-              </>
-            </React.Fragment>
+
+              {row.getIsExpanded() && <RowExpandView user={row.original} />}
+            </>
           ))}
         </TableBody>
       </Table>

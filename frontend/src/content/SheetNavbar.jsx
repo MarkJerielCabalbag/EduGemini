@@ -45,7 +45,7 @@ export function SheetNavbar({ trigger, visibility }) {
     toast.error("There seems to be an error, Try again");
     console.log(error.message);
   };
-  const { data, isLoading, isError } = useGetUser({
+  const { data, isLoading, isError, isPending, isFetching } = useGetUser({
     queryFn: () => getUser(userId),
     onSuccess,
     onError,
@@ -102,7 +102,7 @@ export function SheetNavbar({ trigger, visibility }) {
             {data?.map((user) => (
               <React.Fragment key={user._id}>
                 <Avatar className="border border-slate-900">
-                  {isLoading ? (
+                  {isLoading || isFetching || isPending ? (
                     <AvatarFallback>Profile</AvatarFallback>
                   ) : (
                     <>
@@ -111,20 +111,29 @@ export function SheetNavbar({ trigger, visibility }) {
                       />
                     </>
                   )}
-                  <AvatarFallback>Profile</AvatarFallback>
                 </Avatar>
                 <div className="flex flex-col">
                   {isLoading ? (
                     <Skeleton className="w-[100px] h-[20px] rounded bg-slate-500" />
                   ) : (
-                    <p className="text-sm">{user.user_username}</p>
+                    <p className="text-sm">
+                      {isLoading || isPending || isFetching ? (
+                        <Skeleton className="h-[20px] w-[100px]" />
+                      ) : (
+                        user.user_username
+                      )}
+                    </p>
                   )}
 
                   {isLoading ? (
                     <Skeleton className="w-[100px] h-[20px] rounded bg-slate-500" />
                   ) : (
                     <p className="text-sm italic opacity-75">
-                      {user.user_email}
+                      {isLoading || isPending || isFetching ? (
+                        <Skeleton className="h-[20px] w-[100px]" />
+                      ) : (
+                        user.user_email
+                      )}
                     </p>
                   )}
                 </div>

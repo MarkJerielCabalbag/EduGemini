@@ -1,11 +1,8 @@
-import { getAllActivities, useGetAllActivities } from "@/api/useApi";
-import { baseUrl } from "@/baseUrl";
-import { Avatar, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
+
 import { createColumnHelper } from "@tanstack/react-table";
-import axios from "axios";
-import { ChevronDown, ChevronRight, Divide, Minus, Plus } from "lucide-react";
-import { useMemo } from "react";
+
+import { ChevronDown, ChevronRight, Plus } from "lucide-react";
 
 const columnHelper = createColumnHelper();
 
@@ -13,14 +10,17 @@ export const setStudentListCol = [
   columnHelper.display({
     id: "plus",
     header: () => <Plus />,
-    cell: ({ row }) =>
-      row.getCanExpand() ? (
-        row.getIsExpanded() ? (
-          <ChevronDown onClick={row.getToggleExpandedHandler()} />
+    cell: ({ row }) => (
+      <>
+        {row.getCanExpand() ? (
+          <button onClick={row.getToggleExpandedHandler()}>
+            {row.getIsExpanded() ? <ChevronDown /> : <ChevronRight />}
+          </button>
         ) : (
-          <ChevronRight onClick={row.getToggleExpandedHandler()} />
-        )
-      ) : null,
+          ""
+        )}
+      </>
+    ),
   }),
 
   columnHelper.accessor("studentName", {

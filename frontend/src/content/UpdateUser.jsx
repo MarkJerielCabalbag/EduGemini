@@ -220,7 +220,7 @@ function UpdateUser() {
 
         <Button
           type="submit"
-          className="w-full my-3"
+          className="w-full my-3 md:w-2/4"
           onClick={async () => {
             if (confirm_password !== user_password) {
               toast.error("The password did not match, try again");

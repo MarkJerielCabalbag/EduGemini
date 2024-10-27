@@ -28,7 +28,7 @@ function GetUser() {
               <span className="font-bold text-md">Account ID: </span>
               <span className="font-bold italic opacity-60 text-sm">
                 {isLoading || isPending || isFetching ? (
-                  <Skeleton className={"w-[200px] h-[20px] bg-slate-900"} />
+                  <Skeleton className={"w-[150px] h-[20px] bg-slate-900"} />
                 ) : (
                   user._id
                 )}
@@ -37,12 +37,24 @@ function GetUser() {
 
             <p className="flex flex-col md:flex-row justify-between">
               <span className="font-bold">Username: </span>
-              <span className="font-bold italic">{user.user_username}</span>
+              <span className="font-bold italic opacity-60 text-sm">
+                {isLoading || isPending || isFetching ? (
+                  <Skeleton className={"w-[150px] h-[20px] bg-slate-900"} />
+                ) : (
+                  user.user_username
+                )}
+              </span>
             </p>
 
             <p className="flex flex-col md:flex-row justify-between">
               <span className="font-bold">Email: </span>
-              <span className="font-bold italic">{user.user_email}</span>
+              <span className="font-bold italic opacity-60 text-sm">
+                {isLoading || isPending || isFetching ? (
+                  <Skeleton className={"w-[150px] h-[20px] bg-slate-900"} />
+                ) : (
+                  user.user_email
+                )}
+              </span>
             </p>
           </div>
         </>

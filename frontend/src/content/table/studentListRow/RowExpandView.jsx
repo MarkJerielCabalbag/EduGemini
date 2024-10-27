@@ -52,7 +52,7 @@ const RowExpandView = ({ user }) => {
 
   console.log(data);
   return (
-    <div className="p-5 w-full">
+    <div className="p-3">
       {openAddChanceModal && (
         <AddChances
           open={openAddChanceModal}
