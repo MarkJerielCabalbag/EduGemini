@@ -6,7 +6,7 @@ import SignUp from "../content/SignUp";
 
 function Auth() {
   return (
-    <div className="h-screen flex flex-col justify-center items-center my-28 p-5 md:my-0">
+    <div className="container h-screen flex flex-col justify-center my-36 md:my-0">
       <div className="text-center">
         <h1 className="flex gap-2 items-center justify-center italic font-bold sm:text-md md:text-2xl lg:text-2xl">
           <BrainCircuit />
@@ -21,25 +21,27 @@ function Auth() {
         </p>
       </div>
 
-      <Tabs
-        defaultValue="signin"
-        className="bg-white shadow-2xl p-5 rounded-sm sm:w-full md:w-1/2 lg:w-4/12"
-      >
-        <TabsList className="w-full">
-          <TabsTrigger value="signin" className="w-2/4">
-            Sign in
-          </TabsTrigger>
-          <TabsTrigger value="signup" className="w-2/4">
-            Sign up
-          </TabsTrigger>
-        </TabsList>
-        <TabsContent value="signin">
-          <SignIn />
-        </TabsContent>
-        <TabsContent value="signup">
-          <SignUp />
-        </TabsContent>
-      </Tabs>
+      <div className="flex justify-center">
+        <Tabs
+          defaultValue="signin"
+          className="bg-white shadow-2xl p-5 rounded-sm w-[500px] md:w-1/2 lg:w-4/12"
+        >
+          <TabsList className="w-full">
+            <TabsTrigger value="signin" className="w-2/4">
+              Sign in
+            </TabsTrigger>
+            <TabsTrigger value="signup" className="w-2/4">
+              Sign up
+            </TabsTrigger>
+          </TabsList>
+          <TabsContent value="signin">
+            <SignIn />
+          </TabsContent>
+          <TabsContent value="signup">
+            <SignUp />
+          </TabsContent>
+        </Tabs>
+      </div>
     </div>
   );
 }

@@ -42,12 +42,12 @@ function SignUp() {
   });
 
   return (
-    <>
+    <div>
       <h1 className="mt-5 mb-2 text-xl font-bold text-center">Join Us!</h1>
       <Separator className="my-5" />
       <form onSubmit={(e) => e.preventDefault()}>
-        <div className="flex gap-2 w-full my-5">
-          <div className=" w-2/4">
+        <div className="gap-2 w-full my-5 md:flex">
+          <div className="w-full md:w-2/4">
             <Label
               htmlFor="user_email"
               className="font-bold italic flex items-center gap-2 mb-2"
@@ -77,7 +77,7 @@ function SignUp() {
               )}
             </p>
           </div>
-          <div className=" w-2/4">
+          <div className="w-full my-5 md:w-2/4 md:my-0">
             <Label
               htmlFor="user_name"
               className="font-bold italic flex items-center gap-2 mb-2"
@@ -163,7 +163,7 @@ function SignUp() {
           )}
         </Button>
       </form>
-    </>
+    </div>
   );
 }
 

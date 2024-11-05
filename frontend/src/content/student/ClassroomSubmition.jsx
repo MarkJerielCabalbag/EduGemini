@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Link, Navigate, useNavigate, useParams } from "react-router-dom";
-
+import { FileSizeValidator } from "use-file-picker/validators";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import {
   classwork,
@@ -130,6 +130,9 @@ function ClassroomSubmition() {
     ],
     multiple: true,
     readAs: "BinaryString",
+    validators: [
+      new FileSizeValidator({ maxFileSize: 100 * 1024 * 1024 /* 100 MB */ }),
+    ],
     onFilesSuccessfullySelected: async ({ plainFiles, filesContent }) => {
       console.log("onFilesSuccessfullySelected", plainFiles, filesContent);
 

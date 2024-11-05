@@ -61,7 +61,7 @@ function AdminAuthenticate() {
 
         <form
           onSubmit={(e) => e.preventDefault()}
-          className="bg-white shadow-2xl p-5 rounded"
+          className="bg-white shadow-2xl p-5 rounded w-[500px]"
         >
           <div className="my-5">
             <Label className="font-bold italic flex items-center gap-2 mb-2">

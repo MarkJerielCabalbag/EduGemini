@@ -90,7 +90,7 @@ function Announcements({ userStatus }) {
   });
 
   return (
-    <div className="h-full container sm:container md:container lg:container">
+    <div className="h-screen overflow-y-auto container sm:container md:container lg:container">
       {data?.map((item) => (
         <>
           {item._id === announceId ? (
