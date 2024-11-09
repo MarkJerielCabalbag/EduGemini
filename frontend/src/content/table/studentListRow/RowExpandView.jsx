@@ -235,7 +235,7 @@ const RowExpandView = ({ user }) => {
               <>
                 {user.workStatus.name === "Turned in" ||
                 user.workStatus.name === "Late" ? (
-                  <div className="grid grid-cols-3 gap-3">
+                  <div className="grid grid-cols-1 gap-3 w-full md:grid-cols-2 lg:grid-cols-4">
                     {data?.map((similar) => (
                       <div className=" bg-slate-900 text-white p-5 rounded-md flex flex-col-reverse items-start gap-2">
                         <h1>{similar.name}</h1>

@@ -344,7 +344,7 @@ classworkRouter.post(
 
       // Collect existing filenames for the student
       const existingFilenames = studentExist
-        ? studentExist.files.map((file) => file.filename)
+        ? studentExist.files.map((file) => file.originalname)
         : [];
 
       // Check for file duplication

@@ -7,7 +7,7 @@ import moment from "moment";
 import { GoogleGenerativeAI } from "@google/generative-ai";
 import officeParser from "officeparser";
 import { nanoid } from "nanoid";
-import { GoogleAIFileManager } from "@google/generative-ai/server";
+import { GoogleAIFileManager, FileState } from "@google/generative-ai/server";
 import { processInstrcutionFile } from "../utils/processInstructionFile.js";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
@@ -461,6 +461,24 @@ const submitAttachment = asyncHandler(async (req, res, next) => {
           }
         );
 
+        const name = uploadResult.file.name;
+
+        let fileState = await fileManager.getFile(name);
+        while (fileState.state === FileState.PROCESSING) {
+          process.stdout.write("processing");
+          // Sleep for 10 seconds
+          await new Promise((resolve) => setTimeout(resolve, 10_000));
+          // Fetch the file from the API again
+          fileState = await fileManager.getFile(name);
+        }
+
+        if (fileState.state === FileState.FAILED) {
+          return res.status(400).json({ message: "Video processing failed." });
+        }
+
+        const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
+        const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+
         const result = await model.generateContent([
           {
             fileData: {
@@ -482,6 +500,24 @@ const submitAttachment = asyncHandler(async (req, res, next) => {
             displayName: `${file.originalname}`,
           }
         );
+
+        const name = uploadResult.file.name;
+
+        let fileState = await fileManager.getFile(name);
+        while (fileState.state === FileState.PROCESSING) {
+          process.stdout.write("processing");
+          // Sleep for 10 seconds
+          await new Promise((resolve) => setTimeout(resolve, 10_000));
+          // Fetch the file from the API again
+          fileState = await fileManager.getFile(name);
+        }
+
+        if (fileState.state === FileState.FAILED) {
+          return res.status(400).json({ message: "Video processing failed." });
+        }
+
+        const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
+        const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
 
         const result = await model.generateContent([
           {
@@ -505,6 +541,23 @@ const submitAttachment = asyncHandler(async (req, res, next) => {
           }
         );
 
+        const name = uploadResult.file.name;
+
+        let fileState = await fileManager.getFile(name);
+        while (fileState.state === FileState.PROCESSING) {
+          process.stdout.write("processing");
+          // Sleep for 10 seconds
+          await new Promise((resolve) => setTimeout(resolve, 10_000));
+          // Fetch the file from the API again
+          fileState = await fileManager.getFile(name);
+        }
+
+        if (fileState.state === FileState.FAILED) {
+          return res.status(400).json({ message: "Video processing failed." });
+        }
+
+        const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
+        const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
         const result = await model.generateContent([
           {
             fileData: {
@@ -529,6 +582,22 @@ const submitAttachment = asyncHandler(async (req, res, next) => {
           }
         );
 
+        const name = uploadResult.file.name;
+
+        let fileState = await fileManager.getFile(name);
+        while (fileState.state === FileState.PROCESSING) {
+          process.stdout.write("processing");
+          // Sleep for 10 seconds
+          await new Promise((resolve) => setTimeout(resolve, 10_000));
+          // Fetch the file from the API again
+          fileState = await fileManager.getFile(name);
+        }
+
+        if (fileState.state === FileState.FAILED) {
+          return res.status(400).json({ message: "Audio processing failed." });
+        }
+        const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
+        const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
         const result = await model.generateContent([
           {
             fileData: {
@@ -550,6 +619,8 @@ const submitAttachment = asyncHandler(async (req, res, next) => {
             displayName: `${file.originalname}`,
           }
         );
+        const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
+        const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
 
         const result = await model.generateContent([
           {
@@ -752,7 +823,7 @@ const similarityIndex = asyncHandler(async (req, res, next) => {
         const uploadResult = await fileManager.uploadFile(
           `classworks/${classworkPath}/answers${file.path}/${file.originalname}`,
           {
-            mimeType: "image/png",
+            mimeType: "image/jpeg",
             displayName: `${file.originalname}`,
           }
         );
@@ -779,6 +850,24 @@ const similarityIndex = asyncHandler(async (req, res, next) => {
           }
         );
 
+        const name = uploadResult.file.name;
+
+        let fileState = await fileManager.getFile(name);
+        while (fileState.state === FileState.PROCESSING) {
+          process.stdout.write("processing");
+          // Sleep for 10 seconds
+          await new Promise((resolve) => setTimeout(resolve, 10_000));
+          // Fetch the file from the API again
+          fileState = await fileManager.getFile(name);
+        }
+
+        if (fileState.state === FileState.FAILED) {
+          return res.status(400).json({ message: "Video processing failed." });
+        }
+
+        const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
+        const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+
         const result = await model.generateContent([
           {
             fileData: {
@@ -800,6 +889,24 @@ const similarityIndex = asyncHandler(async (req, res, next) => {
             displayName: `${file.originalname}`,
           }
         );
+
+        const name = uploadResult.file.name;
+
+        let fileState = await fileManager.getFile(name);
+        while (fileState.state === FileState.PROCESSING) {
+          process.stdout.write("processing");
+          // Sleep for 10 seconds
+          await new Promise((resolve) => setTimeout(resolve, 10_000));
+          // Fetch the file from the API again
+          fileState = await fileManager.getFile(name);
+        }
+
+        if (fileState.state === FileState.FAILED) {
+          return res.status(400).json({ message: "Video processing failed." });
+        }
+
+        const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
+        const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
 
         const result = await model.generateContent([
           {
@@ -823,6 +930,23 @@ const similarityIndex = asyncHandler(async (req, res, next) => {
           }
         );
 
+        const name = uploadResult.file.name;
+
+        let fileState = await fileManager.getFile(name);
+        while (fileState.state === FileState.PROCESSING) {
+          process.stdout.write("processing");
+          // Sleep for 10 seconds
+          await new Promise((resolve) => setTimeout(resolve, 10_000));
+          // Fetch the file from the API again
+          fileState = await fileManager.getFile(name);
+        }
+
+        if (fileState.state === FileState.FAILED) {
+          return res.status(400).json({ message: "Video processing failed." });
+        }
+
+        const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
+        const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
         const result = await model.generateContent([
           {
             fileData: {
@@ -847,6 +971,22 @@ const similarityIndex = asyncHandler(async (req, res, next) => {
           }
         );
 
+        const name = uploadResult.file.name;
+
+        let fileState = await fileManager.getFile(name);
+        while (fileState.state === FileState.PROCESSING) {
+          process.stdout.write("processing");
+          // Sleep for 10 seconds
+          await new Promise((resolve) => setTimeout(resolve, 10_000));
+          // Fetch the file from the API again
+          fileState = await fileManager.getFile(name);
+        }
+
+        if (fileState.state === FileState.FAILED) {
+          return res.status(400).json({ message: "Audio processing failed." });
+        }
+        const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
+        const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
         const result = await model.generateContent([
           {
             fileData: {
@@ -868,6 +1008,8 @@ const similarityIndex = asyncHandler(async (req, res, next) => {
             displayName: `${file.originalname}`,
           }
         );
+        const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
+        const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
 
         const result = await model.generateContent([
           {
@@ -993,12 +1135,32 @@ const similarityIndex = asyncHandler(async (req, res, next) => {
       } //Visuals video
       else if (fileFormat === "mp4") {
         const uploadResult = await fileManager.uploadFile(
-          `classworks/${classworkPath}/answers${file.path}/${file.originalname}`,
+          `classworks/${classworkPath}${file.path}/${file.files.map(
+            (file) => file.originalname
+          )}`,
           {
             mimeType: "video/mp4",
-            displayName: `${file.originalname}`,
+            displayName: `${file.files.map((file) => file.originalname)}`,
           }
         );
+
+        const name = uploadResult.file.name;
+
+        let fileState = await fileManager.getFile(name);
+        while (fileState.state === FileState.PROCESSING) {
+          process.stdout.write("processing");
+          // Sleep for 10 seconds
+          await new Promise((resolve) => setTimeout(resolve, 10_000));
+          // Fetch the file from the API again
+          fileState = await fileManager.getFile(name);
+        }
+
+        if (fileState.state === FileState.FAILED) {
+          return res.status(400).json({ message: "Video processing failed." });
+        }
+
+        const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
+        const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
 
         const result = await model.generateContent([
           {
@@ -1015,12 +1177,32 @@ const similarityIndex = asyncHandler(async (req, res, next) => {
         studentFiles = result.response.text();
       } else if (fileFormat === "mpeg") {
         const uploadResult = await fileManager.uploadFile(
-          `classworks/${classworkPath}/answers${file.path}/${file.originalname}`,
+          `classworks/${classworkPath}${file.path}/${file.files.map(
+            (file) => file.originalname
+          )}`,
           {
             mimeType: "video/mpeg",
-            displayName: `${file.originalname}`,
+            displayName: `${file.files.map((file) => file.originalname)}`,
           }
         );
+
+        const name = uploadResult.file.name;
+
+        let fileState = await fileManager.getFile(name);
+        while (fileState.state === FileState.PROCESSING) {
+          process.stdout.write("processing");
+          // Sleep for 10 seconds
+          await new Promise((resolve) => setTimeout(resolve, 10_000));
+          // Fetch the file from the API again
+          fileState = await fileManager.getFile(name);
+        }
+
+        if (fileState.state === FileState.FAILED) {
+          return res.status(400).json({ message: "Video processing failed." });
+        }
+
+        const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
+        const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
 
         const result = await model.generateContent([
           {
@@ -1037,12 +1219,32 @@ const similarityIndex = asyncHandler(async (req, res, next) => {
         studentFiles = result.response.text();
       } else if (fileFormat === "mov") {
         const uploadResult = await fileManager.uploadFile(
-          `classworks/${classworkPath}/answers${file.path}/${file.originalname}`,
+          `classworks/${classworkPath}${file.path}/${file.files.map(
+            (file) => file.originalname
+          )}`,
           {
             mimeType: "video/mov",
-            displayName: `${file.originalname}`,
+            displayName: `${file.files.map((file) => file.originalname)}`,
           }
         );
+
+        const name = uploadResult.file.name;
+
+        let fileState = await fileManager.getFile(name);
+        while (fileState.state === FileState.PROCESSING) {
+          process.stdout.write("processing");
+          // Sleep for 10 seconds
+          await new Promise((resolve) => setTimeout(resolve, 10_000));
+          // Fetch the file from the API again
+          fileState = await fileManager.getFile(name);
+        }
+
+        if (fileState.state === FileState.FAILED) {
+          return res.status(400).json({ message: "Video processing failed." });
+        }
+
+        const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
+        const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
 
         const result = await model.generateContent([
           {
@@ -1061,12 +1263,32 @@ const similarityIndex = asyncHandler(async (req, res, next) => {
       //Audio
       else if (fileFormat === "wav") {
         const uploadResult = await fileManager.uploadFile(
-          `classworks/${classworkPath}/answers${file.path}/${file.originalname}`,
+          `classworks/${classworkPath}${file.path}/${file.files.map(
+            (file) => file.originalname
+          )}`,
           {
             mimeType: "audio/wav",
-            displayName: `${file.originalname}`,
+            displayName: `${file.files.map((file) => file.originalname)}`,
           }
         );
+
+        const name = uploadResult.file.name;
+
+        let fileState = await fileManager.getFile(name);
+        while (fileState.state === FileState.PROCESSING) {
+          process.stdout.write("processing");
+          // Sleep for 10 seconds
+          await new Promise((resolve) => setTimeout(resolve, 10_000));
+          // Fetch the file from the API again
+          fileState = await fileManager.getFile(name);
+        }
+
+        if (fileState.state === FileState.FAILED) {
+          return res.status(400).json({ message: "Video processing failed." });
+        }
+
+        const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
+        const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
 
         const result = await model.generateContent([
           {
@@ -1083,12 +1305,32 @@ const similarityIndex = asyncHandler(async (req, res, next) => {
         studentFiles = result.response.text();
       } else if (fileFormat === "mp3") {
         const uploadResult = await fileManager.uploadFile(
-          `classworks/${classworkPath}/answers${file.path}/${file.originalname}`,
+          `classworks/${classworkPath}${file.path}/${file.files.map(
+            (file) => file.originalname
+          )}`,
           {
             mimeType: "audio/mp3",
-            displayName: `${file.originalname}`,
+            displayName: `${file.files.map((file) => file.originalname)}`,
           }
         );
+
+        const name = uploadResult.file.name;
+
+        let fileState = await fileManager.getFile(name);
+        while (fileState.state === FileState.PROCESSING) {
+          process.stdout.write("processing");
+          // Sleep for 10 seconds
+          await new Promise((resolve) => setTimeout(resolve, 10_000));
+          // Fetch the file from the API again
+          fileState = await fileManager.getFile(name);
+        }
+
+        if (fileState.state === FileState.FAILED) {
+          return res.status(400).json({ message: "Video processing failed." });
+        }
+
+        const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
+        const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
 
         const result = await model.generateContent([
           {
@@ -1525,7 +1767,7 @@ const acceptLateClasswork = asyncHandler(async (req, res, next) => {
         const uploadResult = await fileManager.uploadFile(
           `classworks/${classworkPath}/answers${file.path}/${file.originalname}`,
           {
-            mimeType: "image/png",
+            mimeType: "image/jpeg",
             displayName: `${file.originalname}`,
           }
         );
@@ -1552,6 +1794,24 @@ const acceptLateClasswork = asyncHandler(async (req, res, next) => {
           }
         );
 
+        const name = uploadResult.file.name;
+
+        let fileState = await fileManager.getFile(name);
+        while (fileState.state === FileState.PROCESSING) {
+          process.stdout.write("processing");
+          // Sleep for 10 seconds
+          await new Promise((resolve) => setTimeout(resolve, 10_000));
+          // Fetch the file from the API again
+          fileState = await fileManager.getFile(name);
+        }
+
+        if (fileState.state === FileState.FAILED) {
+          return res.status(400).json({ message: "Video processing failed." });
+        }
+
+        const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
+        const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+
         const result = await model.generateContent([
           {
             fileData: {
@@ -1573,6 +1833,24 @@ const acceptLateClasswork = asyncHandler(async (req, res, next) => {
             displayName: `${file.originalname}`,
           }
         );
+
+        const name = uploadResult.file.name;
+
+        let fileState = await fileManager.getFile(name);
+        while (fileState.state === FileState.PROCESSING) {
+          process.stdout.write("processing");
+          // Sleep for 10 seconds
+          await new Promise((resolve) => setTimeout(resolve, 10_000));
+          // Fetch the file from the API again
+          fileState = await fileManager.getFile(name);
+        }
+
+        if (fileState.state === FileState.FAILED) {
+          return res.status(400).json({ message: "Video processing failed." });
+        }
+
+        const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
+        const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
 
         const result = await model.generateContent([
           {
@@ -1596,6 +1874,23 @@ const acceptLateClasswork = asyncHandler(async (req, res, next) => {
           }
         );
 
+        const name = uploadResult.file.name;
+
+        let fileState = await fileManager.getFile(name);
+        while (fileState.state === FileState.PROCESSING) {
+          process.stdout.write("processing");
+          // Sleep for 10 seconds
+          await new Promise((resolve) => setTimeout(resolve, 10_000));
+          // Fetch the file from the API again
+          fileState = await fileManager.getFile(name);
+        }
+
+        if (fileState.state === FileState.FAILED) {
+          return res.status(400).json({ message: "Video processing failed." });
+        }
+
+        const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
+        const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
         const result = await model.generateContent([
           {
             fileData: {
@@ -1620,6 +1915,22 @@ const acceptLateClasswork = asyncHandler(async (req, res, next) => {
           }
         );
 
+        const name = uploadResult.file.name;
+
+        let fileState = await fileManager.getFile(name);
+        while (fileState.state === FileState.PROCESSING) {
+          process.stdout.write("processing");
+          // Sleep for 10 seconds
+          await new Promise((resolve) => setTimeout(resolve, 10_000));
+          // Fetch the file from the API again
+          fileState = await fileManager.getFile(name);
+        }
+
+        if (fileState.state === FileState.FAILED) {
+          return res.status(400).json({ message: "Audio processing failed." });
+        }
+        const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
+        const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
         const result = await model.generateContent([
           {
             fileData: {
@@ -1641,6 +1952,8 @@ const acceptLateClasswork = asyncHandler(async (req, res, next) => {
             displayName: `${file.originalname}`,
           }
         );
+        const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
+        const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
 
         const result = await model.generateContent([
           {

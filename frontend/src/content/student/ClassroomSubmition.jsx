@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Link, Navigate, useNavigate, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import { FileSizeValidator } from "use-file-picker/validators";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import {
@@ -14,6 +14,8 @@ import {
 import {
   ArrowLeft,
   Calendar,
+  CheckCircle2,
+  CircleX,
   File,
   Info,
   Loader2Icon,
@@ -23,7 +25,7 @@ import {
 import toast from "react-hot-toast";
 import { Button } from "@/components/ui/button";
 import { useFilePicker } from "use-file-picker";
-import DocViewer, { DocViewerRenderers } from "@cyntler/react-doc-viewer";
+
 import { baseUrl } from "@/baseUrl";
 import CancelSubmitionModal from "@/components/modals/CancelSubmitionModal";
 import moment from "moment";
@@ -31,7 +33,9 @@ import Feedback from "./Feedback";
 import PrivateComment from "./PrivateComment";
 import { Separator } from "@/components/ui/separator";
 import LoadingState from "@/utils/LoadingState";
-import { Badge } from "@/components/ui/badge";
+import axios from "axios";
+import { Progress } from "@/components/ui/progress";
+
 function ClassroomSubmition() {
   const [files, setFiles] = useState([]);
   const [showTurnInBtn, setShowTurnInBtn] = useState(false);
@@ -42,6 +46,9 @@ function ClassroomSubmition() {
   const userId = localStorage.getItem("userId");
   const { workId, roomId } = useParams();
   const [filename, setFilename] = useState("");
+
+  const [progress, setProgress] = useState({ started: false, pc: 0 });
+  const [progressMessage, setProgressMessage] = useState("");
   const { data } = useQuery({
     queryKey: ["classwork"],
     queryFn: () => classwork(workId),
@@ -55,7 +62,9 @@ function ClassroomSubmition() {
   let dateAction = new Date();
   let timeAction = dateAction.toLocaleString("en-US", options);
 
-  const onError = () => console.log("error");
+  const onError = (error) => {
+    toast.error(error.message);
+  };
   const onSuccess = (data) => {
     queryCleint.invalidateQueries({ queryKey: ["attachments"] });
     queryCleint.invalidateQueries({ queryKey: ["classwork"] });
@@ -135,7 +144,7 @@ function ClassroomSubmition() {
     ],
     onFilesSuccessfullySelected: async ({ plainFiles, filesContent }) => {
       console.log("onFilesSuccessfullySelected", plainFiles, filesContent);
-
+      let addFile;
       try {
         const formData = new FormData();
         formData.append("roomId", roomId);
@@ -146,24 +155,33 @@ function ClassroomSubmition() {
         for (let i = 0; i < plainFiles.length; i++) {
           formData.append(`files`, plainFiles[i]);
         }
-
-        const response = await fetch(
-          `${baseUrl}/api/eduGemini/classwork/addFiles/${workId}`,
-          {
-            method: "POST",
-            body: formData,
-          }
-        );
-
-        const data = await response.json();
-        if (!response.ok) {
-          throw new Error(data.message || "An error occurred");
-        }
-
-        toast.success(data.message);
-        queryCleint.invalidateQueries({
-          queryKey: ["attachments"],
+        setProgressMessage("Uploading...");
+        setProgress((prevState) => {
+          return { ...prevState, started: true };
         });
+        const response = await axios
+          .post(
+            `${baseUrl}/api/eduGemini/classwork/addFiles/${workId}`,
+            formData,
+            {
+              onUploadProgress: (progressEvent) => {
+                setProgress((prevState) => {
+                  return { ...prevState, pc: progressEvent.progress * 100 };
+                });
+              },
+            }
+          )
+          .then((res) => {
+            setProgressMessage("Uploaded Successfully");
+            queryCleint.invalidateQueries({
+              queryKey: ["attachments"],
+            });
+            console.log(res.data);
+            toast.success(res.data.message);
+          })
+          .catch(() => {
+            setProgressMessage("Duplicated file'(s)");
+          });
       } catch (error) {
         toast.error(error.message);
       }
@@ -289,13 +307,30 @@ function ClassroomSubmition() {
 
                               <div className="my-2 text-xs md:text-md">
                                 <h1>Your Work</h1>
-
+                                <div className="w-full">
+                                  {progress.started && (
+                                    <div className="flex gap-2 mt-2">
+                                      <Progress value={progress.pc} />
+                                      {parseInt(progress.pc)}%
+                                    </div>
+                                  )}
+                                  {progressMessage && (
+                                    <p className="flex gap-1 items-center my-2">
+                                      {progressMessage ===
+                                      "Uploaded Successfully" ? (
+                                        <CheckCircle2 />
+                                      ) : null}
+                                      {progressMessage}
+                                    </p>
+                                  )}
+                                </div>
                                 <div className="h-full overflow-x-auto">
                                   {attachments?.length === 0 ? (
                                     <>
                                       <div className="flex justify-center items-center">
                                         No files uploaded yet.
                                       </div>
+
                                       <Button
                                         className={`w-full my-2 `}
                                         onClick={() => openFilePicker()}

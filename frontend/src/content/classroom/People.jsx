@@ -117,14 +117,18 @@ function People() {
         <div className=" text-slate-900 flex items-center gap-3 ">
           <div className="flex items-center gap-4">
             <h1 className="text-5xl font-extrabold">{male}</h1>
-            <h1 className="font-extrabold text-lg">Males</h1>
+            <h1 className="font-extrabold text-lg">
+              {male > 1 ? "Males" : "Male"}
+            </h1>
           </div>
         </div>
 
         <div className=" text-slate-900 flex items-center gap-3">
           <div className="flex items-center gap-4">
             <h1 className="text-5xl font-extrabold">{female}</h1>
-            <h1 className="font-extrabold text-lg">Females</h1>
+            <h1 className="font-extrabold text-lg">
+              {female > 1 ? "Females" : "Female"}
+            </h1>
           </div>
         </div>
       </div>

@@ -3,6 +3,7 @@ import MenuBar from "@/content/MenuBar";
 import { Button } from "@/components/ui/button";
 import {
   AlignRight,
+  AudioLines,
   BookMarked,
   BookType,
   BrainCircuit,
@@ -11,7 +12,9 @@ import {
   Captions,
   FileDown,
   FileUp,
+  Film,
   GraduationCap,
+  Image,
   NotepadText,
   Pencil,
   UserRoundCheck,
@@ -19,20 +22,24 @@ import {
 import React, { useState } from "react";
 import CreateClass from "@/components/modals/CreateClass";
 import JoinClass from "@/components/modals/JoinClass";
-import ViewSupportedFormats from "@/components/modals/ViewSupportedFormats";
+
 import Header from "@/content/Header";
 import { getUser, useGetUser } from "@/api/useApi";
-import { Avatar } from "@radix-ui/react-avatar";
-import { AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Skeleton } from "@/components/ui/skeleton";
-import { baseUrl } from "@/baseUrl";
+
 import { useNavigate } from "react-router-dom";
 import { SheetNavbar } from "@/content/SheetNavbar";
+import {
+  audioSupported,
+  codeSuppoted,
+  documentSupported,
+  pictureSupported,
+  videoSupported,
+} from "@/utils/fileSupported";
 
 function Home() {
   const [openCreateClassModal, setOpenCreateClassModal] = useState(false);
   const [openJoinClassModal, setOpenJoinClassModal] = useState(false);
-  const [openViewFormats, setViewFormats] = useState(false);
+
   const navigate = useNavigate();
   const onSuccess = () => console.log("success");
   const onError = () => console.log("error");
@@ -57,12 +64,7 @@ function Home() {
           onOpenChange={setOpenJoinClassModal}
         />
       )}
-      {openViewFormats && (
-        <ViewSupportedFormats
-          open={openViewFormats}
-          onOpenChange={setViewFormats}
-        />
-      )}
+
       <Header
         endContent={
           <>
@@ -126,10 +128,14 @@ function Home() {
           Why use EduGemini?
         </h1>
         <p className="italic opacity-70 text-sm md:text-lg text-center p-5">
-          EduGemini is more than just a classroom management tool; it’s a
-          partner in education. By integrating advanced AI technology, we aim to
-          create a more engaging, efficient, and personalized learning
-          experience for everyone involved.
+          EduGemini is more than just a classroom management tool; it’s{" "}
+          <b>a partner in education.</b> By integrating advanced AI technology,
+          we aim to create a more
+          <b>
+            {" "}
+            engaging, efficient, and personalized learning experience for
+            everyone involved.
+          </b>
         </p>
 
         <div className="grid grid-cols-1 gap-3 md:grid-cols-3">
@@ -140,7 +146,10 @@ function Home() {
             <p className="text-md opacity-90 italic">
               Our advanced AI analyzes student submissions to provide detailed
               feedback on their output by providing constructive feedback making
-              sure that every students improves their skills continuously.
+              sure that every students improves their skills continuously. Based
+              on student output, teachers receive insights on how their teaching
+              methods have impacted student performance, allowing them to adjust
+              and improve their instructional strategies.
             </p>
             <BrainCog
               size={100}
@@ -149,12 +158,14 @@ function Home() {
           </div>
           <div className="bg-slate-900 text-white text-justify p-5 rounded-sm relative">
             <h1 className="text-md font-bold mb-3 md:text-2xl">
-              Teacher Feedback
+              Similarity Index
             </h1>
             <p className="text-md opacity-90 italic">
-              Based on student output, teachers receive insights on how their
-              teaching methods have impacted student performance, allowing them
-              to adjust and improve their instructional strategies.
+              Our Similarity Index uses advanced AI to analyze student
+              submissions, providing a similarity percentage that helps
+              educators easily identify matching content. This tool promotes
+              academic integrity and assists in pinpointing areas for
+              improvement, streamlining classroom management effectively.
             </p>
             <UserRoundCheck
               size={100}
@@ -182,11 +193,11 @@ function Home() {
         </h1>
         <p className="italic opacity-70 text-sm md:text-lg text-center p-5">
           EduGemini empowers educators by <b>simplifying the process </b>of
-          creating and managing classwork, offering an intuitive platform backed
-          by cutting-edge AI technology. Designed to{" "}
+          creating and managing classwork, offering an intuitive platform{" "}
+          <b> backed by cutting-edge AI technology.</b> Designed to{" "}
           <b>enhance both teaching and learning experiences</b>, this tool
-          provides a streamlined workflow for instructors to efficiently set up
-          classwork, allowing for greater focus on student engagement and
+          provides a <b>streamlined workflow</b> for instructors to efficiently
+          set up classwork, allowing for greater focus on student engagement and
           personalized education.
         </p>
 
@@ -279,7 +290,7 @@ function Home() {
           seamlessly upload their assignments across various formats.
         </p>
 
-        <div className="grid grid-cols-1 gap-3 mb-36 md:grid-cols-3">
+        <div className="grid grid-cols-1 gap-3 md:grid-cols-3">
           <div className="bg-slate-900 text-white text-justify p-5 rounded-sm relative">
             <h1 className="text-md font-bold mb-3 md:text-2xl">01</h1>
             <h2 className="text-xl md:2xl font-extrabold">View Classwork</h2>
@@ -306,19 +317,59 @@ function Home() {
             <h1 className="text-md font-bold mb-3 md:text-2xl">03</h1>
             <h2 className="text-xl md:2xl font-extrabold">Upload Submission</h2>
             <div className="text-md opacity-90 italic">
-              Make sure the the file is included in
-              <span
-                className="text-white italic font-semibold underline hover:pointer underline-offset-8"
-                onClick={() => setViewFormats(true)}
-              >
-                supported file formats
-              </span>
+              Make sure the the file is included in supported file formats
             </div>
             <NotepadText
               size={100}
               className="absolute bottom-3 right-3 opacity-30"
             />
           </div>
+        </div>
+        <h1 className="mt-36 text-center italic text-slate-600 font-extrabold text-2xl my-3 md:text-4xl">
+          Supported File Formats
+        </h1>
+
+        <p className="italic opacity-70 text-sm md:text-lg text-center p-5">
+          Our platform accepts a <b>wide range of file formats</b> to ensure
+          <b> flexibility and convenience for students</b>. These options are
+          designed to{" "}
+          <b>accommodate various types of assignments and projects</b>, making
+          it easy for students to <b>upload and share their work seamlessly.</b>
+        </p>
+
+        <div className="grid grid-cols-1 gap-10 mb-36 md:grid-cols-5">
+          {documentSupported.map((file) => (
+            <div key={file._id} className="flex items-center gap-2 ">
+              <img src={file.img} className="w-10 h-10" />
+              {file.name}
+            </div>
+          ))}
+          {codeSuppoted.map((file) => (
+            <div key={file._id} className="flex items-center gap-2 ">
+              <img src={file.img} className="w-10 h-10 object-contain" />
+              {file.name}
+            </div>
+          ))}
+          {pictureSupported.map((file) => (
+            <div key={file._id} className="flex items-center gap-2">
+              <Image className="h-10 w-10" />
+              {file.name}
+            </div>
+          ))}
+
+          {videoSupported.map((file) => (
+            <div key={file._id} className="flex items-center gap-2">
+              <Film className="h-12 w-12" />
+              {file.name}
+            </div>
+          ))}
+
+          {audioSupported.map((file) => (
+            <div key={file._id} className="flex items-center gap-2">
+              <AudioLines className="h-12 w-12" />
+              {file.name}
+            </div>
+          ))}
         </div>
       </div>
     </div>

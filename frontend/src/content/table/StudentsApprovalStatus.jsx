@@ -91,7 +91,7 @@ const StudentsApprovalStatus = ({
                 disabled={checkedList.length === 1 || checkedList.length === 0}
                 onClick={() => setShowRejectAll(true)}
               >
-                Re-Decline {`(${checkedList.length})`}
+                Decline {`(${checkedList.length})`}
               </Button>
 
               <Button
@@ -99,7 +99,7 @@ const StudentsApprovalStatus = ({
                 disabled={checkedList.length === 1 || checkedList.length === 0}
                 onClick={() => setShowAcceptAll(true)}
               >
-                Re-Approve {`(${checkedList.length})`}
+                Approve {`(${checkedList.length})`}
               </Button>
             </div>
           ) : null}

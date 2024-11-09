@@ -135,3 +135,26 @@ export const codeSuppoted = [
     img: html,
   },
 ];
+
+export const audioSupported = [
+  {
+    _id: 1,
+    name: "audio/wav",
+  },
+  {
+    _id: 2,
+    name: "audio/mp3",
+  },
+];
+
+export const videoSupported = [
+  {
+    _id: 3,
+    name: "video/mp4",
+  },
+  { _id: 4, name: "video/mpeg" },
+  {
+    _id: 5,
+    name: "video/mov",
+  },
+];

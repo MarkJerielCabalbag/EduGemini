@@ -43,7 +43,7 @@ function AdminAuthenticate() {
   });
 
   return (
-    <div className="h-full container sm:container md:container lg:container">
+    <div className="h-full container">
       <div className="my-20 h-screen flex flex-col items-center justify-center gap-10">
         <div className="text-center z-50">
           <h1 className="text-2xl flex gap-2 items-center justify-center italic font-bold">
@@ -61,7 +61,7 @@ function AdminAuthenticate() {
 
         <form
           onSubmit={(e) => e.preventDefault()}
-          className="bg-white shadow-2xl p-5 rounded w-[500px]"
+          className="bg-white shadow-2xl p-5 rounded w-4/5 md:w-1/2 lg:w-2/5"
         >
           <div className="my-5">
             <Label className="font-bold italic flex items-center gap-2 mb-2">

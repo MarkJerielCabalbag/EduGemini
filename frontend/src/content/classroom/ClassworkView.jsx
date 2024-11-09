@@ -14,28 +14,20 @@ import { studentListStatus } from "../table/studentListRow/sudentListStatus";
 import CopyFunctionality from "@/utils/CopyFunctionality";
 import LoadingState from "@/utils/LoadingState";
 import ToolTipComponent from "@/utils/ToolTipComponent";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import {
   ArrowLeft,
   Bell,
-  BookAIcon,
   Clock,
   File,
-  FileCheck2,
-  Files,
-  FileText,
-  School,
   School2Icon,
   SchoolIcon,
   Settings,
-  Timer,
-  Trash2,
 } from "lucide-react";
 import React from "react";
 import { useParams, useNavigate, Link } from "react-router-dom";
 import OpenClassworkSettings from "@/components/modals/OpenClassworkSettings";
 import { Button } from "@/components/ui/button";
-import { Label } from "@radix-ui/react-label";
 
 import { useQueryClient } from "@tanstack/react-query";
 import { toast } from "react-hot-toast";
@@ -44,7 +36,6 @@ import { Badge } from "@/components/ui/badge";
 import DataTable from "../table/DataTable";
 
 import { setStudentListCol } from "../table/useTable";
-import axios from "axios";
 
 function ClassworkView({ userStatus }) {
   const navigate = useNavigate();
@@ -123,6 +114,10 @@ function ClassworkView({ userStatus }) {
 
   const late = dataTable?.data?.filter(
     (workStatus) => workStatus.workStatus.name === "Late"
+  ).length;
+
+  const totalStudents = room?.map(
+    (roomInfo) => roomInfo.acceptedStudents
   ).length;
 
   return (

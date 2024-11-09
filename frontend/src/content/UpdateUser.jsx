@@ -24,7 +24,6 @@ import { baseUrl } from "@/baseUrl";
 function UpdateUser() {
   const queryClient = useQueryClient();
   const [updateInfo, setUpdateInfo] = useState({
-    user_email: "",
     user_username: "",
     user_password: "",
     confirm_password: "",
@@ -38,7 +37,6 @@ function UpdateUser() {
   async function handleUpload() {
     try {
       const formData = new FormData();
-
       formData.append("user_username", user_username);
       formData.append("user_password", user_password);
       formData.append("user_profile", user_profile);
@@ -58,6 +56,7 @@ function UpdateUser() {
 
       toast.success(data.message);
       queryClient.invalidateQueries({ queryKey: ["classworkInfo"] });
+      queryClient.invalidateQueries({ queryKey: ["user"] });
     } catch (error) {
       toast.error(error.message || "An unexpected error occurred");
     }
@@ -227,7 +226,6 @@ function UpdateUser() {
               handleReset();
             }
             const formData = {
-              user_email,
               user_username,
               user_password,
               user_profile,
@@ -236,7 +234,6 @@ function UpdateUser() {
             await mutateAsync(formData);
             handleReset();
             setUpdateInfo({
-              user_email: "",
               user_username: "",
               user_password: "",
               confirm_password: "",
