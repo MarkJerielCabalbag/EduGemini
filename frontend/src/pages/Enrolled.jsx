@@ -111,11 +111,12 @@ function Enrolled() {
                               <>
                                 <Card
                                   key={classroom._id}
-                                  className="shadow-lg rounded"
+                                  className="shadow-lg rounded relative"
                                 >
-                                  <CardHeader className="relative">
+                                  <CardHeader className="">
                                     <Avatar className="h-20 w-20 rounded-full border-2 border-slate-900">
                                       <AvatarImage
+                                        className="w-full h-full rounded-full"
                                         src={`${baseUrl}/${classroom.owner_email}/${classroom.user_img}`}
                                       ></AvatarImage>
                                     </Avatar>
@@ -154,11 +155,12 @@ function Enrolled() {
                               >
                                 <Card
                                   key={classroom._id}
-                                  className="shadow-lg rounded"
+                                  className="shadow-lg rounded relative"
                                 >
-                                  <CardHeader className="relative">
+                                  <CardHeader className="">
                                     <Avatar className="h-20 w-20 rounded-full border-2 border-slate-900">
                                       <AvatarImage
+                                        className="w-full h-full rounded-full"
                                         src={`${baseUrl}/${classroom.owner_email}/${classroom.user_img}`}
                                       ></AvatarImage>
                                     </Avatar>

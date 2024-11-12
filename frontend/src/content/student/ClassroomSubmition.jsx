@@ -144,7 +144,7 @@ function ClassroomSubmition() {
     ],
     onFilesSuccessfullySelected: async ({ plainFiles, filesContent }) => {
       console.log("onFilesSuccessfullySelected", plainFiles, filesContent);
-      let addFile;
+
       try {
         const formData = new FormData();
         formData.append("roomId", roomId);
@@ -159,7 +159,7 @@ function ClassroomSubmition() {
         setProgress((prevState) => {
           return { ...prevState, started: true };
         });
-        const response = await axios
+        await axios
           .post(
             `${baseUrl}/api/eduGemini/classwork/addFiles/${workId}`,
             formData,
