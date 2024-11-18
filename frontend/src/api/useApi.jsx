@@ -769,6 +769,40 @@ export async function getExportActivity(workId, roomId) {
   });
 }
 
+async function allUser() {
+  return await fetch(`${baseUrl}/api/eduGemini/allUser`, {
+    method: "GET",
+    headers: { "Content-Type": "application/json" },
+  }).then(async (res) => {
+    const response = await res.json();
+
+    if (!res.ok) {
+      throw new Error(response.message || "An Error Occured");
+    }
+
+    return response;
+  });
+}
+
+export async function plagiarism(userId, workId, roomId) {
+  return await fetch(
+    `${baseUrl}/api/eduGemini/classroom/plagiarismChecker/${userId}`,
+    {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ workId, roomId }),
+    }
+  ).then(async (res) => {
+    const response = await res.json();
+
+    if (!res.ok) {
+      throw new Error(response.message || "An Error Occured");
+    }
+
+    return response;
+  });
+}
+
 export const useGetClass = ({ queryFn, onSuccess, onError }) => {
   return useQuery({
     queryKey: ["room"],
@@ -1128,6 +1162,23 @@ export const useRejectMultipleStudents = ({
 export const useGetSimilarityIndex = ({ queryFn, onError, onSuccess }) => {
   return useQuery({
     queryFn,
+    onError,
+    onSuccess,
+  });
+};
+
+export const useGetAllUser = ({ onError, onSuccess }) => {
+  return useQuery({
+    queryKey: ["allUser"],
+    queryFn: () => allUser(),
+    onError,
+    onSuccess,
+  });
+};
+
+export const useGetPlagiarismChecker = ({ mutationFn, onError, onSuccess }) => {
+  return useMutation({
+    mutationFn,
     onError,
     onSuccess,
   });

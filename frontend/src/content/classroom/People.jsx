@@ -24,8 +24,9 @@ function People() {
     onSuccess,
   });
 
+  console.log(data);
   const students = data?.map((roomDetails) => roomDetails.students).flat();
-  console.log(students);
+
   const totalStudentApproved = students?.filter(
     (student) => student.approvalStatus === "approved"
   ).length;
@@ -39,11 +40,13 @@ function People() {
   ).length;
 
   const male = students?.filter(
-    (student) => student.user_gender === "male"
+    (student) =>
+      student.approvalStatus === "approved" && student.user_gender === "male"
   ).length;
 
   const female = students?.filter(
-    (student) => student.user_gender === "female"
+    (student) =>
+      student.approvalStatus === "approved" && student.user_gender === "female"
   ).length;
   return (
     <div className="container sm:container md:container lg:container">

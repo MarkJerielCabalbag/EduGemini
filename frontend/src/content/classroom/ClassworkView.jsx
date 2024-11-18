@@ -72,6 +72,7 @@ function ClassworkView({ userStatus }) {
     onSuccess,
   });
 
+  console.log(dataTable.data);
   const { data: user } = useGetUser({
     queryFn: () => getUser(userId),
     onSuccess,
@@ -92,28 +93,34 @@ function ClassworkView({ userStatus }) {
     );
   }
 
+  const filterLateTurnedIn = dataTable.data?.filter(
+    (student) =>
+      student?.workStatus?.name === "Late" ||
+      student?.workStatus?.name === "Turned in"
+  );
+
   const shelved = dataTable?.data?.filter(
-    (workStatus) => workStatus.workStatus.name === "Shelved"
+    (workStatus) => workStatus?.workStatus?.name === "Shelved"
   ).length;
 
   const missing = dataTable?.data?.filter(
-    (workStatus) => workStatus.workStatus.name === "Missing"
+    (workStatus) => workStatus?.workStatus?.name === "Missing"
   ).length;
 
   const turnedIn = dataTable?.data?.filter(
-    (workStatus) => workStatus.workStatus.name === "Turned in"
+    (workStatus) => workStatus?.workStatus?.name === "Turned in"
   ).length;
 
   const cancelled = dataTable?.data?.filter(
-    (workStatus) => workStatus.workStatus.name === "Cancelled"
+    (workStatus) => workStatus?.workStatus?.name === "Cancelled"
   ).length;
 
   const noActionYet = dataTable?.data?.filter(
-    (workStatus) => workStatus.workStatus.name === "No Action Yet"
+    (workStatus) => workStatus?.workStatus?.name === "No Action Yet"
   ).length;
 
   const late = dataTable?.data?.filter(
-    (workStatus) => workStatus.workStatus.name === "Late"
+    (workStatus) => workStatus?.workStatus?.name === "Late"
   ).length;
 
   const totalStudents = room?.map(
@@ -266,7 +273,7 @@ function ClassworkView({ userStatus }) {
                 />
               </div>
 
-              <div className="grid grid-cols-1 my-5 md:grid-cols-3 lg:grid-cols-6 ">
+              <div className="grid grid-cols-1 my-5 hover:cursor-pointer md:grid-cols-3 lg:grid-cols-6 ">
                 <div className=" text-slate-900 p-5 rounded-sm flex items-center gap-3">
                   <div className="p-2 bg-blue-500 rounded-sm w-10 h-10"></div>
                   <div className="flex flex-col">
@@ -339,6 +346,7 @@ function ClassworkView({ userStatus }) {
                     paginationVisibility={"show"}
                     dataSheet={excel}
                     excelFilename={`${classroomInfo.classwork_title}.xlsx`}
+                    filterLateTurnedIn={filterLateTurnedIn}
                   />
                 </div>
               )}

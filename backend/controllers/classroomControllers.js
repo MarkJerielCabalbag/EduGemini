@@ -6,6 +6,9 @@ import multer from "multer";
 import fs from "fs";
 import { dirname } from "path";
 import { fileURLToPath } from "url";
+import { FileState, GoogleAIFileManager } from "@google/generative-ai/server";
+import officeParser from "officeparser";
+import { GoogleGenerativeAI } from "@google/generative-ai";
 const __dirname = dirname(fileURLToPath(import.meta.url));
 //@desc     create class
 //@route    POST /api/eduGemini/classroom/createClass
@@ -130,28 +133,30 @@ const createPublicComment = asyncHandler(async (req, res, next) => {
   const { comment, userId, date, timeAction } = req.body;
 
   if (!comment) {
-    return res.status(400).json({ message: "Please fill out the field" });
+    return res.status(400).json({ message: "Cannot send without a comment" });
   }
 
   const roomExist = await Classroom.findById(roomId);
+  const user = await User.findById(userId);
+  // console.log(user._id.toString());
 
   const findAnnouncement = roomExist.announcement.findIndex(
     (announce) => announce._id.toString() === announceId
   );
   const anounceIndex = roomExist.announcement[findAnnouncement]; //announcement Index
 
-  const findStudent = roomExist.acceptedStudents.find(
+  const findStudent = roomExist.students.find(
     (student) => student._id === userId
   );
 
-  if (findStudent) {
+  console.log(findStudent);
+
+  if (user._id.toString() === findStudent._id) {
     // console.log(findStudent);
 
     const username = `${findStudent.user_lastname}, ${
       findStudent.user_firstname
     } ${findStudent.user_middlename.charAt(0)}.`;
-
-    const profile = `${findStudent.user_profile_path}/${findStudent.user_img}`;
 
     anounceIndex.publicComment.push({
       _id: nanoid(),
@@ -160,7 +165,6 @@ const createPublicComment = asyncHandler(async (req, res, next) => {
       username: username,
       date: date,
       time: timeAction,
-      profile: profile,
     });
   } else {
     anounceIndex.publicComment.push({
@@ -170,7 +174,6 @@ const createPublicComment = asyncHandler(async (req, res, next) => {
       username: roomExist.owner_name,
       date: date,
       time: timeAction,
-      profile: `${roomExist.profile_path}/${roomExist.user_img}`,
     });
   }
 
@@ -321,10 +324,10 @@ const deleteClassworkType = asyncHandler(async (req, res, next) => {
 const joinStudent = asyncHandler(async (req, res, next) => {
   const {
     _id,
-    user_username,
+    // user_username,
     user_email,
-    user_profile_path,
-    user_img,
+    // user_profile_path,
+    // user_img,
     user_lastname,
     user_firstname,
     user_middlename,
@@ -368,15 +371,15 @@ const joinStudent = asyncHandler(async (req, res, next) => {
 
   classroomExist.students.unshift({
     _id,
-    user_username,
-    user_email,
-    user_profile_path,
-    user_img,
+    // user_username,
+    // user_email,
+    // user_profile_path,
+    // user_img,
     user_lastname,
     user_firstname,
     user_middlename,
     user_gender,
-    class_code,
+    // class_code,
     approvalStatus: "pending",
   });
 
@@ -417,22 +420,22 @@ const acceptJoinStudent = asyncHandler(async (req, res, next) => {
 
   roomExist.acceptedStudents.push({
     _id: userId,
-    user_username: studentToBeUpdated.user_username,
-    user_email: studentToBeUpdated.user_email,
-    user_profile_path: studentToBeUpdated.user_profile_path,
-    user_img: studentToBeUpdated.user_img,
-    user_lastname: studentToBeUpdated.user_lastname,
-    user_firstname: studentToBeUpdated.user_firstname,
-    user_middlename: studentToBeUpdated.user_middlename,
-    user_gender: studentToBeUpdated.user_gender,
-    class_code: studentToBeUpdated.class_code,
+    // user_username: studentToBeUpdated.user_username,
+    // user_email: studentToBeUpdated.user_email,
+    // user_profile_path: studentToBeUpdated.user_profile_path,
+    // user_img: studentToBeUpdated.user_img,
+    // user_lastname: studentToBeUpdated.user_lastname,
+    // user_firstname: studentToBeUpdated.user_firstname,
+    // user_middlename: studentToBeUpdated.user_middlename,
+    // user_gender: studentToBeUpdated.user_gender,
+    //class_code: studentToBeUpdated.class_code,
     approvalStatus: "approved",
   });
 
   await roomExist.save();
   res
     .status(200)
-    .json({ message: `${studentToBeUpdated.user_username} is accepted` });
+    .json({ message: `${studentToBeUpdated.user_firstname} is accepted` });
 });
 
 //@desc     reject join student
@@ -463,7 +466,7 @@ const rejectJoinStudent = asyncHandler(async (req, res, next) => {
   await roomExist.save();
   return res
     .status(200)
-    .json({ message: `${studentToBeUpdated.user_username} is declined` });
+    .json({ message: `${studentToBeUpdated.user_firstname} is declined` });
 });
 
 //@desc     reject join student
@@ -522,15 +525,15 @@ const approveMultipleStudents = asyncHandler(async (req, res, next) => {
 
     roomExist.acceptedStudents.push({
       _id: listedStudent._id,
-      user_username: studentToBeUpdated.user_username,
-      user_email: studentToBeUpdated.user_email,
-      user_profile_path: studentToBeUpdated.user_profile_path,
-      user_img: studentToBeUpdated.user_img,
-      user_lastname: studentToBeUpdated.user_lastname,
-      user_firstname: studentToBeUpdated.user_firstname,
-      user_middlename: studentToBeUpdated.user_middlename,
-      user_gender: studentToBeUpdated.user_gender,
-      class_code: studentToBeUpdated.class_code,
+      // user_username: studentToBeUpdated.user_username,
+      // user_email: studentToBeUpdated.user_email,
+      // user_profile_path: studentToBeUpdated.user_profile_path,
+      // user_img: studentToBeUpdated.user_img,
+      // user_lastname: studentToBeUpdated.user_lastname,
+      // user_firstname: studentToBeUpdated.user_firstname,
+      // user_middlename: studentToBeUpdated.user_middlename,
+      // user_gender: studentToBeUpdated.user_gender,
+      // class_code: studentToBeUpdated.class_code,
       approvalStatus: "approved",
     });
   });
@@ -539,6 +542,377 @@ const approveMultipleStudents = asyncHandler(async (req, res, next) => {
   return res
     .status(200)
     .json({ message: `${checkedList.length} students successfully approved` });
+});
+
+//@desc     check plagiarsm
+//@route    GET /api/eduGemini/classroom/plagiarismChecker/:roomId/:workId/:userId
+//@access   private
+const plagiarismChecker = asyncHandler(async (req, res, next) => {
+  const { userId } = req.params;
+  const { workId, roomId } = req.body;
+  const roomExist = await Classroom.findById(roomId);
+  if (!roomExist) {
+    return res.status(400).json({ message: `${roomId} id does not exist` });
+  }
+
+  const foundStudent = roomExist.students.find(
+    (student) => student._id.toString() === userId
+  );
+
+  if (!foundStudent) {
+    return res.status(400).json({ message: `Student ${userId} not found` });
+  }
+
+  const findClasswork = roomExist.classwork.findIndex(
+    (classwork) => classwork._id.toString() === workId
+  );
+
+  if (findClasswork === -1) {
+    return res.status(400).json({ message: `Classwork ${workId} not found` });
+  }
+
+  const workIndex = roomExist.classwork[findClasswork];
+
+  let studentExist = workIndex.classwork_outputs.find(
+    (output) => output._id.toString() === userId
+  );
+
+  const students = workIndex.classwork_outputs.map(
+    (output) => output._id.toString() === userId
+  );
+
+  if (
+    (students && !studentExist) ||
+    (studentExist && studentExist.workStatus.name === "Shelved") ||
+    (studentExist && studentExist.workStatus.name === "Cancelled") ||
+    (studentExist && studentExist.workStatus.name === "No Action Yet")
+  ) {
+    return res.status(400).send({ message: "No output yet" });
+  }
+
+  //student files
+  const studentFiles = studentExist.files;
+
+  //student folder path
+  const studentFolderpath = studentExist.files.path;
+  //classwork folder path
+  const classworkPath = workIndex.classwork_folder_path;
+  //classwork attach file
+  const classworkAttachFile = workIndex.classwork_attach_file.originalname;
+  const fileManager = new GoogleAIFileManager(process.env.GEMINI_API_KEY);
+
+  const filesToBeprompted = await Promise.all(
+    studentFiles.map(async (file) => {
+      let fileFormat = file.originalname.split(".").pop();
+      let studentFiles;
+      let answerPath = fs.readFileSync(
+        `classworks/${classworkPath}/answers${file.path}/${file.originalname}`
+      );
+
+      if (
+        fileFormat === "html" ||
+        fileFormat === "css" ||
+        fileFormat === "js" ||
+        fileFormat === "php" ||
+        fileFormat === "dart" ||
+        fileFormat === "py" ||
+        fileFormat === "c" ||
+        fileFormat === "cpp" ||
+        fileFormat === "cs" ||
+        fileFormat === "swift" ||
+        fileFormat === "rs" ||
+        fileFormat === "go" ||
+        fileFormat === "ru" ||
+        fileFormat === "r" ||
+        fileFormat === "sql" ||
+        fileFormat === "java"
+      ) {
+        studentFiles = answerPath;
+      } else if (
+        fileFormat === "docx" ||
+        fileFormat === "pptx" ||
+        fileFormat === "xlsx" ||
+        fileFormat === "pdf"
+      ) {
+        studentFiles = await officeParser.parseOfficeAsync(answerPath);
+      } else if (fileFormat === "png") {
+        const uploadResult = await fileManager.uploadFile(
+          `classworks/${classworkPath}/answers${file.path}/${file.originalname}`,
+          {
+            mimeType: "image/png",
+            displayName: `${file.originalname}`,
+          }
+        );
+        const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
+        const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+
+        const result = await model.generateContent([
+          "Analyze and describe the image provided as this serves as the answer of the student.",
+          {
+            fileData: {
+              fileUri: uploadResult.file.uri,
+              mimeType: uploadResult.file.mimeType,
+            },
+          },
+        ]);
+        studentFiles = result.response.text();
+      } else if (fileFormat === "jpg") {
+        const uploadResult = await fileManager.uploadFile(
+          `classworks/${classworkPath}/answers${file.path}/${file.originalname}`,
+          {
+            mimeType: "image/jpeg",
+            displayName: `${file.originalname}`,
+          }
+        );
+        const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
+        const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+
+        const result = await model.generateContent([
+          "Analyze and describe the image provided as this serves as the answer of the student.",
+          {
+            fileData: {
+              fileUri: uploadResult.file.uri,
+              mimeType: uploadResult.file.mimeType,
+            },
+          },
+        ]);
+        studentFiles = result.response.text();
+      } //Visuals video
+      else if (fileFormat === "mp4") {
+        const uploadResult = await fileManager.uploadFile(
+          `classworks/${classworkPath}/answers${file.path}/${file.originalname}`,
+          {
+            mimeType: "video/mp4",
+            displayName: `${file.originalname}`,
+          }
+        );
+
+        const name = uploadResult.file.name;
+
+        let fileState = await fileManager.getFile(name);
+        while (fileState.state === FileState.PROCESSING) {
+          process.stdout.write("processing");
+          // Sleep for 10 seconds
+          await new Promise((resolve) => setTimeout(resolve, 10_000));
+          // Fetch the file from the API again
+          fileState = await fileManager.getFile(name);
+        }
+
+        if (fileState.state === FileState.FAILED) {
+          return res.status(400).json({ message: "Video processing failed." });
+        }
+
+        const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
+        const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+
+        const result = await model.generateContent([
+          {
+            fileData: {
+              mimeType: uploadResult.file.mimeType,
+              fileUri: uploadResult.file.uri,
+            },
+          },
+          {
+            text: "Analyze and describe the video provided as this serves as the answer of the student.",
+          },
+        ]);
+
+        studentFiles = result.response.text();
+      } else if (fileFormat === "mpeg") {
+        const uploadResult = await fileManager.uploadFile(
+          `classworks/${classworkPath}/answers${file.path}/${file.originalname}`,
+          {
+            mimeType: "video/mpeg",
+            displayName: `${file.originalname}`,
+          }
+        );
+
+        const name = uploadResult.file.name;
+
+        let fileState = await fileManager.getFile(name);
+        while (fileState.state === FileState.PROCESSING) {
+          process.stdout.write("processing");
+          // Sleep for 10 seconds
+          await new Promise((resolve) => setTimeout(resolve, 10_000));
+          // Fetch the file from the API again
+          fileState = await fileManager.getFile(name);
+        }
+
+        if (fileState.state === FileState.FAILED) {
+          return res.status(400).json({ message: "Video processing failed." });
+        }
+
+        const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
+        const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+
+        const result = await model.generateContent([
+          {
+            fileData: {
+              mimeType: uploadResult.file.mimeType,
+              fileUri: uploadResult.file.uri,
+            },
+          },
+          {
+            text: "Analyze and describe the video provided as this serves as the answer of the student.",
+          },
+        ]);
+
+        studentFiles = result.response.text();
+      } else if (fileFormat === "mov") {
+        const uploadResult = await fileManager.uploadFile(
+          `classworks/${classworkPath}/answers${file.path}/${file.originalname}`,
+          {
+            mimeType: "video/mov",
+            displayName: `${file.originalname}`,
+          }
+        );
+
+        const name = uploadResult.file.name;
+
+        let fileState = await fileManager.getFile(name);
+        while (fileState.state === FileState.PROCESSING) {
+          process.stdout.write("processing");
+          // Sleep for 10 seconds
+          await new Promise((resolve) => setTimeout(resolve, 10_000));
+          // Fetch the file from the API again
+          fileState = await fileManager.getFile(name);
+        }
+
+        if (fileState.state === FileState.FAILED) {
+          return res.status(400).json({ message: "Video processing failed." });
+        }
+
+        const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
+        const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+        const result = await model.generateContent([
+          {
+            fileData: {
+              mimeType: uploadResult.file.mimeType,
+              fileUri: uploadResult.file.uri,
+            },
+          },
+          {
+            text: "Analyze and describe the video provided as this serves as the answer of the student.",
+          },
+        ]);
+
+        studentFiles = result.response.text();
+      }
+      //Audio
+      else if (fileFormat === "wav") {
+        const uploadResult = await fileManager.uploadFile(
+          `classworks/${classworkPath}/answers${file.path}/${file.originalname}`,
+          {
+            mimeType: "audio/wav",
+            displayName: `${file.originalname}`,
+          }
+        );
+
+        const name = uploadResult.file.name;
+
+        let fileState = await fileManager.getFile(name);
+        while (fileState.state === FileState.PROCESSING) {
+          process.stdout.write("processing");
+          // Sleep for 10 seconds
+          await new Promise((resolve) => setTimeout(resolve, 10_000));
+          // Fetch the file from the API again
+          fileState = await fileManager.getFile(name);
+        }
+
+        if (fileState.state === FileState.FAILED) {
+          return res.status(400).json({ message: "Audio processing failed." });
+        }
+        const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
+        const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+        const result = await model.generateContent([
+          {
+            fileData: {
+              mimeType: uploadResult.file.mimeType,
+              fileUri: uploadResult.file.uri,
+            },
+          },
+          {
+            text: "Analyze and describe the audio provided as this serves as the answer of the student.",
+          },
+        ]);
+
+        studentFiles = result.response.text();
+      } else if (fileFormat === "mp3") {
+        const uploadResult = await fileManager.uploadFile(
+          `classworks/${classworkPath}/answers${file.path}/${file.originalname}`,
+          {
+            mimeType: "audio/mp3",
+            displayName: `${file.originalname}`,
+          }
+        );
+        const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
+        const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+
+        const result = await model.generateContent([
+          {
+            fileData: {
+              mimeType: uploadResult.file.mimeType,
+              fileUri: uploadResult.file.uri,
+            },
+          },
+          {
+            text: "Analyze and describe the audio provided as this serves as the answer of the student.",
+          },
+        ]);
+
+        studentFiles = result.response.text();
+      }
+
+      return studentFiles;
+    })
+  );
+
+  const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
+  const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+
+  const prompt = `
+Analyze the following student's output for potential plagiarism by comparing it with external internet sources.
+
+Student Output:
+${filesToBeprompted}
+
+Perform a thorough search across external internet sources. For each detected match, return a JSON array in the following format:
+[
+  {
+    "source": "exact URL of the internet source",
+    "similarityPercentage": percentage,
+    "matchingContent": "exact content matching the student's output"
+  }
+]
+
+If no matches are found, return the following JSON array:
+[
+  {
+    "source": "no matches found",
+    "similarityPercentage": 0,
+    "matchingContent": "no matching content"
+  }
+]
+
+Return only the JSON array in the specified format. Do not include any additional text, explanation, or formatting. Ensure that "source" contains the exact internet URL of the identified external source.
+`;
+
+  console.log(prompt);
+
+  const result = await model.generateContent(prompt);
+
+  const plagiarismData = result.response.text();
+  console.log(plagiarismData);
+  try {
+    const jsonStart = plagiarismData.indexOf("[");
+    const jsonEnd = plagiarismData.lastIndexOf("]") + 1;
+    const jsonFormat = JSON.parse(plagiarismData.slice(jsonStart, jsonEnd));
+    console.log(jsonFormat);
+    return res.status(200).send(jsonFormat);
+  } catch (error) {
+    console.error("Failed to extract JSON:", error);
+  }
+  return res.status(200).send(plagiarismData);
 });
 
 export default {
@@ -559,4 +933,5 @@ export default {
   approveMultipleStudents,
   adminAllClass,
   createPublicComment,
+  plagiarismChecker,
 };

@@ -8,6 +8,7 @@ import {
   createPrivateComment,
   getAttachments,
   useCreatePrivateComment,
+  useGetAllUser,
   useGetAttachments,
 } from "@/api/useApi";
 import { useParams } from "react-router-dom";
@@ -66,6 +67,10 @@ const PrivateCommentModal = ({
     onSuccess,
   });
 
+  const { data: allUser } = useGetAllUser({
+    onError,
+    onSuccess,
+  });
   return (
     <ReusableModal
       open={open}
@@ -91,10 +96,15 @@ const PrivateCommentModal = ({
                     }`}
                   >
                     <div className="flex gap-3 items-center">
-                      <img
-                        className="h-10 w-10 rounded-full border border-slate-900"
-                        src={`${baseUrl}/${comment.profile}`}
-                      />
+                      {allUser?.map((userInfo) =>
+                        userInfo._id === comment.user ? (
+                          <img
+                            className="h-10 w-10 rounded-full"
+                            src={`${baseUrl}/${userInfo.profile_path}/${userInfo.profile.filename}`}
+                          />
+                        ) : null
+                      )}
+
                       <div>
                         <h1 className="font-bold">{comment.username}</h1>
                         <p className="italic opacity-75 text-sm">

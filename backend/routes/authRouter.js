@@ -63,9 +63,6 @@ authRouter.post(
     const { userId } = req.params;
     const user = await User.findById(userId);
     const roomExist = await Classroom.findOne({ owner: userId });
-    const userExistStudentAccepted = await Classroom.find({
-      acceptedStudents: { $elemMatch: { _id: userId } },
-    });
 
     if (user) {
       user.user_username = req.body.user_username || user.user_username;
@@ -90,24 +87,6 @@ authRouter.post(
         if (roomExist) {
           roomExist.user_img = req.file.filename;
           await roomExist.save();
-        }
-
-        if (userExistStudentAccepted && userExistStudentAccepted.length > 0) {
-          for (const classroom of userExistStudentAccepted) {
-            //students Array
-            classroom.students.map((student) => {
-              if (student._id.toString() === userId) {
-                student.user_img = req.file.filename;
-              }
-            });
-            //acceptedStudents Array
-            classroom.acceptedStudents.map((student) => {
-              if (student._id.toString() === userId) {
-                student.user_img = req.file.filename;
-              }
-            });
-            await classroom.save();
-          }
         }
 
         user.profile = req.file;
@@ -144,5 +123,8 @@ authRouter.post("/login", authController.loginUser);
 authRouter.post("/logout", authController.logoutUser);
 
 authRouter.get("/profile/:userId", authController.getUserProfile);
+
+//all user
+authRouter.get("/allUser", authController.getAllUser);
 
 export default authRouter;

@@ -9,6 +9,7 @@ import officeParser from "officeparser";
 import { nanoid } from "nanoid";
 import { GoogleAIFileManager, FileState } from "@google/generative-ai/server";
 import { processInstrcutionFile } from "../utils/processInstructionFile.js";
+import User from "../models/userModel.js";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 //@desc     get classwork
@@ -106,7 +107,7 @@ const createPrivateComment = asyncHandler(async (req, res, next) => {
   const { comment, date, timeAction, teacherId, studentId } = req.body;
 
   const roomExist = await Classroom.findById(roomId);
-
+  const user = await User.findById(studentId);
   if (!roomExist) {
     return res.status(400).json({ message: `${roomId} id does not exist` });
   }
@@ -142,8 +143,6 @@ const createPrivateComment = asyncHandler(async (req, res, next) => {
       foundStudent.user_firstname
     } ${foundStudent.user_middlename.charAt(0)}.`;
 
-    const profile = `${foundStudent.user_profile_path}/${foundStudent.user_img}`;
-
     studentExist.privateComment.push({
       _id: nanoid(),
       user: userId,
@@ -151,7 +150,6 @@ const createPrivateComment = asyncHandler(async (req, res, next) => {
       username: username,
       date: date,
       time: timeAction,
-      profile: profile,
     });
   }
 
@@ -163,7 +161,6 @@ const createPrivateComment = asyncHandler(async (req, res, next) => {
       username: roomExist.owner_name,
       date: date,
       time: timeAction,
-      profile: `${roomExist.profile_path}/${roomExist.user_img}`,
     });
   }
 
@@ -1365,26 +1362,34 @@ const similarityIndex = asyncHandler(async (req, res, next) => {
   const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
 
   const prompt = `
-    Compare the similarity between this student's output: ${JSON.stringify(
-      studentOutput.output
-    )} 
-    and the following students' outputs: ${JSON.stringify(studentListOutputs)}. 
-    Return only an array of objects in the format: [{ "name": "student full name", "similarityIndex": percentage }]. 
-    The result should be pure JSON type with no extra characters included.
-  `;
+Compare the similarity between this student's output: ${JSON.stringify(
+    studentOutput.output
+  )} 
+and the following students' outputs: ${JSON.stringify(studentListOutputs)}. 
+Return only a valid JSON array in the following format:
+[
+  {
+    "name": "student full name",
+    "similarityIndex": percentage
+  }
+]
+Do not include any additional text, explanation, or formatting. Return only the JSON array, nothing else.`;
+
+  const result = await model.generateContent(prompt);
+
+  const similarityData = result.response.text();
 
   try {
-    const result = await model.generateContent(prompt);
+    const jsonStart = similarityData.indexOf("[");
+    const jsonEnd = similarityData.lastIndexOf("]") + 1;
+    const jsonFormat = JSON.parse(similarityData.slice(jsonStart, jsonEnd));
 
-    const similarityData = result.response.text();
-
-    return res.status(200).send(similarityData);
+    return res.status(200).send(jsonFormat);
   } catch (error) {
-    console.error("Error generating similarity index:", error);
-    return res
-      .status(500)
-      .json({ message: "Failed to generate similarity index." });
+    console.error("Failed to extract JSON:", error);
   }
+
+  return res.status(200).send(similarityData);
 });
 
 //@desc     cancel classwork attachment
@@ -1468,11 +1473,15 @@ const studentList = asyncHandler(async (req, res, next) => {
     moment(`${dueDate} ${dueTime}`, "MMM Do YYYY h:mm A")
   );
 
-  const listedStudent = roomExist.acceptedStudents.map((student) => {
+  const acceptedStudents = roomExist.students.filter(
+    (student) => student.approvalStatus === "approved"
+  );
+
+  const listedStudent = acceptedStudents.map((student) => {
     const studentActivity = classworkOutputs.find(
       (output) => output._id.toString() === student._id.toString()
     );
-
+    // const studentInfo = await User.findById(student._id);
     let workStatus;
 
     if (
@@ -1514,7 +1523,7 @@ const studentList = asyncHandler(async (req, res, next) => {
       teacherFeedback: studentActivity?.teacherFeedback
         ? studentActivity?.teacherFeedback
         : "No feedback for teacher available",
-      user_img: `${student.user_profile_path}/${student.user_img}`,
+
       chancesResubmition:
         studentActivity?.chancesResubmition === undefined
           ? "No Action Yet"
@@ -1537,8 +1546,11 @@ export const getAllActivities = asyncHandler(async (req, res, next) => {
   const { roomId } = req.params;
 
   const roomExist = await Classroom.findById(roomId);
+  const acceptedStudents = roomExist.students.filter(
+    (student) => student.approvalStatus === "approved"
+  );
 
-  const allactivities = roomExist.acceptedStudents.map((student) => {
+  const allactivities = acceptedStudents.map((student) => {
     const eachClassworkTitle = () =>
       roomExist.classwork.map((classwork) => {
         const title = classwork.classwork_title;
@@ -2048,7 +2060,11 @@ export const getExportActivities = asyncHandler(async (req, res, next) => {
     return res.status(404).send({ message: "Room not found" });
   }
 
-  let allActivities = roomExist.acceptedStudents.map((student) => {
+  const acceptedStudents = roomExist.students.filter(
+    (student) => student.approvalStatus === "approved"
+  );
+
+  let allActivities = acceptedStudents.map((student) => {
     let eachClassworkTitle = () =>
       roomExist.classwork.map((classwork) => {
         const title = classwork.classwork_title;
@@ -2127,7 +2143,11 @@ const exportSpecificActivity = asyncHandler(async (req, res, next) => {
     moment(`${dueDate} ${dueTime}`, "MMM Do YYYY h:mm A")
   );
 
-  const listedStudent = roomExist.acceptedStudents.map((student) => {
+  const acceptedStudents = roomExist.students.filter(
+    (student) => student.approvalStatus === "approved"
+  );
+
+  const listedStudent = acceptedStudents.map((student) => {
     const studentActivity = classworkOutputs.find(
       (output) => output._id.toString() === student._id.toString()
     );
@@ -2189,5 +2209,6 @@ export default {
   createPrivateComment,
   getExportActivities,
   exportSpecificActivity,
+
   similarityIndex,
 };

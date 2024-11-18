@@ -20,23 +20,21 @@ import { baseUrl } from "@/baseUrl";
 function JoinClass({ open, onOpenChange }) {
   const queryClient = useQueryClient();
   const [student, setStudent] = useState({
-    user_email: "",
-    user_username: "",
+    // user_email: "",
+    // user_username: "",
     user_lastname: "",
     user_firstname: "",
     user_middlename: "",
-
     class_code: "",
     _id: "",
   });
   const [user_gender, setSelectGender] = useState(null);
   const {
-    user_email,
-    user_username,
+    // user_email,
+    // user_username,
     user_firstname,
     user_middlename,
     user_lastname,
-
     class_code,
     _id,
   } = student;
@@ -48,8 +46,8 @@ function JoinClass({ open, onOpenChange }) {
   const onSuccess = (data) => {
     toast.success(data.success);
     setStudent({
-      user_email: "",
-      user_username: "",
+      // user_email: "",
+      // user_username: "",
       user_lastname: "",
       user_firstname: "",
       user_middlename: "",
@@ -250,10 +248,10 @@ function JoinClass({ open, onOpenChange }) {
                   try {
                     await mutateAsync({
                       _id: user._id,
-                      user_username: user.user_username,
-                      user_email: user.user_email,
-                      user_profile_path: user.profile_path,
-                      user_img: user.profile.filename,
+                      // user_username: user.user_username,
+                      // user_email: user.user_email,
+                      // user_profile_path: user.profile_path,
+                      // user_img: user.profile.filename,
                       user_firstname: user_firstname,
                       user_middlename: user_middlename,
                       user_lastname: user_lastname,

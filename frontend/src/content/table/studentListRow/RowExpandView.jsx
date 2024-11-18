@@ -1,4 +1,12 @@
-import { similarityIndex, useGetSimilarityIndex } from "@/api/useApi";
+import {
+  getUser,
+  plagiarism,
+  similarityIndex,
+  useGetAllUser,
+  useGetPlagiarismChecker,
+  useGetSimilarityIndex,
+  useGetUser,
+} from "@/api/useApi";
 import { baseUrl } from "@/baseUrl";
 import AcceptLateOutput from "@/components/modals/AcceptLateOutput";
 import AddChances from "@/components/modals/AddChances";
@@ -8,12 +16,12 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Gauge } from "@/components/ui/gauge";
 import { Skeleton } from "@/components/ui/skeleton";
-import { Clock, File, Loader, Star } from "lucide-react";
+import { Clock, File, Loader, Loader2Icon, Star } from "lucide-react";
 import moment from "moment";
 import React, { useState } from "react";
 import { Link, useParams } from "react-router-dom";
 
-const RowExpandView = ({ user }) => {
+const RowExpandView = ({ user, filterLateTurnedIn }) => {
   const [openAddChanceModal, setAddChanceModal] = useState(false);
   const [openAcceptLateOutputModal, setAcceptLateoutputModal] = useState(false);
   const [openPrivateCommentModal, setOpenPrivateModal] = useState(false);
@@ -50,6 +58,23 @@ const RowExpandView = ({ user }) => {
     onError,
     onSuccess,
   });
+
+  const {
+    mutateAsync,
+    data: dataPlagiarism,
+    isPending,
+  } = useGetPlagiarismChecker({
+    mutationFn: () => plagiarism(userId, workId, roomId),
+    onError,
+    onSuccess,
+  });
+
+  const { data: allUser } = useGetAllUser({
+    onError,
+    onSuccess,
+  });
+
+  console.log(dataPlagiarism);
 
   return (
     <div className="p-3">
@@ -88,8 +113,16 @@ const RowExpandView = ({ user }) => {
       <div>
         <div className="flex gap-3 items-center">
           <Avatar>
-            <AvatarImage src={`${baseUrl}/${user.user_img}`} />
-            <AvatarFallback src={<Loader />} />
+            {allUser?.map((users) =>
+              user._id === users._id ? (
+                <AvatarImage
+                  className="h-10 w-10 rounded-full border-2 border-slate-900"
+                  src={`${baseUrl}/${users.profile_path}/${users.profile.filename}`}
+                />
+              ) : (
+                <AvatarImage className="h-10 w-10 rounded-full border-2 border-slate-900" />
+              )
+            )}
           </Avatar>
           <div>
             <h1 className="font-bold text-xs italic text-slate-900 md:text-md">
@@ -131,7 +164,7 @@ const RowExpandView = ({ user }) => {
                 {user.chancesResubmition === 0 ? (
                   <Button
                     onClick={() => setAddChanceModal(true)}
-                    variant="ghost"
+                    className="bg-yellow-500"
                   >
                     Give a chance?
                   </Button>
@@ -176,13 +209,6 @@ const RowExpandView = ({ user }) => {
           </div>
 
           <div className="my-5">
-            <h1 className="text-slate-900 text-sm italic font-bold md:text-lg">
-              Files
-            </h1>
-            <p className="italic text-slate-500 my-2 text-xs md:text-lg">
-              These are the files of student
-            </p>
-
             {(isOverdue && user.workStatus.name === "Cancelled") ||
             (isOverdue && user.workStatus.name === "Shelved") ? (
               <Button
@@ -196,65 +222,147 @@ const RowExpandView = ({ user }) => {
               ""
             )}
 
-            <div className="grid grid-cols-1 gap-3 lg:grid-cols-3">
-              {user.files?.map((file) => (
-                <div className="bg-slate-900 text-slate-100 flex items-center gap-2 rounded-md p-3">
-                  <File />
-                  <Link
-                    target="_blank"
-                    to="/class/classroom/viewFile"
-                    onClick={() => {
-                      localStorage.setItem("files", JSON.stringify(user.files));
-                      localStorage.setItem(
-                        "path",
-                        JSON.stringify(user.classwork_path + user.path)
-                      );
-                    }}
-                  >
-                    <div className="flex flex-col">
-                      <p className="line-clamp-1">{file.originalname}</p>
-                      <p>{fileSizeLabel(file.size)}</p>
+            {user.files.length === 0 ? null : (
+              <>
+                <h1 className="text-slate-900 text-sm italic font-bold md:text-lg">
+                  Files
+                </h1>
+                <p className="italic text-slate-500 my-2 text-xs md:text-lg">
+                  These are the files of student
+                </p>
+
+                <div className="grid grid-cols-1 gap-3 lg:grid-cols-3">
+                  {user.files?.map((file) => (
+                    <div className="bg-slate-900 text-slate-100 flex items-center gap-2 rounded-md p-3">
+                      <File />
+                      <Link
+                        target="_blank"
+                        to="/class/classroom/viewFile"
+                        onClick={() => {
+                          localStorage.setItem(
+                            "files",
+                            JSON.stringify(user.files)
+                          );
+                          localStorage.setItem(
+                            "path",
+                            JSON.stringify(user.classwork_path + user.path)
+                          );
+                        }}
+                      >
+                        <div className="flex flex-col">
+                          <p className="line-clamp-1">{file.originalname}</p>
+                          <p>{fileSizeLabel(file.size)}</p>
+                        </div>
+                      </Link>
                     </div>
-                  </Link>
+                  ))}
                 </div>
-              ))}
-            </div>
+              </>
+            )}
+
             <h1 className="text-slate-900 my-5 text-sm italic font-bold md:text-lg">
               Similarity Index
             </h1>
-            {isFetching || isLoading ? (
-              <div className="grid grid-cols-3">
-                <div className="w-60 bg-slate-900 text-white p-5 rounded-md flex flex-col-reverse items-start gap-2">
-                  <Skeleton className={"bg-slate-500 rounded-sm p-2 w-36"} />
-                  <Skeleton
-                    className={"bg-slate-500 p-2 h-16 w-16 rounded-full"}
-                  />
-                </div>
-              </div>
+            {filterLateTurnedIn.length === 1 ? (
+              <p className="italic text-slate-500 my-2 text-xs md:text-lg">
+                The number of turned in and late outputs is currently
+                insufficient to calculate a meaningful similarity index.
+              </p>
             ) : (
               <>
-                {user.workStatus.name === "Turned in" ||
-                user.workStatus.name === "Late" ? (
-                  <div className="grid grid-cols-1 gap-3 w-full md:grid-cols-2 lg:grid-cols-4">
-                    {data?.map((similar) => (
-                      <div className=" bg-slate-900 text-white p-5 rounded-md flex flex-col-reverse items-start gap-2">
-                        <h1>{similar.name}</h1>
-
-                        <Gauge
-                          value={similar.similarityIndex}
-                          size="medium"
-                          showValue={true}
-                        />
-                      </div>
-                    ))}
+                {isFetching || isLoading ? (
+                  <div className="grid grid-cols-3">
+                    <div className="w-60 bg-slate-900 text-white p-5 rounded-md flex flex-col-reverse items-start gap-2">
+                      <Skeleton
+                        className={"bg-slate-500 rounded-sm p-2 w-36"}
+                      />
+                      <Skeleton
+                        className={"bg-slate-500 p-2 h-16 w-16 rounded-full"}
+                      />
+                    </div>
                   </div>
                 ) : (
-                  <p className="italic text-slate-500 my-2 text-xs md:text-lg">
-                    {error?.message}
-                  </p>
+                  <>
+                    {user.workStatus.name === "Turned in" ||
+                    user.workStatus.name === "Late" ? (
+                      <div className="grid grid-cols-1 gap-3 w-full md:grid-cols-2 lg:grid-cols-4">
+                        {data?.map((similar) => (
+                          <div className=" bg-slate-900 text-white p-5 rounded-md flex flex-col-reverse items-start gap-2">
+                            <h1>{similar.name}</h1>
+
+                            <Gauge
+                              value={similar.similarityIndex}
+                              size="medium"
+                              showValue={true}
+                            />
+                          </div>
+                        ))}
+                      </div>
+                    ) : (
+                      <p className="italic text-slate-500 my-2 text-xs md:text-lg">
+                        {error?.message}
+                      </p>
+                    )}
+                  </>
                 )}
               </>
             )}
+
+            <h1 className="text-slate-900 mt-5 text-sm italic font-bold md:text-lg">
+              Plagiarism Checker
+            </h1>
+            {user.workStatus.name === "Turned in" ||
+            user.workStatus.name === "Late" ? (
+              <Button
+                disabled={isPending}
+                className="my-5"
+                onClick={async () => {
+                  await mutateAsync(workId, roomId);
+                }}
+              >
+                {isLoading || isPending ? (
+                  <Loader2Icon className="animate-spin" />
+                ) : (
+                  "Check Plagiarism"
+                )}
+              </Button>
+            ) : null}
+
+            <>
+              {isFetching || isLoading ? (
+                <div className="grid grid-cols-3">
+                  <div className="w-60 bg-slate-900 text-white p-5 rounded-md flex flex-col-reverse items-start gap-2">
+                    <Skeleton className={"bg-slate-500 rounded-sm p-2 w-36"} />
+                    <Skeleton
+                      className={"bg-slate-500 p-2 h-16 w-16 rounded-full"}
+                    />
+                  </div>
+                </div>
+              ) : (
+                <>
+                  {user.workStatus.name === "Turned in" ||
+                  user.workStatus.name === "Late" ? (
+                    <div className="grid grid-cols-1 gap-3 w-full md:grid-cols-2 lg:grid-cols-4">
+                      {dataPlagiarism?.map((plagiarism) => (
+                        <div className=" bg-slate-900 text-white p-5 rounded-md flex flex-col-reverse items-start gap-2">
+                          <h1>{plagiarism.source}</h1>
+                          <p>{plagiarism.matchingContent}</p>
+                          <Gauge
+                            value={plagiarism.similarityPercentage}
+                            size="medium"
+                            showValue={true}
+                          />
+                        </div>
+                      ))}
+                    </div>
+                  ) : (
+                    <p className="italic text-slate-500 my-2 text-xs md:text-lg">
+                      {error?.message}
+                    </p>
+                  )}
+                </>
+              )}
+            </>
           </div>
         </div>
       </div>

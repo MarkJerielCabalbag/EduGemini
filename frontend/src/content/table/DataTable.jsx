@@ -32,6 +32,7 @@ const DataTable = ({
   paginationVisibility,
   dataSheet,
   excelFilename,
+  filterLateTurnedIn,
 }) => {
   const [columnVisibility, setColumnVisibility] = useState({
     files: false,
@@ -116,7 +117,12 @@ const DataTable = ({
                 ))}
               </TableRow>
 
-              {row.getIsExpanded() && <RowExpandView user={row.original} />}
+              {row.getIsExpanded() && (
+                <RowExpandView
+                  user={row.original}
+                  filterLateTurnedIn={filterLateTurnedIn}
+                />
+              )}
             </>
           ))}
         </TableBody>

@@ -3,6 +3,7 @@ import {
   fetchClassData,
   getAnnouncement,
   useCreatePublicAnnouncement,
+  useGetAllUser,
   useGetannouncement,
   useGetClass,
 } from "@/api/useApi";
@@ -89,6 +90,11 @@ function Announcements({ userStatus }) {
     onSuccess,
   });
 
+  const { data: allUser } = useGetAllUser({
+    onError,
+    onSuccess,
+  });
+
   return (
     <div className="h-screen overflow-y-auto container sm:container md:container lg:container">
       {data?.map((item) => (
@@ -167,50 +173,56 @@ function Announcements({ userStatus }) {
                       />
                     </div>
                   </div>
-                  <Table>
-                    <TableHeader>
-                      <TableRow>
-                        <TableHead className="w-[100px] bg-slate-900 text-white">
-                          Downloadable File(s)
-                        </TableHead>
-                      </TableRow>
-                    </TableHeader>
-                    <TableBody>
-                      {item.files.map((file) => (
+                  {item.files.length === 0 ? null : (
+                    <Table>
+                      <TableHeader>
                         <TableRow>
-                          {isLoading || isPending || isFetching ? (
-                            <TableCell className="font-medium flex gap-3 items-center">
-                              <File />
-                              <Skeleton
-                                className={"h-[20px] w-[400px] bg-slate-700"}
-                              />
-                            </TableCell>
-                          ) : (
-                            <TableCell className="font-medium flex gap-3 items-center">
-                              <File />
-
-                              <Link
-                                target="_blank"
-                                onClick={() => {
-                                  localStorage.setItem(
-                                    "files",
-                                    JSON.stringify(item.files)
-                                  );
-                                  localStorage.setItem(
-                                    "path",
-                                    JSON.stringify(item.path)
-                                  );
-                                }}
-                                to="/class/classroom/viewFile"
-                              >
-                                {file.originalname}
-                              </Link>
-                            </TableCell>
-                          )}
+                          <TableHead className="w-[100px] bg-slate-900 text-white">
+                            Downloadable File(s)
+                          </TableHead>
                         </TableRow>
-                      ))}
-                    </TableBody>
-                  </Table>
+                      </TableHeader>
+                      <TableBody>
+                        <>
+                          {item.files.map((file) => (
+                            <TableRow>
+                              {isLoading || isPending || isFetching ? (
+                                <TableCell className="font-medium flex gap-3 items-center">
+                                  <File />
+                                  <Skeleton
+                                    className={
+                                      "h-[20px] w-[400px] bg-slate-700"
+                                    }
+                                  />
+                                </TableCell>
+                              ) : (
+                                <TableCell className="font-medium flex gap-3 items-center">
+                                  <File />
+
+                                  <Link
+                                    target="_blank"
+                                    onClick={() => {
+                                      localStorage.setItem(
+                                        "files",
+                                        JSON.stringify(item.files)
+                                      );
+                                      localStorage.setItem(
+                                        "path",
+                                        JSON.stringify(item.path)
+                                      );
+                                    }}
+                                    to="/class/classroom/viewFile"
+                                  >
+                                    {file.originalname}
+                                  </Link>
+                                </TableCell>
+                              )}
+                            </TableRow>
+                          ))}
+                        </>
+                      </TableBody>
+                    </Table>
+                  )}
 
                   <Separator className="my-5" />
 
@@ -254,10 +266,14 @@ function Announcements({ userStatus }) {
                                 }`}
                               >
                                 <div className="flex gap-3 items-center">
-                                  <img
-                                    className="h-10 w-10 rounded-full border border-slate-900"
-                                    src={`${baseUrl}/${comment.profile}`}
-                                  />
+                                  {allUser?.map((userInfo) =>
+                                    userInfo._id === comment.user ? (
+                                      <img
+                                        className="h-10 w-10 rounded-full border border-slate-900"
+                                        src={`${baseUrl}/${userInfo.profile_path}/${userInfo.profile.filename}`}
+                                      />
+                                    ) : null
+                                  )}
                                   <div>
                                     <h1 className="font-bold text-xs md:text-md">
                                       {comment.username}

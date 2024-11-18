@@ -118,6 +118,16 @@ const generateToken = (id) => {
     expiresIn: "1d",
   });
 };
+
+//@desc     Get all user
+//@route    Get /api/eduGemini/allUser
+//@access   private
+const getAllUser = asyncHandler(async (req, res, next) => {
+  const allUser = await User.find();
+  console.log(allUser);
+  res.status(200).send(allUser);
+});
+
 // //@desc     Update User Profile
 // //@route    POST /api/eduGemini/profile
 // //@access   private
@@ -158,4 +168,5 @@ export default {
   logoutUser,
   getUserProfile,
   // updateUserProfile,
+  getAllUser,
 };

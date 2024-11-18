@@ -37,14 +37,14 @@ export const setStudentListCol = [
     cell: (info) => (
       <Badge
         className={`${
-          info.getValue().name === "Missing" ? "bg-red-500" : ""
-        }  ${info.getValue().name === "Shelved" ? "bg-sky-500" : ""} ${
-          info.getValue().name === "Cancelled" ? "bg-red-900" : ""
-        } ${info.getValue().name === "Turned in" ? "bg-green-500" : ""} ${
-          info.getValue().name === "Late" ? "bg-yellow-500" : ""
+          info.getValue()?.name === "Missing" ? "bg-red-500" : ""
+        }  ${info.getValue()?.name === "Shelved" ? "bg-sky-500" : ""} ${
+          info.getValue()?.name === "Cancelled" ? "bg-red-900" : ""
+        } ${info.getValue()?.name === "Turned in" ? "bg-green-500" : ""} ${
+          info.getValue()?.name === "Late" ? "bg-yellow-500" : ""
         }`}
       >
-        {info.getValue().name}
+        {info.getValue()?.name}
       </Badge>
     ),
     header: () => "Status",

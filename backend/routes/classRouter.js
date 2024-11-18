@@ -261,4 +261,10 @@ classRouter.post(
   "/approveStudents",
   classroomControllers.approveMultipleStudents
 );
+
+//plagiarism checker
+classRouter.post(
+  "/plagiarismChecker/:userId",
+  classroomControllers.plagiarismChecker
+);
 export default classRouter;
