@@ -30,7 +30,7 @@ function JoinClass({ open, onOpenChange }) {
   });
   const [user_gender, setSelectGender] = useState(null);
   const {
-    // user_email,
+    user_email,
     // user_username,
     user_firstname,
     user_middlename,
@@ -46,7 +46,7 @@ function JoinClass({ open, onOpenChange }) {
   const onSuccess = (data) => {
     toast.success(data.success);
     setStudent({
-      // user_email: "",
+      user_email: "",
       // user_username: "",
       user_lastname: "",
       user_firstname: "",
@@ -249,7 +249,7 @@ function JoinClass({ open, onOpenChange }) {
                     await mutateAsync({
                       _id: user._id,
                       // user_username: user.user_username,
-                      // user_email: user.user_email,
+                      user_email: user.user_email,
                       // user_profile_path: user.profile_path,
                       // user_img: user.profile.filename,
                       user_firstname: user_firstname,

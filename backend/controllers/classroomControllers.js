@@ -372,7 +372,7 @@ const joinStudent = asyncHandler(async (req, res, next) => {
   classroomExist.students.unshift({
     _id,
     // user_username,
-    // user_email,
+    user_email,
     // user_profile_path,
     // user_img,
     user_lastname,
