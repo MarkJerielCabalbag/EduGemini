@@ -11,6 +11,7 @@ import { baseUrl } from "@/baseUrl";
 import AcceptLateOutput from "@/components/modals/AcceptLateOutput";
 import AddChances from "@/components/modals/AddChances";
 import PrivateCommentModal from "@/components/modals/PrivateCommentModal";
+import UpdateScoreModal from "@/components/modals/UpdateScoreModal";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -25,7 +26,7 @@ const RowExpandView = ({ user, filterLateTurnedIn }) => {
   const [openAddChanceModal, setAddChanceModal] = useState(false);
   const [openAcceptLateOutputModal, setAcceptLateoutputModal] = useState(false);
   const [openPrivateCommentModal, setOpenPrivateModal] = useState(false);
-
+  const [openUpdateScoreModal, setUpdateScoreModal] = useState(false);
   const { workId } = useParams();
 
   const onError = () => console.log("error");
@@ -110,6 +111,16 @@ const RowExpandView = ({ user, filterLateTurnedIn }) => {
           studentId={user._id}
         />
       )}
+
+      {openUpdateScoreModal && (
+        <UpdateScoreModal
+          open={openUpdateScoreModal}
+          onOpenChange={setUpdateScoreModal}
+          roomId={user.roomId}
+          workId={workId}
+          studentId={user._id}
+        />
+      )}
       <div>
         <div className="flex gap-3 items-center">
           <Avatar>
@@ -177,17 +188,25 @@ const RowExpandView = ({ user, filterLateTurnedIn }) => {
             </p>
           </div>
 
-          {user.workStatus.name === "Turned in" ||
-          user.workStatus.name === "Late" ||
-          user.workStatus.name === "Cancelled" ? (
-            <Button
-              variant={"secondary"}
-              className="my-5"
-              onClick={() => setOpenPrivateModal(true)}
-            >
-              See All Comments
-            </Button>
-          ) : null}
+          <div className="flex flex-col gap-2 my-5 lg:flex-row">
+            {user.workStatus.name === "Turned in" ||
+            user.workStatus.name === "Late" ||
+            user.workStatus.name === "Cancelled" ? (
+              <Button
+                variant={"secondary"}
+                onClick={() => setOpenPrivateModal(true)}
+              >
+                See All Comments
+              </Button>
+            ) : null}
+
+            {user.workStatus.name === "Turned in" ||
+            user.workStatus.name === "Late" ? (
+              <Button onClick={() => setUpdateScoreModal(true)}>
+                Update Score
+              </Button>
+            ) : null}
+          </div>
 
           <div>
             <h1 className="text-slate-900 text-sm italic font-bold md:text-lg">

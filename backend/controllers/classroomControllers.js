@@ -151,7 +151,7 @@ const createPublicComment = asyncHandler(async (req, res, next) => {
 
   console.log(findStudent);
 
-  if (user._id.toString() === findStudent._id) {
+  if (findStudent) {
     // console.log(findStudent);
 
     const username = `${findStudent.user_lastname}, ${
@@ -325,7 +325,7 @@ const joinStudent = asyncHandler(async (req, res, next) => {
   const {
     _id,
     // user_username,
-    user_email,
+    // user_email,
     // user_profile_path,
     // user_img,
     user_lastname,
@@ -354,16 +354,16 @@ const joinStudent = asyncHandler(async (req, res, next) => {
   }
 
   const studentDuplication = classroomExist.students.find(
-    (student) => student.user_email === user_email
+    (student) => student._id === _id && student.approvalStatus === "approved"
   );
 
   if (studentDuplication) {
     return res.status(400).json({
-      message: `The account ${user_email} is already registered here`,
+      message: `The account is already registered here`,
     });
   }
 
-  if (classroomExist.owner_email === user_email) {
+  if (classroomExist.owner === _id) {
     return res
       .status(400)
       .json({ message: "You can not join the class you created" });
@@ -372,7 +372,7 @@ const joinStudent = asyncHandler(async (req, res, next) => {
   classroomExist.students.unshift({
     _id,
     // user_username,
-    user_email,
+    // user_email,
     // user_profile_path,
     // user_img,
     user_lastname,

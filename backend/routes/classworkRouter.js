@@ -479,4 +479,10 @@ classworkRouter.get(
   classworkController.similarityIndex
 );
 
+//update score student
+classworkRouter.post(
+  "/updateScore/:roomId/:workId/:studentId",
+  classworkController.updateStudentScore
+);
+
 export default classworkRouter;

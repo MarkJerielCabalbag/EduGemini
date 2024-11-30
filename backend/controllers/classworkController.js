@@ -943,7 +943,7 @@ const similarityIndex = asyncHandler(async (req, res, next) => {
         }
 
         const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
-        const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+        const model = genAI.getGenerativeModel({ model: "gemini-1.5-flashs" });
         const result = await model.generateContent([
           {
             fileData: {
@@ -1659,6 +1659,10 @@ const acceptLateClasswork = asyncHandler(async (req, res, next) => {
   //classwork attach file
   const classworkAttachFile = workIndex.classwork_attach_file.originalname;
 
+  if (!studentFiles) {
+    return res.status(400).json({ message: "There is no files attach" });
+  }
+
   let instructionFile;
   let instructionPath = fs.readFileSync(
     `classworks/${classworkPath}/${classworkAttachFile}`
@@ -2193,6 +2197,54 @@ const exportSpecificActivity = asyncHandler(async (req, res, next) => {
   res.status(200).send(listedStudent);
 });
 
+//@desc     POST update student score
+//@route    POST /api/eduGemini/classwork/updateScore/:roomId/:workId/:studentId
+//@access   private
+const updateStudentScore = asyncHandler(async (req, res, next) => {
+  const { roomId, workId, studentId } = req.params;
+  const { score } = req.body;
+
+  console.log(score);
+
+  const roomExist = await Classroom.findById(roomId);
+  if (!roomExist) {
+    return res.status(400).json({ message: `${roomId} id does not exist` });
+  }
+
+  if (!score) {
+    return res.status(400).json({ message: "Please provide a score" });
+  }
+
+  const foundStudent = roomExist.students.find(
+    (student) => student._id.toString() === studentId
+  );
+
+  if (!foundStudent) {
+    return res.status(400).json({ message: `Student ${studentId} not found` });
+  }
+
+  const findClasswork = roomExist.classwork.findIndex(
+    (classwork) => classwork._id.toString() === workId
+  );
+
+  if (findClasswork === -1) {
+    return res.status(400).json({ message: `Classwork ${workId} not found` });
+  }
+
+  const workIndex = roomExist.classwork[findClasswork];
+
+  let studentExist = workIndex.classwork_outputs.find(
+    (output) => output._id.toString() === studentId
+  );
+
+  studentExist.score = score;
+  roomExist.classwork[findClasswork] = workIndex;
+
+  await roomExist.save();
+
+  return res.status(200).json({ message: "The score is successfully updated" });
+});
+
 export default {
   getClasswork,
   getClassworkInformation,
@@ -2209,6 +2261,6 @@ export default {
   createPrivateComment,
   getExportActivities,
   exportSpecificActivity,
-
+  updateStudentScore,
   similarityIndex,
 };
