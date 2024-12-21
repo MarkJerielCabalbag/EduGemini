@@ -1,7 +1,9 @@
 import {
+  aiDetector,
   getUser,
   plagiarism,
   similarityIndex,
+  useGetAiDetector,
   useGetAllUser,
   useGetPlagiarismChecker,
   useGetSimilarityIndex,
@@ -17,7 +19,17 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Gauge } from "@/components/ui/gauge";
 import { Skeleton } from "@/components/ui/skeleton";
-import { Clock, File, Loader, Loader2Icon, Star } from "lucide-react";
+import {
+  BookX,
+  Bot,
+  Clock,
+  File,
+  Loader,
+  Loader2Icon,
+  ScanSearch,
+  Star,
+  TriangleAlert,
+} from "lucide-react";
 import moment from "moment";
 import React, { useState } from "react";
 import { Link, useParams } from "react-router-dom";
@@ -61,9 +73,10 @@ const RowExpandView = ({ user, filterLateTurnedIn }) => {
   });
 
   const {
-    mutateAsync,
+    mutateAsync: checkPlagiarism,
     data: dataPlagiarism,
-    isPending,
+    isPending: isPendingPlagiarsm,
+    isLoading: isLoadingPlagiarism,
   } = useGetPlagiarismChecker({
     mutationFn: () => plagiarism(userId, workId, roomId),
     onError,
@@ -71,6 +84,17 @@ const RowExpandView = ({ user, filterLateTurnedIn }) => {
   });
 
   const { data: allUser } = useGetAllUser({
+    onError,
+    onSuccess,
+  });
+
+  const {
+    data: aiDetected,
+    mutateAsync: checkAiGenerated,
+    isPending: isPendingAiDetection,
+    isLoading: isLoadingAiDetection,
+  } = useGetAiDetector({
+    mutationFn: () => aiDetector(userId, workId, roomId),
     onError,
     onSuccess,
   });
@@ -208,77 +232,58 @@ const RowExpandView = ({ user, filterLateTurnedIn }) => {
             ) : null}
           </div>
 
-          <div>
-            <h1 className="text-slate-900 text-sm italic font-bold md:text-lg">
-              Student Feedback
-            </h1>
+          {(isOverdue && user.workStatus.name === "Cancelled") ||
+          (isOverdue && user.workStatus.name === "Shelved") ? (
+            <Button
+              variant="ghost"
+              className="bg-yellow-500 my-5"
+              onClick={() => setAcceptLateoutputModal(true)}
+            >
+              Accept late ouput?
+            </Button>
+          ) : (
+            ""
+          )}
 
-            <pre className="italic my-2 text-slate-500 leading-6 text-xs text-balance md:text-lg">
-              {user.studentFeedback}
-            </pre>
-          </div>
+          {user.files.length === 0 ? null : (
+            <>
+              <h1 className="text-slate-900 text-sm italic font-bold md:text-lg">
+                Files
+              </h1>
+              <p className="italic text-slate-500 my-2 text-xs md:text-lg">
+                These are the files of student
+              </p>
 
-          <div>
-            <h1 className="text-slate-900 text-sm italic font-bold md:text-lg">
-              Teacher Feedback
-            </h1>
-            <pre className="italic my-2 text-slate-500 leading-6 text-xs text-balance md:text-lg">
-              {user.teacherFeedback}
-            </pre>
-          </div>
+              <div className="grid grid-cols-1 gap-3 lg:grid-cols-3">
+                {user.files?.map((file) => (
+                  <div className="bg-slate-900 text-slate-100 flex items-center gap-2 rounded-md p-3">
+                    <File />
+                    <Link
+                      target="_blank"
+                      to="/class/classroom/viewFile"
+                      onClick={() => {
+                        localStorage.setItem(
+                          "files",
+                          JSON.stringify(user.files)
+                        );
+                        localStorage.setItem(
+                          "path",
+                          JSON.stringify(user.classwork_path + user.path)
+                        );
+                      }}
+                    >
+                      <div className="flex flex-col">
+                        <p className="line-clamp-1">{file.originalname}</p>
+                        <p>{fileSizeLabel(file.size)}</p>
+                      </div>
+                    </Link>
+                  </div>
+                ))}
+              </div>
+            </>
+          )}
 
           <div className="my-5">
-            {(isOverdue && user.workStatus.name === "Cancelled") ||
-            (isOverdue && user.workStatus.name === "Shelved") ? (
-              <Button
-                variant="ghost"
-                className="bg-yellow-500 my-5"
-                onClick={() => setAcceptLateoutputModal(true)}
-              >
-                Accept late ouput?
-              </Button>
-            ) : (
-              ""
-            )}
-
-            {user.files.length === 0 ? null : (
-              <>
-                <h1 className="text-slate-900 text-sm italic font-bold md:text-lg">
-                  Files
-                </h1>
-                <p className="italic text-slate-500 my-2 text-xs md:text-lg">
-                  These are the files of student
-                </p>
-
-                <div className="grid grid-cols-1 gap-3 lg:grid-cols-3">
-                  {user.files?.map((file) => (
-                    <div className="bg-slate-900 text-slate-100 flex items-center gap-2 rounded-md p-3">
-                      <File />
-                      <Link
-                        target="_blank"
-                        to="/class/classroom/viewFile"
-                        onClick={() => {
-                          localStorage.setItem(
-                            "files",
-                            JSON.stringify(user.files)
-                          );
-                          localStorage.setItem(
-                            "path",
-                            JSON.stringify(user.classwork_path + user.path)
-                          );
-                        }}
-                      >
-                        <div className="flex flex-col">
-                          <p className="line-clamp-1">{file.originalname}</p>
-                          <p>{fileSizeLabel(file.size)}</p>
-                        </div>
-                      </Link>
-                    </div>
-                  ))}
-                </div>
-              </>
-            )}
-
             <h1 className="text-slate-900 my-5 text-sm italic font-bold md:text-lg">
               Similarity Index
             </h1>
@@ -326,62 +331,176 @@ const RowExpandView = ({ user, filterLateTurnedIn }) => {
                 )}
               </>
             )}
+          </div>
 
-            <h1 className="text-slate-900 mt-5 text-sm italic font-bold md:text-lg">
-              Plagiarism Checker
-            </h1>
-            {user.workStatus.name === "Turned in" ||
-            user.workStatus.name === "Late" ? (
-              <Button
-                disabled={isPending}
-                className="my-5"
-                onClick={async () => {
-                  await mutateAsync(workId, roomId);
-                }}
-              >
-                {isLoading || isPending ? (
+          <h1 className="text-slate-900 mt-5 text-sm italic font-bold md:text-lg">
+            Plagiarism Checker
+          </h1>
+
+          <p className="text-lg italic opacity-75 my-2">
+            <span className="flex gap-2 items-center font-extrabold">
+              <TriangleAlert />
+              Attention!
+            </span>
+            Our plagiarism detection feature uses advanced technology to
+            identify similarities in text. However, no system is entirely
+            foolproof. Please do not rely solely on this tool to make decisions
+            that affect an individual's academic or professional standing.
+            Always verify results manually for accuracy.
+          </p>
+
+          {user.workStatus.name === "Turned in" ||
+          user.workStatus.name === "Late" ? (
+            <Button
+              disabled={isPendingPlagiarsm}
+              className="mb-5"
+              onClick={async () => {
+                await checkPlagiarism(workId, roomId);
+              }}
+            >
+              {isLoadingPlagiarism || isPendingPlagiarsm ? (
+                <div className="flex gap-2 items-center">
                   <Loader2Icon className="animate-spin" />
-                ) : (
-                  "Check Plagiarism"
-                )}
-              </Button>
-            ) : null}
-
-            <>
-              {isFetching || isLoading ? (
-                <div className="grid grid-cols-3">
-                  <div className="w-60 bg-slate-900 text-white p-5 rounded-md flex flex-col-reverse items-start gap-2">
-                    <Skeleton className={"bg-slate-500 rounded-sm p-2 w-36"} />
-                    <Skeleton
-                      className={"bg-slate-500 p-2 h-16 w-16 rounded-full"}
-                    />
-                  </div>
+                  <p>Checking....</p>
                 </div>
               ) : (
-                <>
-                  {user.workStatus.name === "Turned in" ||
-                  user.workStatus.name === "Late" ? (
-                    <div className="grid grid-cols-1 gap-3 w-full md:grid-cols-2 lg:grid-cols-4">
-                      {dataPlagiarism?.map((plagiarism) => (
-                        <div className=" bg-slate-900 text-white p-5 rounded-md flex flex-col-reverse items-start gap-2">
-                          <h1>{plagiarism.source}</h1>
-                          <p>{plagiarism.matchingContent}</p>
-                          <Gauge
-                            value={plagiarism.similarityPercentage}
-                            size="medium"
-                            showValue={true}
-                          />
-                        </div>
-                      ))}
-                    </div>
-                  ) : (
-                    <p className="italic text-slate-500 my-2 text-xs md:text-lg">
-                      {error?.message}
-                    </p>
-                  )}
-                </>
+                <div className="flex gap-2 items-center">
+                  <ScanSearch />
+                  CheckPlagiarism
+                </div>
               )}
-            </>
+            </Button>
+          ) : null}
+
+          <>
+            {isLoadingPlagiarism || isPendingPlagiarsm ? (
+              <div className="grid grid-cols-3">
+                <div className="w-60 bg-slate-900 text-white p-5 rounded-md flex flex-col-reverse items-start gap-2">
+                  <Skeleton className={"bg-slate-500 rounded-sm p-2 w-36"} />
+                  <Skeleton
+                    className={"bg-slate-500 p-2 h-16 w-16 rounded-full"}
+                  />
+                </div>
+              </div>
+            ) : (
+              <>
+                {user.workStatus.name === "Turned in" ||
+                user.workStatus.name === "Late" ? (
+                  <div className="grid grid-cols-1 gap-3 w-full md:grid-cols-2 lg:grid-cols-4">
+                    {dataPlagiarism?.map((plagiarism) => (
+                      <div className=" bg-slate-900 text-white p-5 rounded-md flex flex-col-reverse items-start gap-2">
+                        <h1>{plagiarism.source}</h1>
+                        <p>{plagiarism.matchingContent}</p>
+                        <Gauge
+                          value={plagiarism.similarityPercentage}
+                          size="medium"
+                          showValue={true}
+                        />
+                      </div>
+                    ))}
+                  </div>
+                ) : (
+                  <p className="italic text-slate-500 my-2 text-xs md:text-lg">
+                    {error?.message}
+                  </p>
+                )}
+              </>
+            )}
+          </>
+
+          <h1 className="text-slate-900 mt-5 text-sm italic font-bold md:text-lg">
+            AI Detector
+          </h1>
+
+          <p className="text-lg italic opacity-75 my-2">
+            <span className="flex gap-2 items-center font-extrabold">
+              <TriangleAlert />
+              Attention!
+            </span>
+            While our AI Detector is advanced, no detector is completely
+            reliable, regardless of its accuracy score. Never rely solely on AI
+            detection to make decisions that affect an individual's work or
+            academic standing.
+          </p>
+
+          {user.workStatus.name === "Turned in" ||
+          user.workStatus.name === "Late" ? (
+            <Button
+              disabled={isPendingAiDetection}
+              className="mb-5"
+              onClick={async () => {
+                await checkAiGenerated(workId, roomId);
+              }}
+            >
+              {isLoadingAiDetection || isPendingAiDetection ? (
+                <div className="flex gap-2 items-center">
+                  <Loader2Icon className="animate-spin" />
+                  <p>Detecting....</p>
+                </div>
+              ) : (
+                <div className="flex gap-2 items-center">
+                  <Bot />
+                  AI Detector
+                </div>
+              )}
+            </Button>
+          ) : null}
+
+          <>
+            {isPendingAiDetection || isLoadingAiDetection ? (
+              <div className="grid grid-cols-3">
+                <div className="w-60 bg-slate-900 text-white p-5 rounded-md flex flex-col-reverse items-start gap-2">
+                  <Skeleton className={"bg-slate-500 rounded-sm p-2 w-36"} />
+                  <Skeleton
+                    className={"bg-slate-500 p-2 h-16 w-16 rounded-full"}
+                  />
+                </div>
+              </div>
+            ) : (
+              <>
+                {user.workStatus.name === "Turned in" ||
+                user.workStatus.name === "Late" ? (
+                  <div className="grid grid-cols-1 gap-3 w-full md:grid-cols-2 lg:grid-cols-4">
+                    <div className=" bg-slate-900 text-white p-5 rounded-md flex flex-col items-start gap-2">
+                      <Gauge
+                        value={aiDetected?.similarityScore}
+                        size="medium"
+                        showValue={true}
+                      />
+                      <h1 className="italic font-md font-bold">
+                        Detected Pattern
+                      </h1>
+                      <p>"{aiDetected?.detectedPattern}"</p>
+                      <h1 className="italic font-md font-bold">Evidence</h1>
+                      <p>"{aiDetected?.evidence}"</p>
+                    </div>
+                  </div>
+                ) : (
+                  <p className="italic text-slate-500 my-2 text-xs md:text-lg">
+                    {error?.message}
+                  </p>
+                )}
+              </>
+            )}
+          </>
+
+          <div>
+            <h1 className="text-slate-900 mt-5 text-sm italic font-bold md:text-lg">
+              Student Feedback
+            </h1>
+
+            <pre className="italic my-2 text-slate-500 leading-6 text-xs text-balance md:text-lg">
+              {user.studentFeedback}
+            </pre>
+          </div>
+
+          <div>
+            <h1 className="text-slate-900 text-sm italic font-bold md:text-lg">
+              Teacher Feedback
+            </h1>
+            <pre className="italic my-2 text-slate-500 leading-6 text-xs text-balance md:text-lg">
+              {user.teacherFeedback}
+            </pre>
           </div>
         </div>
       </div>

@@ -803,6 +803,25 @@ export async function plagiarism(userId, workId, roomId) {
   });
 }
 
+export async function aiDetector(userId, workId, roomId) {
+  return await fetch(
+    `${baseUrl}/api/eduGemini/classroom/aiDetector/${userId}`,
+    {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ workId, roomId }),
+    }
+  ).then(async (res) => {
+    const response = await res.json();
+
+    if (!res.ok) {
+      throw new Error(response.message || "An Error Occured");
+    }
+
+    return response;
+  });
+}
+
 export async function updateScore(roomId, workId, studentId, score) {
   return await fetch(
     `${baseUrl}/api/eduGemini/classwork/updateScore/${roomId}/${workId}/${studentId}`,
@@ -1204,6 +1223,14 @@ export const useGetPlagiarismChecker = ({ mutationFn, onError, onSuccess }) => {
 };
 
 export const useUpdateStudentScore = ({ mutationFn, onError, onSuccess }) => {
+  return useMutation({
+    mutationFn,
+    onError,
+    onSuccess,
+  });
+};
+
+export const useGetAiDetector = ({ mutationFn, onError, onSuccess }) => {
   return useMutation({
     mutationFn,
     onError,

@@ -11,7 +11,6 @@ import { GoogleAIFileManager, FileState } from "@google/generative-ai/server";
 import { processInstrcutionFile } from "../utils/processInstructionFile.js";
 import User from "../models/userModel.js";
 
-const __dirname = path.dirname(fileURLToPath(import.meta.url));
 //@desc     get classwork
 //@route    GET /api/eduGemini/classwork/getClasswork/:roomId
 //@access   private
@@ -312,6 +311,8 @@ const submitAttachment = asyncHandler(async (req, res, next) => {
   let instructionPath = fs.readFileSync(
     `classworks/${classworkPath}/${classworkAttachFile}`
   );
+
+  console.log(instructionPath);
   const fileManager = new GoogleAIFileManager(process.env.GEMINI_API_KEY);
   let instructionFormat = classworkAttachFile.split(".").pop();
 

@@ -267,4 +267,7 @@ classRouter.post(
   "/plagiarismChecker/:userId",
   classroomControllers.plagiarismChecker
 );
+
+//ai detector
+classRouter.post("/aiDetector/:userId", classroomControllers.aiDetector);
 export default classRouter;
