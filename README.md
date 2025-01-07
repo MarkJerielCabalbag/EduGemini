@@ -1,6 +1,6 @@
 # EduGemini: AI-Assisted Classroom Management System
 
-![EduGemini Logo](https://via.placeholder.com/800x200?text=EduGemini+AI-Assisted+Classroom+Management) <!-- Replace with your logo URL -->
+<!-- Replace with your logo URL -->
 
 ## 🚀 Project Overview
 
@@ -132,7 +132,7 @@ This project is licensed under the MIT License. See the [LICENSE](./LICENSE) fil
 
 ## 🧑‍💻 Author
 
-- **[Your Name](https://github.com/yourusername)**
+- **[MarkJerielCabalbag](https://github.com/MarkJerielCabalbag)**
   - Role: Project Manager and Developer
   - Key Contributions: Designed and developed the system, integrated AI feedback features, and managed project timelines.
 
@@ -140,8 +140,7 @@ This project is licensed under the MIT License. See the [LICENSE](./LICENSE) fil
 
 ## 🌐 Links
 
-- [Live Demo](#) <!-- Add your live demo URL -->
-- [GitHub Repository](https://github.com/yourusername/EduGemini)
+- [Live Demo](edugemini.online) <!-- Add your live demo URL -->
 - [Portfolio](#) <!-- Add your portfolio URL -->
 
 ---
